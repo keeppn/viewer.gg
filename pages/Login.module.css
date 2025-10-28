@@ -1,0 +1,823 @@
+/* Gradient Wave Login Form - Scoped Styles for Login Component */
+
+.loginBody { /* This class will be applied to the root div of Login.tsx */
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
+    background-size: 400% 400%;
+    animation: gradientFlow 15s ease infinite;
+    line-height: 1.6;
+    position: relative;
+}
+
+@keyframes gradientFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Animated Wave Background */
+.waveContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.wave {
+    position: absolute;
+    top: 0;
+    left: -50%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    transform-origin: center;
+}
+
+.wave1 {
+    animation: waveMove 20s linear infinite;
+    animation-delay: 0s;
+}
+
+.wave2 {
+    animation: waveMove 25s linear infinite reverse;
+    animation-delay: -5s;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+}
+
+.wave3 {
+    animation: waveMove 30s linear infinite;
+    animation-delay: -10s;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+}
+
+.wave4 {
+    animation: waveMove 35s linear infinite reverse;
+    animation-delay: -15s;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
+}
+
+@keyframes waveMove {
+    0% { transform: translateX(-50%) skewX(-5deg); }
+    100% { transform: translateX(50%) skewX(-5deg); }
+}
+
+/* Gradient Particles */
+.gradientParticles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: radial-gradient(circle, rgba(255,255,255,0.8), transparent);
+    border-radius: 50%;
+    animation: particleFloat 15s linear infinite;
+}
+
+.particle:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+.particle:nth-child(2) { top: 60%; left: 80%; animation-delay: -3s; }
+.particle:nth-child(3) { top: 80%; left: 20%; animation-delay: -6s; }
+.particle:nth-child(4) { top: 30%; left: 70%; animation-delay: -9s; }
+.particle:nth-child(5) { top: 10%; left: 60%; animation-delay: -12s; }
+.particle:nth-child(6) { top: 70%; left: 40%; animation-delay: -15s; }
+
+@keyframes particleFloat {
+    0%, 100% { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
+    10%, 90% { opacity: 1; }
+    50% { transform: translateY(-100px) translateX(50px) scale(1.5); }
+}
+
+.loginContainer {
+    width: 100%;
+    max-width: 420px;
+    position: relative;
+    z-index: 10;
+}
+
+.loginCard {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 24px;
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+.loginCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 35px 70px rgba(0, 0, 0, 0.2);
+}
+
+.cardGlow {
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c);
+    background-size: 400% 400%;
+    animation: gradientFlow 8s ease infinite;
+    border-radius: 24px;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.loginCard:hover .cardGlow {
+    opacity: 1;
+}
+
+.loginHeader {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.gradientIcon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 24px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+.iconWave {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: iconWaveMove 3s ease-in-out infinite;
+}
+
+@keyframes iconWaveMove {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+.gradientIcon svg {
+    width: 32px;
+    height: 32px;
+    color: rgba(255,255,255,0.9);
+    z-index: 1;
+}
+
+.loginHeader h2 {
+    color: rgba(255,255,255,0.95);
+    font-size: 2.25rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #ffffff, rgba(255,255,255,0.7));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.loginHeader p {
+    color: rgba(255,255,255,0.7);
+    font-size: 16px;
+    font-weight: 400;
+}
+
+/* Gradient Form Styles */
+.formGroup {
+    margin-bottom: 28px;
+    position: relative;
+}
+
+.inputContainer {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+}
+
+.inputBg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 16px;
+    transition: all 0.3s ease;
+}
+
+.inputContainer:focus-within .inputBg {
+    background: rgba(255,255,255,0.15);
+    border-color: rgba(255,255,255,0.4);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.inputContainer input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    padding: 20px 24px;
+    color: rgba(255,255,255,0.95);
+    font-size: 16px;
+    font-weight: 500;
+    outline: none;
+    position: relative;
+    z-index: 2;
+}
+
+.inputContainer input::placeholder {
+    color: transparent;
+}
+
+.inputContainer input:-webkit-autofill,
+.inputContainer input:-webkit-autofill:hover,
+.inputContainer input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 30px rgba(255,255,255,0.1) inset;
+    -webkit-text-fill-color: rgba(255,255,255,0.95);
+}
+
+.inputContainer label {
+    position: absolute;
+    left: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255,255,255,0.6);
+    font-size: 16px;
+    font-weight: 400;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    z-index: 3;
+}
+
+.inputContainer input:focus + label,
+.inputContainer input:not(:placeholder-shown) + label {
+    top: 12px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.8);
+    transform: translateY(0);
+}
+
+.inputWave {
+    position: absolute;
+    bottom: 0;
+    left: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+    transition: all 0.3s ease;
+    z-index: 4;
+}
+
+.inputContainer:focus-within .inputWave {
+    left: 100%;
+    animation: inputWaveFlow 1s ease-in-out;
+}
+
+@keyframes inputWaveFlow {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* Password Toggle */
+.passwordContainer {
+    padding-right: 60px;
+}
+
+.passwordToggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.toggleBg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255,255,255,0.1);
+    border-radius: 12px;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.passwordToggle:hover .toggleBg {
+    opacity: 1;
+}
+
+.toggleIcon {
+    position: relative;
+    z-index: 1;
+    width: 20px;
+    height: 20px;
+    color: rgba(255,255,255,0.7);
+}
+
+.toggleIcon svg {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: all 0.3s ease;
+}
+
+.eyeClosed {
+    opacity: 0;
+    transform: scale(0.8);
+}
+
+.passwordToggle.showPassword .eyeOpen {
+    opacity: 0;
+    transform: scale(0.8);
+}
+
+.passwordToggle.showPassword .eyeClosed {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Form Options */
+.formOptions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.checkboxContainer {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.checkboxContainer input[type="checkbox"] {
+    display: none;
+}
+
+.checkboxLabel {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
+    color: rgba(255,255,255,0.8);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.gradientCheckbox {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    position: relative;
+    overflow: hidden;
+}
+
+.checkboxBg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.checkboxContainer input[type="checkbox"]:checked + .checkboxLabel .checkboxBg {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-color: rgba(255,255,255,0.5);
+}
+
+.gradientCheckbox svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    width: 12px;
+    height: 12px;
+    color: white;
+    transition: all 0.3s ease;
+    z-index: 1;
+}
+
+.checkboxContainer input[type="checkbox"]:checked + .checkboxLabel svg {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.forgotLink {
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.forgotLink::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: rgba(255,255,255,0.8);
+    transition: width 0.3s ease;
+}
+
+.forgotLink:hover::after {
+    width: 100%;
+}
+
+.forgotLink:hover {
+    color: rgba(255,255,255,1);
+}
+
+/* Gradient Button */
+.gradientButton {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-radius: 16px;
+    padding: 0;
+    cursor: pointer;
+    position: relative;
+    margin-bottom: 28px;
+    overflow: hidden;
+    height: 56px;
+}
+
+.buttonBg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 16px;
+    transition: all 0.3s ease;
+}
+
+.gradientButton:hover .buttonBg {
+    background: linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.15));
+    border-color: rgba(255,255,255,0.5);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.buttonContent {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: rgba(255,255,255,0.95);
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.btnLoader {
+    position: absolute;
+    display: flex;
+    gap: 4px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.loaderWave {
+    width: 4px;
+    height: 16px;
+    background: rgba(255,255,255,0.8);
+    border-radius: 2px;
+    animation: loaderWave 1.2s ease-in-out infinite;
+}
+
+.loaderWave:nth-child(2) { animation-delay: 0.1s; }
+.loaderWave:nth-child(3) { animation-delay: 0.2s; }
+
+@keyframes loaderWave {
+    0%, 80%, 100% { transform: scaleY(0.5); opacity: 0.5; }
+    40% { transform: scaleY(1); opacity: 1; }
+}
+
+.gradientButton.loading .btnText {
+    opacity: 0;
+}
+
+.gradientButton.loading .btnLoader {
+    opacity: 1;
+}
+
+.buttonRipple {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 16px;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+/* Divider */
+.divider {
+    display: flex;
+    align-items: center;
+    margin: 28px 0;
+    gap: 16px;
+}
+
+.dividerLine {
+    flex: 1;
+    height: 1px;
+    position: relative;
+    overflow: hidden;
+}
+
+.lineGradient {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: lineFlow 3s ease-in-out infinite;
+}
+
+@keyframes lineFlow {
+    0%, 100% { left: -100%; }
+    50% { left: 100%; }
+}
+
+.divider span {
+    color: rgba(255,255,255,0.6);
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Social Login */
+.socialLogin {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.socialBtn {
+    width: 50px;
+    height: 50px;
+    background: transparent;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.socialBg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 14px;
+    transition: all 0.3s ease;
+}
+
+.googleBg {
+    background: rgba(255,255,255,0.1);
+}
+
+.facebookBg {
+    background: rgba(24, 119, 242, 0.1);
+}
+
+.appleBg {
+    background: rgba(0,0,0,0.1);
+}
+
+.socialBtn:hover .socialBg {
+    background: rgba(255,255,255,0.2);
+    border-color: rgba(255,255,255,0.4);
+    transform: scale(1.05);
+}
+
+.socialBtn svg {
+    width: 22px;
+    height: 22px;
+    color: rgba(255,255,255,0.8);
+    z-index: 1;
+    transition: all 0.3s ease;
+}
+
+.socialBtn:hover svg {
+    color: rgba(255,255,255,1);
+}
+
+/* Signup Link */
+.signupLink {
+    text-align: center;
+}
+
+.signupLink p {
+    color: rgba(255,255,255,0.7);
+    font-size: 14px;
+}
+
+.signupLink a {
+    color: rgba(255,255,255,0.9);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.signupLink a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: rgba(255,255,255,0.9);
+    transition: width 0.3s ease;
+}
+
+.signupLink a:hover::after {
+    width: 100%;
+}
+
+/* Error States */
+.error-message {
+    color: #ff6b6b;
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 8px;
+    margin-left: 8px;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    background: rgba(255, 107, 107, 0.1);
+    padding: 4px 8px;
+    border-radius: 6px;
+    backdrop-filter: blur(10px);
+}
+
+.error-message.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.formGroup.error .inputBg {
+    background: rgba(255, 107, 107, 0.1);
+    border-color: rgba(255, 107, 107, 0.4);
+}
+
+/* Success Message */
+.successMessage {
+    display: none;
+    text-align: center;
+    padding: 40px 20px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.successMessage.show {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.successWave {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    animation: successWaveMove 2s ease-in-out;
+}
+
+@keyframes successWaveMove {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+.successContent {
+    position: relative;
+    z-index: 1;
+}
+
+.successIcon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    color: white;
+    animation: successPulse 0.6s ease-out;
+}
+
+@keyframes successPulse {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.successIcon svg {
+    width: 28px;
+    height: 28px;
+}
+
+.successMessage h3 {
+    color: rgba(255,255,255,0.95);
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+}
+
+.successMessage p {
+    color: rgba(255,255,255,0.7);
+    font-size: 14px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 480px) {
+    .loginBody {
+        padding: 16px;
+    }
+    
+    .loginCard {
+        padding: 28px;
+        border-radius: 20px;
+    }
+    
+    .loginHeader h2 {
+        font-size: 1.875rem;
+    }
+    
+    .gradientIcon {
+        width: 64px;
+        height: 64px;
+    }
+    
+    .formOptions {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    
+    .wave {
+        width: 150%;
+        left: -25%;
+    }
+}
