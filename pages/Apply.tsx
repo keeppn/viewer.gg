@@ -34,7 +34,15 @@ const Apply: React.FC = () => {
       language: 'English', // Mock data
       submissionDate: new Date().toISOString().split('T')[0],
       status: 'Pending',
+      customFields: {}, // Initialize customFields
     };
+
+    // Populate customFields
+    tournament.formFields.forEach(field => {
+      if (formData[field.id]) {
+        newApplication.customFields[field.id] = formData[field.id];
+      }
+    });
 
     addApplication(newApplication);
     navigate('/applications');

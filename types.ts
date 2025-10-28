@@ -15,6 +15,7 @@ export interface Application {
     language: string;
     submissionDate: string;
     status: 'Pending' | 'Approved' | 'Rejected';
+    customFields: Record<string, string>; // To store data from dynamic form fields
 }
 
 export interface Tournament {

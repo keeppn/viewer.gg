@@ -9,10 +9,15 @@ import Settings from './pages/Settings';
 import Live from './pages/Live';
 import NewTournament from './pages/NewTournament';
 import Apply from './pages/Apply'; // Import the new component
+import Login from './pages/Login'; // Import Login component
 
 export const router = createBrowserRouter([
   {
     path: '/',
+    element: <Login />,
+  },
+  {
+    path: '/dashboard',
     element: <App />,
     children: [
       {
