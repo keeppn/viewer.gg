@@ -12,10 +12,5 @@ export default defineConfig({
       alias: {
         '@': path.resolve(__dirname, '.'),
       }
-    },
-    build: {
-      rollupOptions: {
-        external: ['@google/generative-ai'],
-      },
-    },
+    }
 });
