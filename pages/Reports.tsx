@@ -1,10 +1,9 @@
 
 
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import Button from '../components/common/Button';
 import { AnalyticsData, Application } from '../types';
-import { generateReportSummary } from '../services/geminiService';
 
 interface OutletContextType {
   analyticsData: AnalyticsData;
@@ -20,28 +19,10 @@ const Reports: React.FC = () => {
   });
   const [reportFormat, setReportFormat] = useState<'csv' | 'pdf'>('pdf');
   const [brandLogo, setBrandLogo] = useState<File | null>(null);
-  const [summary, setSummary] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
   
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setReportOptions({ ...reportOptions, [e.target.name]: e.target.checked });
   };
-  
-  const handleGenerateSummary = useCallback(async () => {
-    setIsLoading(true);
-    setError('');
-    setSummary('');
-    try {
-      const summaryText = await generateReportSummary(reportOptions, analyticsData, applications);
-      setSummary(summaryText);
-    } catch (err) {
-      setError('Failed to generate summary. Please try again.');
-      console.error(err);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [reportOptions, analyticsData, applications]);
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
@@ -66,20 +47,6 @@ const Reports: React.FC = () => {
               <span className="text-gray-400">{brandLogo ? `File: ${brandLogo.name}` : 'Upload Sponsor Logo'}</span>
               <input type="file" onChange={(e) => e.target.files && setBrandLogo(e.target.files[0])} className="hidden" accept="image/*" />
             </label>
-          </div>
-
-          {/* AI Summary */}
-           <div>
-              <h3 className="text-lg font-semibold mb-2 text-gray-200">AI-Powered Summary</h3>
-              <p className="text-sm text-gray-400 mb-4">Use Gemini to generate a narrative summary for your report based on the selected data.</p>
-              <Button onClick={handleGenerateSummary} disabled={isLoading}>{isLoading ? 'Generating...' : 'Generate with AI'}</Button>
-              {error && <p className="text-red-400 mt-2 text-sm">{error}</p>}
-              {summary && (
-                  <div className="mt-4 p-4 bg-black/20 rounded-lg border border-white/10">
-                      <h4 className="font-semibold text-[#FFCB82] mb-2">Generated Summary:</h4>
-                      <p className="text-gray-300 whitespace-pre-wrap">{summary}</p>
-                  </div>
-              )}
           </div>
           
           {/* Format & Download */}
