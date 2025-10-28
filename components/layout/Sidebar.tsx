@@ -28,13 +28,13 @@ const NavItem: React.FC<{
 
 const Sidebar: React.FC = () => {
   const pages: { name: string; icon: React.ReactNode; path: string }[] = [
-    { name: 'Overview', icon: <OverviewIcon />, path: '/' },
-    { name: 'Tournaments', icon: <TournamentIcon />, path: '/tournaments' },
-    { name: 'Analytics', icon: <AnalyticsIcon />, path: '/analytics' },
-    { name: 'Applications', icon: <ApplicationIcon />, path: '/applications' },
-    { name: 'Live', icon: <LiveIcon />, path: '/live' },
-    { name: 'Reports', icon: <ReportIcon />, path: '/reports' },
-    { name: 'Settings', icon: <SettingsIcon />, path: '/settings' },
+    { name: 'Overview', icon: <OverviewIcon />, path: '/dashboard' },
+    { name: 'Tournaments', icon: <TournamentIcon />, path: '/dashboard/tournaments' },
+    { name: 'Analytics', icon: <AnalyticsIcon />, path: '/dashboard/analytics' },
+    { name: 'Applications', icon: <ApplicationIcon />, path: '/dashboard/applications' },
+    { name: 'Live', icon: <LiveIcon />, path: '/dashboard/live' },
+    { name: 'Reports', icon: <ReportIcon />, path: '/dashboard/reports' },
+    { name: 'Settings', icon: <SettingsIcon />, path: '/dashboard/settings' },
   ];
 
   return (
