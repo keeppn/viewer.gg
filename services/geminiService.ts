@@ -1,8 +1,12 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { AnalyticsData, Application } from "../types";
 
 // FIX: Initialize GoogleGenAI with API key from environment variables as per guidelines.
-const ai = new GoogleGenAI({apiKey: process.env.API_KEY});
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+if (!apiKey) {
+  throw new Error("VITE_GEMINI_API_KEY is not set");
+}
+const ai = new GoogleGenerativeAI(apiKey);
 
 
 export const generateReportSummary = async (
@@ -35,11 +39,11 @@ export const generateReportSummary = async (
   }
 
   try {
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: prompt,
-    });
-    return response.text;
+    const model = ai.getGenerativeModel({ model: "gemini-1.5-flash"});
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
+    return text;
   } catch (error) {
     console.error("Error generating summary with Gemini:", error);
     throw new Error("Failed to communicate with the Gemini API.");
