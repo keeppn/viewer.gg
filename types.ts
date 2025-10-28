@@ -1,13 +1,3 @@
-export enum Page {
-    OVERVIEW = 'Overview',
-    TOURNAMENTS = 'Tournaments',
-    ANALYTICS = 'Analytics',
-    APPLICATIONS = 'Applications',
-    REPORTS = 'Reports',
-    SETTINGS = 'Settings',
-    LIVE = 'Live',
-}
-
 export interface FormField {
     id: string;
     label: string;

@@ -1,13 +1,12 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Page } from '../../types';
 import { OverviewIcon, TournamentIcon, AnalyticsIcon, ApplicationIcon, ReportIcon, SettingsIcon, LogoIcon, LiveIcon } from '../icons/Icons';
 
 const NavItem: React.FC<{
-  page: Page;
+  name: string;
   icon: React.ReactNode;
   path: string;
-}> = ({ page, icon, path }) => {
+}> = ({ name, icon, path }) => {
   const location = useLocation();
   const isActive = location.pathname === path;
   return (
@@ -21,21 +20,21 @@ const NavItem: React.FC<{
       >
         {isActive && <div className="absolute left-0 top-0 h-full w-1 bg-[#387B66] rounded-r-full"></div>}
         <div className="w-6 h-6">{icon}</div>
-        <span className="ml-4 font-semibold">{page}</span>
+        <span className="ml-4 font-semibold">{name}</span>
       </li>
     </Link>
   );
 };
 
 const Sidebar: React.FC = () => {
-  const pages: { page: Page; icon: React.ReactNode; path: string }[] = [
-    { page: Page.OVERVIEW, icon: <OverviewIcon />, path: '/' },
-    { page: Page.TOURNAMENTS, icon: <TournamentIcon />, path: '/tournaments' },
-    { page: Page.ANALYTICS, icon: <AnalyticsIcon />, path: '/analytics' },
-    { page: Page.APPLICATIONS, icon: <ApplicationIcon />, path: '/applications' },
-    { page: Page.LIVE, icon: <LiveIcon />, path: '/live' },
-    { page: Page.REPORTS, icon: <ReportIcon />, path: '/reports' },
-    { page: Page.SETTINGS, icon: <SettingsIcon />, path: '/settings' },
+  const pages: { name: string; icon: React.ReactNode; path: string }[] = [
+    { name: 'Overview', icon: <OverviewIcon />, path: '/' },
+    { name: 'Tournaments', icon: <TournamentIcon />, path: '/tournaments' },
+    { name: 'Analytics', icon: <AnalyticsIcon />, path: '/analytics' },
+    { name: 'Applications', icon: <ApplicationIcon />, path: '/applications' },
+    { name: 'Live', icon: <LiveIcon />, path: '/live' },
+    { name: 'Reports', icon: <ReportIcon />, path: '/reports' },
+    { name: 'Settings', icon: <SettingsIcon />, path: '/settings' },
   ];
 
   return (
@@ -46,10 +45,10 @@ const Sidebar: React.FC = () => {
       </div>
       <nav>
         <ul>
-          {pages.map(({ page, icon, path }) => (
+          {pages.map(({ name, icon, path }) => (
             <NavItem
-              key={page}
-              page={page}
+              key={name}
+              name={name}
               icon={icon}
               path={path}
             />

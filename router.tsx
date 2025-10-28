@@ -7,6 +7,8 @@ import Applications from './pages/Applications';
 import Reports from './pages/Reports';
 import Settings from './pages/Settings';
 import Live from './pages/Live';
+import NewTournament from './pages/NewTournament';
+import Apply from './pages/Apply'; // Import the new component
 
 export const router = createBrowserRouter([
   {
@@ -20,6 +22,14 @@ export const router = createBrowserRouter([
       {
         path: 'tournaments',
         element: <Tournaments />,
+      },
+      {
+        path: 'tournaments/new',
+        element: <NewTournament />,
+      },
+      {
+        path: 'tournaments/:tournamentId/apply', // New route for applying to a tournament
+        element: <Apply />,
       },
       {
         path: 'analytics',

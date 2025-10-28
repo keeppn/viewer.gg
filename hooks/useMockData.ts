@@ -63,8 +63,18 @@ export const useMockData = () => {
   };
 
   const analyticsData: AnalyticsData = initialAnalytics;
+
+  const addApplication = (application: Omit<Application, 'id'>) => {
+    setApplications(prev => [
+      ...prev,
+      {
+        id: prev.length > 0 ? Math.max(...prev.map(a => a.id)) + 1 : 1,
+        ...application,
+      }
+    ]);
+  };
   
-  return { applications, setApplications, tournaments, setTournaments, stats, analyticsData, liveStreams };
+  return { applications, setApplications, tournaments, setTournaments, stats, analyticsData, liveStreams, addApplication };
 };
 
 export type { Application, Tournament };

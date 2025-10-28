@@ -12,6 +12,7 @@ const App: React.FC = () => {
     stats,
     analyticsData,
     liveStreams,
+    addApplication, // Get the addApplication function from the hook
   } = useMockData();
 
   const updateApplicationStatus = (id: number, status: 'Approved' | 'Rejected') => {
@@ -45,6 +46,7 @@ const App: React.FC = () => {
     updateApplicationStatus,
     addTournament,
     updateTournament,
+    addApplication, // Add the addApplication function to the context
   };
 
   return (

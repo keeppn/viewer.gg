@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Tournament, FormField } from '../../types';
 import Button from '../common/Button';
-import { BackIcon, PlusIcon, TrashIcon, ArrowUpIcon, ArrowDownIcon } from '../icons/Icons';
+import { BackIcon, PlusIcon, TrashIcon, ArrowUpIcon, ArrowDownIcon, CopyIcon } from '../icons/Icons'; // Add CopyIcon
 
 interface ManageTournamentFormProps {
     tournament: Tournament;
@@ -17,6 +17,8 @@ const ManageTournamentForm: React.FC<ManageTournamentFormProps> = ({ tournament,
 
     const [newFieldLabel, setNewFieldLabel] = useState('');
     const [newFieldType, setNewFieldType] = useState<'text' | 'url' | 'number'>('text');
+
+    const publicFormUrl = `${window.location.origin}/tournaments/${tournament.id}/apply`;
 
     const handleAddField = () => {
         if (!newFieldLabel) return;
@@ -56,6 +58,11 @@ const ManageTournamentForm: React.FC<ManageTournamentFormProps> = ({ tournament,
         });
     };
 
+    const handleCopy = () => {
+        navigator.clipboard.writeText(publicFormUrl);
+        // Optionally, show a "Copied!" message
+    };
+
     return (
         <div className="space-y-8">
             <div className="flex items-center justify-between">
@@ -67,6 +74,14 @@ const ManageTournamentForm: React.FC<ManageTournamentFormProps> = ({ tournament,
                     </div>
                 </div>
                 <Button variant="success" onClick={handleSave} className="text-lg px-6 py-3">Save All Changes</Button>
+            </div>
+
+            <div className="bg-[#1E1E1E] p-8 rounded-lg shadow-sm border border-white/10">
+                <h3 className="text-xl font-bold mb-6 text-white border-b border-white/20 pb-4">Public Form URL</h3>
+                <div className="flex items-center space-x-4">
+                    <input type="text" value={publicFormUrl} readOnly className="w-full bg-[#121212] text-gray-400 rounded-md p-3 border border-white/20" />
+                    <Button onClick={handleCopy} icon={<CopyIcon />}>Copy</Button>
+                </div>
             </div>
 
             <div className="bg-[#1E1E1E] p-8 rounded-lg shadow-sm border border-white/10">
