@@ -1,13 +1,12 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { AnalyticsData, Application } from "../types";
 
-// FIX: Initialize GoogleGenAI with API key from environment variables as per guidelines.
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-if (!apiKey) {
-  throw new Error("VITE_GEMINI_API_KEY is not set");
-}
-const ai = new GoogleGenerativeAI(apiKey);
+let ai: GoogleGenerativeAI | null = null;
 
+if (apiKey) {
+  ai = new GoogleGenerativeAI(apiKey);
+}
 
 export const generateReportSummary = async (
   reportOptions: { includeAnalytics: boolean; includeApplications: boolean; includeStreamerList: boolean; },
@@ -15,7 +14,10 @@ export const generateReportSummary = async (
   applications: Application[]
 ): Promise<string> => {
 
-  // FIX: Removed mock implementation to use the actual Gemini API call.
+  if (!ai) {
+    return "The AI summary feature is not configured. Please set the VITE_GEMINI_API_KEY environment variable.";
+  }
+
   let prompt = 'Generate a concise, professional summary for a tournament report based on the following data. The summary should be positive and suitable for sponsors. Use markdown for formatting.\n\n';
 
   if (reportOptions.includeAnalytics) {
