@@ -38,6 +38,8 @@ dist-ssr
 build
 .vercel
 .netlify
+.next
+out
 
 # Testing
 coverage
