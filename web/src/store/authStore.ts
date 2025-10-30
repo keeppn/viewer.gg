@@ -38,10 +38,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         // Get user profile from database
         const { data: userData, error } = await supabase
           .from('users')
-          .select(`
-            *,
-            organization:organizations(*)
-          `)
+          .select('*, organizations(*)')
           .eq('id', session.user.id)
           .single();
 
@@ -84,7 +81,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           console.log('User data loaded:', userData);
           set({ 
             user: userData,
-            organization: userData.organization,
+            organization: userData.organizations || null,
             session,
             loading: false,
             initialized: true
