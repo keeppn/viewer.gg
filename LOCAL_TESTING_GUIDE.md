@@ -198,8 +198,8 @@ The app should work with mock data even without real API keys:
 2. Run:
 ```javascript
 // Check if env variables are loaded
-console.log(import.meta.env.VITE_SUPABASE_URL);
-console.log(import.meta.env.VITE_SUPABASE_ANON_KEY ? "Key loaded" : "No key");
+console.log(import.meta.env.NEXT_SUPABASE_URL);
+console.log(import.meta.env.NEXT_SUPABASE_ANON_KEY ? "Key loaded" : "No key");
 ```
 
 3. Should see your Supabase URL and "Key loaded"
