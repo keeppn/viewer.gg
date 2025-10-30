@@ -1,25 +1,48 @@
 {
-  "name": "viewer.gg---co-streaming-dashboard",
+  "name": "viewer.gg",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "discord-bot": "node --loader ts-node/esm discord-bot/index.ts"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.39.7",
+    "@tanstack/react-query": "^5.22.2",
+    "axios": "^1.6.7",
+    "date-fns": "^3.3.1",
+    "discord.js": "^14.14.1",
+    "jspdf": "^3.0.3",
+    "jspdf-autotable": "^5.0.2",
+    "lucide-react": "0.548.0",
+    "papaparse": "^5.4.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "react-hook-form": "^7.50.1",
     "react-router-dom": "^7.9.4",
-    "recharts": "^3.3.0"
+    "recharts": "^3.3.0",
+    "zustand": "^4.5.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.16",
     "@types/node": "^22.14.0",
+    "@types/papaparse": "^5.3.14",
+    "@types/react": "^19.0.6",
+    "@types/react-dom": "^19.0.2",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
     "@vitejs/plugin-react": "^5.0.0",
+    "dotenv": "^16.4.4",
+    "eslint": "^8.56.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.16",
+    "ts-node": "^10.9.2",
     "typescript": "~5.8.2",
     "vite": "^6.2.0"
   }
