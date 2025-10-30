@@ -33,6 +33,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const session = await getCurrentSession();
       
       if (session) {
+        console.log('Session found:', session.user.id);
+        
         // Get user profile from database
         const { data: userData, error } = await supabase
           .from('users')
@@ -43,7 +45,43 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           .eq('id', session.user.id)
           .single();
 
-        if (!error && userData) {
+        if (error) {
+          console.error('Error fetching user:', error);
+          
+          // If user doesn't exist in database, create a basic user record
+          if (error.code === 'PGRST116') { // Row not found
+            console.log('Creating new user record...');
+            const { data: newUser, error: createError } = await supabase
+              .from('users')
+              .insert({
+                id: session.user.id,
+                email: session.user.email || '',
+                name: session.user.user_metadata.full_name || session.user.user_metadata.name || 'User',
+                avatar_url: session.user.user_metadata.avatar_url || session.user.user_metadata.picture || null,
+                role: 'viewer',
+                organization_id: null
+              })
+              .select()
+              .single();
+
+            if (createError) {
+              console.error('Error creating user:', createError);
+            } else if (newUser) {
+              console.log('User created successfully');
+              set({ 
+                user: newUser,
+                organization: null,
+                session,
+                loading: false,
+                initialized: true
+              });
+              return;
+            }
+          }
+        }
+
+        if (userData) {
+          console.log('User data loaded:', userData);
           set({ 
             user: userData,
             organization: userData.organization,
@@ -53,6 +91,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           });
           return;
         }
+      } else {
+        console.log('No session found');
       }
 
       set({ 
