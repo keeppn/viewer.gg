@@ -28,15 +28,25 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 // --- Auth helpers (client-side) ---
 
 /**
- * Start an OAuth sign-in flow with the given provider.
+ * Start an OAuth sign-in flow with the given provider and user type.
+ * @param provider - OAuth provider (twitch, youtube, kick, google, discord)
+ * @param userType - 'organizer' or 'streamer' (null for login)
  */
 export async function signInWithProvider(
-  provider: "twitch" | "google" | "discord"
+  provider: "twitch" | "youtube" | "kick" | "google" | "discord",
+  userType?: 'organizer' | 'streamer' | null
 ) {
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider,
+  // Store user type in localStorage temporarily for the callback
+  if (userType) {
+    localStorage.setItem('pending_user_type', userType);
+    localStorage.setItem('pending_oauth_provider', provider);
+  }
+  
+  const { data, error} = await supabase.auth.signInWithOAuth({
+    provider: provider as any, // YouTube and Kick will be handled via custom OAuth
     options: {
       redirectTo: `${window.location.origin}/auth/callback`,
+      scopes: provider === 'youtube' ? 'https://www.googleapis.com/auth/youtube.readonly' : undefined,
     },
   });
   if (error) throw error;

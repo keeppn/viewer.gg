@@ -47,7 +47,12 @@ npm install
    ```sql
    -- Copy and paste content from supabase/schema.sql
    ```
-3. Get your project credentials from Settings > API
+3. **IMPORTANT**: Run the authentication migration:
+   ```sql
+   -- Copy and paste content from supabase/migration_add_auth_fields.sql
+   ```
+   This adds required columns for the authentication system.
+4. Get your project credentials from Settings > API
 
 ### 3. Configure Environment Variables
 
@@ -188,6 +193,29 @@ The application uses PostgreSQL via Supabase with the following main tables:
 - `report_configs` - Report generation configurations
 
 ## 🔐 Authentication Flow
+
+The platform supports OAuth authentication for both **Tournament Organizers** and **Streamers**:
+
+### Supported OAuth Providers
+- **Google** (Organizers) - Professional/business accounts
+- **Discord** (Organizers) - Gaming community integration
+- **Twitch** (Streamers) - Most popular streaming platform
+- **YouTube** (Streamers) - Live streaming & VODs
+
+### Setup & Testing
+For detailed authentication setup, troubleshooting, and testing:
+- 🚀 **Quick Start**: See [`docs/QUICK_START.md`](./docs/QUICK_START.md) (10 minutes)
+- 📖 **Complete Guide**: See [`docs/AUTH_SETUP.md`](./docs/AUTH_SETUP.md)
+- ✅ **Testing Checklist**: See [`docs/AUTH_TESTING.md`](./docs/AUTH_TESTING.md)
+- 🔍 **Technical Details**: See [`docs/AUTH_FIX_SUMMARY.md`](./docs/AUTH_FIX_SUMMARY.md)
+
+### Authentication Requirements
+1. Run the authentication migration (`supabase/migration_add_auth_fields.sql`)
+2. Configure OAuth providers in Supabase Dashboard
+3. Set up redirect URLs for each provider
+4. Test each authentication flow
+
+**Important**: The authentication system requires specific database columns. Make sure to run both `schema.sql` and `migration_add_auth_fields.sql` in your Supabase project.
 
 1. User clicks "Sign in with [Provider]"
 2. Redirected to OAuth provider

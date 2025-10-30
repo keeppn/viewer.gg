@@ -86,7 +86,21 @@ export const DiscordIcon = ({ className }: IconProps = {}) => (
   />
 );
 
-export const YouTubeIcon = ({ className }: IconProps = {}) => <IconWrapper className={className}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.502-9.407-.502-9.407-.502s-7.537 0-9.407.502A3.007 3.007 0 00.502 6.205C0 8.075 0 12 0 12s0 3.925.502 5.795a3.007 3.007 0 002.088 2.088c1.87.502 9.407.502 9.407.502s7.537 0 9.407-.502a3.007 3.007 0 002.088-2.088C24 15.925 24 12 24 12s0-3.925-.505-5.795zM9.546 15.58V8.42l6.52 3.58-6.52 3.58z" /></svg></IconWrapper>
+export const YouTubeIcon = ({ className }: IconProps = {}) => (
+  <IconWrapper className={className}>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.502-9.407-.502-9.407-.502s-7.537 0-9.407.502A3.007 3.007 0 00.502 6.205C0 8.075 0 12 0 12s0 3.925.502 5.795a3.007 3.007 0 002.088 2.088c1.87.502 9.407.502 9.407.502s7.537 0 9.407-.502a3.007 3.007 0 002.088-2.088C24 15.925 24 12 24 12s0-3.925-.505-5.795zM9.546 15.58V8.42l6.52 3.58-6.52 3.58z" />
+    </svg>
+  </IconWrapper>
+);
+
+export const KickIcon = ({ className }: IconProps = {}) => (
+  <IconWrapper className={className}>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.18l7.45 3.73L12 11.82 4.55 7.91 12 4.18zM4 9.27l7 3.5v7l-7-3.5v-7zm16 0v7l-7 3.5v-7l7-3.5z"/>
+    </svg>
+  </IconWrapper>
+);
 
 export const CheckCircleIcon = () => (
     <IconWrapper><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></IconWrapper>

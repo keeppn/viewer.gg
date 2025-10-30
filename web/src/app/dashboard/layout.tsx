@@ -32,12 +32,16 @@ export default function DashboardLayout({
   // Fetch data when user is authenticated
   useEffect(() => {
     if (user && organization) {
+      console.log('Fetching data for organization:', organization.id);
       fetchTournaments(organization.id);
       fetchApplications(organization.id);
+    } else if (user && !organization) {
+      console.log('User has no organization assigned');
     }
   }, [user, organization, fetchTournaments, fetchApplications]);
 
-  if (loading || !initialized) {
+  // Show loading only while auth is initializing, not while data is loading
+  if (!initialized) {
     return (
       <div className="min-h-screen bg-[#121212] flex items-center justify-center">
         <div className="text-white text-xl">Loading...</div>
