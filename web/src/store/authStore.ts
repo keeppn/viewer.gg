@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { User, Organization } from '../types';
-import { getCurrentUser, getCurrentSession, signOut as supabaseSignOut } from '../lib/supabase';
+import { getCurrentSession, signOut as supabaseSignOut } from '../lib/supabase';
 import { supabase } from '../lib/supabase';
 
 interface AuthState {
@@ -33,97 +33,26 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const session = await getCurrentSession();
       
       if (session) {
-        console.log('Session found:', session.user.id);
-        
-        // Get user profile from database (try without RLS first for debugging)
-        console.log('Attempting to fetch user:', session.user.id);
-        console.log('Session details:', {
-          provider: session.user.app_metadata?.provider,
-          email: session.user.email,
-          user_metadata: session.user.user_metadata
-        });
-        
-        const { data: userData, error } = await supabase
+        console.log('AuthStore: Session object:', JSON.stringify(session, null, 2));
+        console.log('AuthStore: Session found, user ID:', session.user.id);
+
+        const { data: userData, error: fetchError } = await supabase
           .from('users')
           .select('*')
           .eq('id', session.user.id)
           .single();
 
-        if (error) {
-          console.error('Error fetching user:', error);
-          console.error('Error code:', error.code);
-          console.error('Error message:', error.message);
-          console.error('Full error details:', JSON.stringify(error, null, 2));
-          
-          // Try to create user regardless of error code
-          console.log('Attempting to create new user record...');
-          
-          // Determine user type from OAuth provider if possible
-          const provider = session.user.app_metadata?.provider;
-          let user_type = 'organizer'; // Default to organizer for fallback
-          let streaming_platform = null;
-          
-          // Map OAuth providers to user types
-          if (provider === 'twitch' || provider === 'youtube') {
-            user_type = 'streamer';
-            streaming_platform = provider === 'twitch' ? 'Twitch' : 'YouTube';
-          }
-          
-          const newUserData = {
-            id: session.user.id,
-            email: session.user.email || '',
-            name: session.user.user_metadata.full_name || session.user.user_metadata.name || session.user.email?.split('@')[0] || 'User',
-            avatar_url: session.user.user_metadata.avatar_url || session.user.user_metadata.picture || null,
-            role: user_type === 'organizer' ? 'admin' : 'viewer',
-            user_type: user_type,
-            oauth_provider: provider,
-            streaming_platform: streaming_platform,
-            organization_id: null
-          };
-          
-          console.log('Creating user with data:', newUserData);
-          
-          const { data: newUser, error: createError } = await supabase
-            .from('users')
-            .insert(newUserData)
-            .select()
-            .single();
-
-          if (createError) {
-            console.error('Error creating user:', createError);
-            console.error('Create error code:', createError.code);
-            console.error('Create error message:', createError.message);
-            console.error('Full create error:', JSON.stringify(createError, null, 2));
-            
-            // Set session anyway so user isn't completely logged out
-            set({ 
-              user: null,
-              organization: null,
-              session,
-              loading: false,
-              initialized: true
-            });
-            return;
-          }
-          
-          if (newUser) {
-            console.log('User created successfully:', newUser);
-            set({ 
-              user: newUser,
-              organization: null,
-              session,
-              loading: false,
-              initialized: true
-            });
-            return;
-          }
+        if (fetchError && fetchError.code !== 'PGRST116') {
+          console.error('AuthStore: Error fetching user profile:', JSON.stringify(fetchError, null, 2));
+          set({ user: null, organization: null, session, loading: false, initialized: true });
+          return;
         }
 
         if (userData) {
-          console.log('User data loaded:', userData);
-          
-          // Fetch organization separately if user has one
+          console.log('AuthStore: User profile found:', userData);
           let organizationData = null;
+
+          // If user has organization_id, fetch it
           if (userData.organization_id) {
             const { data: org } = await supabase
               .from('organizations')
@@ -131,37 +60,113 @@ export const useAuthStore = create<AuthState>((set, get) => ({
               .eq('id', userData.organization_id)
               .single();
             organizationData = org;
+          } else {
+            // User exists but has no organization - create one for them
+            console.log('AuthStore: User has no organization, creating one...');
+
+            const organizationName = userData.name || session.user.email?.split('@')[0] || 'New Organization';
+
+            const { data: newOrg, error: orgError } = await supabase
+              .from('organizations')
+              .insert({
+                name: `${organizationName}'s Organization`,
+                logo_url: userData.avatar_url || null,
+              })
+              .select()
+              .single();
+
+            if (!orgError && newOrg) {
+              // Update user with new organization_id
+              const { error: updateError } = await supabase
+                .from('users')
+                .update({ organization_id: newOrg.id })
+                .eq('id', userData.id);
+
+              if (!updateError) {
+                userData.organization_id = newOrg.id;
+                organizationData = newOrg;
+                console.log('AuthStore: Organization created and linked:', newOrg.id);
+              } else {
+                console.error('AuthStore: Failed to link organization to user:', updateError);
+              }
+            } else {
+              console.error('AuthStore: Failed to create organization:', orgError);
+            }
           }
-          
-          set({ 
-            user: userData,
-            organization: organizationData,
+
+          set({ user: userData, organization: organizationData, session, loading: false, initialized: true });
+        } else {
+          // User profile not found, so create it
+          console.log('AuthStore: No user profile found, creating one...');
+
+          const provider = session.user.app_metadata?.provider;
+          // All users are now organizers (streamers use public application forms)
+          const user_type = 'organizer';
+
+          // Step 1: Create organization for the new organizer
+          const organizationName = session.user.user_metadata?.full_name ||
+                                  session.user.user_metadata?.name ||
+                                  session.user.email?.split('@')[0] ||
+                                  'New Organization';
+
+          console.log('AuthStore: Creating organization:', organizationName);
+
+          const { data: newOrganization, error: orgError } = await supabase
+            .from('organizations')
+            .insert({
+              name: `${organizationName}'s Organization`,
+              logo_url: session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture || null,
+            })
+            .select()
+            .single();
+
+          if (orgError) {
+            console.error('AuthStore: Error creating organization:', orgError);
+            // Continue without organization - can be created later
+          }
+
+          // Step 2: Create user profile with organization link
+          const newUserData = {
+            id: session.user.id,
+            email: session.user.email || '',
+            name: session.user.user_metadata?.full_name || session.user.user_metadata?.name || session.user.email?.split('@')[0] || 'New User',
+            avatar_url: session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture || null,
+            role: 'admin',
+            user_type: user_type,
+            oauth_provider: provider,
+            organization_id: newOrganization?.id || null,
+          };
+
+          console.log('AuthStore: Creating user with data:', newUserData);
+
+          const { data: newUser, error: createError } = await supabase
+            .from('users')
+            .insert(newUserData)
+            .select()
+            .single();
+
+          if (createError) {
+            console.error('AuthStore: Error creating user profile:', createError);
+            set({ user: null, organization: null, session, loading: false, initialized: true });
+            return;
+          }
+
+          console.log('AuthStore: User profile created successfully:', newUser);
+          set({
+            user: newUser,
+            organization: newOrganization || null,
             session,
             loading: false,
             initialized: true
           });
-          return;
         }
       } else {
-        console.log('No session found');
+        console.log('AuthStore: No session found.');
+        set({ user: null, organization: null, session: null, loading: false, initialized: true });
       }
-
-      set({ 
-        user: null, 
-        organization: null, 
-        session: null,
-        loading: false,
-        initialized: true
-      });
     } catch (error) {
-      console.error('Auth initialization error:', error);
-      set({ 
-        user: null, 
-        organization: null,
-        session: null, 
-        loading: false,
-        initialized: true
-      });
+      console.error('AuthStore: Unexpected error during initialization:', error);
+      set({ user: null, organization: null, session: null, loading: false, initialized: true });
     }
   },
 
@@ -172,13 +177,20 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 }));
 
 // Listen to auth state changes
-supabase.auth.onAuthStateChange(async (event, session) => {
-  const store = useAuthStore.getState();
-  
-  if (event === 'SIGNED_IN' && session) {
-    await store.initialize();
-  } else if (event === 'SIGNED_OUT') {
-    store.setUser(null);
-    store.setOrganization(null);
-  }
-});
+let authListener: any = null;
+
+if (typeof window !== 'undefined') {
+    authListener = supabase.auth.onAuthStateChange(async (event, session) => {
+        console.log('AuthStore: Auth state changed:', event);
+        const store = useAuthStore.getState();
+        
+        if (event === 'SIGNED_IN') {
+            if (session) {
+                await store.initialize();
+            }
+        } else if (event === 'SIGNED_OUT') {
+            store.setUser(null);
+            store.setOrganization(null);
+        }
+    });
+}

@@ -10,9 +10,10 @@ const Login: React.FC = () => {
   const router = useRouter();
   const { loading } = useAuthStore();
 
-  const handleAuthenticate = async (provider: string, userType: 'organizer' | 'streamer' | null) => {
+  const handleAuthenticate = async (provider: string, userType: 'organizer' | null) => {
     try {
-      await signInWithProvider(provider as any, userType);
+      // All signups are for organizers now
+      await signInWithProvider(provider as any, 'organizer');
       // OAuth will redirect, no need to do anything here
     } catch (error) {
       console.error('Authentication error:', error);
@@ -22,7 +23,7 @@ const Login: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#121212] via-[#1a1a1a] to-[#0a0a0a] flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-[#0a0e13] via-[#1a2332] to-[#0f1419] flex items-center justify-center">
         <div className="text-white text-xl">Loading...</div>
       </div>
     );
