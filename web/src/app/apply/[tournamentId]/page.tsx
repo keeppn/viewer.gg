@@ -33,7 +33,7 @@ export default function ApplyPage() {
   const [formData, setFormData] = useState<{[key: string]: string}>({
     streamerName: '',
     email: '',
-    platform: 'twitch',
+    platform: 'Twitch',
     channelUrl: '',
     discordUsername: '',
   });
@@ -92,7 +92,7 @@ export default function ApplyPage() {
       // Prepare streamer profile
       const streamerProfile = {
         name: formData.streamerName,
-        platform: formData.platform,
+        platform: formData.platform as 'Twitch' | 'YouTube' | 'Kick',
         channel_url: formData.channelUrl,
         email: formData.email,
         discord_username: formData.discordUsername,
@@ -213,9 +213,9 @@ export default function ApplyPage() {
                     className="w-full bg-[#121212] text-white rounded-md p-3 border border-white/20 focus:border-[#387B66] focus:outline-none transition-colors"
                     required
                   >
-                    <option value="twitch">Twitch</option>
-                    <option value="youtube">YouTube</option>
-                    <option value="kick">Kick</option>
+                    <option value="Twitch">Twitch</option>
+                    <option value="YouTube">YouTube</option>
+                    <option value="Kick">Kick</option>
                   </select>
                 </div>
 
