@@ -104,9 +104,11 @@ export default function ApplyPage() {
       // Submit application via API
       await applicationApi.create({
         tournament_id: tournament.id,
-        streamer_profile: streamerProfile,
+        streamer: streamerProfile,
         custom_data: customData,
         status: 'Pending',
+        availability_confirmed: false,
+        submission_date: new Date().toISOString(),
       });
 
       // Show success and redirect
