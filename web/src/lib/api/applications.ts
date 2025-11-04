@@ -121,12 +121,29 @@ export const applicationApi = {
   },
 
   // Get applications statistics
-  async getStats(tournamentId?: string) {
-    let query = supabase.from('applications').select('status', { count: 'exact' });
-    
-    if (tournamentId) {
-      query = query.eq('tournament_id', tournamentId);
-    }
+  async getStats(tournamentId?: string, organizationId?: string) {
+    // Helper function to build query
+    const buildQuery = () => {
+      if (tournamentId) {
+        // Filter by specific tournament
+        return supabase
+          .from('applications')
+          .select('status', { count: 'exact' })
+          .eq('tournament_id', tournamentId);
+      } else if (organizationId) {
+        // Filter by organization if no specific tournament
+        // Use inner join to ensure we only get applications for this org's tournaments
+        return supabase
+          .from('applications')
+          .select('status, tournament:tournaments!inner(organization_id)', { count: 'exact' })
+          .eq('tournament.organization_id', organizationId);
+      } else {
+        // No filter - return all (should not happen in production)
+        return supabase
+          .from('applications')
+          .select('status', { count: 'exact' });
+      }
+    };
 
     const [
       { count: total },
@@ -134,10 +151,10 @@ export const applicationApi = {
       { count: rejected },
       { count: pending }
     ] = await Promise.all([
-      query,
-      query.eq('status', 'Approved'),
-      query.eq('status', 'Rejected'),
-      query.eq('status', 'Pending')
+      buildQuery(),
+      buildQuery().eq('status', 'Approved'),
+      buildQuery().eq('status', 'Rejected'),
+      buildQuery().eq('status', 'Pending')
     ]);
 
     return {

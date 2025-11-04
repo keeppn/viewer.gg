@@ -23,33 +23,11 @@ export default function AuthCallbackPage() {
         if (session) {
           console.log('Session established:', session.user.email)
           
-          // Check if user profile exists
-          const { data: existingUser } = await supabase
-            .from('users')
-            .select('id')
-            .eq('id', session.user.id)
-            .single()
-
-          // Create user profile if doesn't exist
-          if (!existingUser) {
-            const provider = session.user.app_metadata?.provider || 'unknown'
-            await supabase.from('users').insert({
-              id: session.user.id,
-              email: session.user.email!,
-              name: session.user.user_metadata?.full_name || 
-                    session.user.user_metadata?.name || 
-                    session.user.email!.split('@')[0],
-              avatar_url: session.user.user_metadata?.avatar_url || 
-                         session.user.user_metadata?.picture || 
-                         null,
-              oauth_provider: provider,
-              user_type: 'organizer',
-              role: 'admin',
-              organization_id: null,
-            })
-          }
-
-          // Redirect to dashboard
+          // ✅ Removed duplicate user creation logic
+          // User creation is now handled exclusively in authStore.initialize()
+          // This prevents race conditions and ensures proper organization setup
+          
+          // Redirect to dashboard where authStore will handle user creation if needed
           router.push('/dashboard')
         } else {
           router.push('/?error=No session')

@@ -42,9 +42,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const session = await getCurrentSession();
       
       if (session) {
-        console.log('AuthStore: Session object:', JSON.stringify(session, null, 2));
         console.log('AuthStore: Session found, user ID:', session.user.id);
 
+        // Try to fetch existing user profile
         const { data: userData, error: fetchError } = await supabase
           .from('users')
           .select('*')
@@ -52,7 +52,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           .single();
 
         if (fetchError && fetchError.code !== 'PGRST116') {
-          console.error('AuthStore: Error fetching user profile:', JSON.stringify(fetchError, null, 2));
+          console.error('AuthStore: Error fetching user profile:', fetchError);
           set({ user: null, organization: null, session, loading: false, initialized: true, isInitializing: false });
           return;
         }
@@ -63,12 +63,17 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
           // If user has organization_id, fetch it
           if (userData.organization_id) {
-            const { data: org } = await supabase
+            const { data: org, error: orgError } = await supabase
               .from('organizations')
               .select('*')
               .eq('id', userData.organization_id)
               .single();
-            organizationData = org;
+            
+            if (orgError) {
+              console.error('AuthStore: Error fetching organization:', orgError);
+            } else {
+              organizationData = org;
+            }
           } else {
             // User exists but has no organization - create one for them
             console.log('AuthStore: User has no organization, creating one...');
@@ -84,33 +89,32 @@ export const useAuthStore = create<AuthState>((set, get) => ({
               .select()
               .single();
 
-            if (!orgError && newOrg) {
+            if (orgError) {
+              console.error('AuthStore: Failed to create organization:', orgError);
+            } else if (newOrg) {
               // Update user with new organization_id
               const { error: updateError } = await supabase
                 .from('users')
                 .update({ organization_id: newOrg.id })
                 .eq('id', userData.id);
 
-              if (!updateError) {
+              if (updateError) {
+                console.error('AuthStore: Failed to link organization to user:', updateError);
+              } else {
                 userData.organization_id = newOrg.id;
                 organizationData = newOrg;
                 console.log('AuthStore: Organization created and linked:', newOrg.id);
-              } else {
-                console.error('AuthStore: Failed to link organization to user:', updateError);
               }
-            } else {
-              console.error('AuthStore: Failed to create organization:', orgError);
             }
           }
 
           set({ user: userData, organization: organizationData, session, loading: false, initialized: true, isInitializing: false });
         } else {
-          // User profile not found, so create it
+          // User profile not found, create it
           console.log('AuthStore: No user profile found, creating one...');
 
           const provider = session.user.app_metadata?.provider;
-          // All users are now organizers (streamers use public application forms)
-          const user_type = 'organizer';
+          const user_type = 'organizer'; // All users are now organizers
 
           // Step 1: Create organization for the new organizer
           const organizationName = session.user.user_metadata?.full_name ||
@@ -124,25 +128,32 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             .from('organizations')
             .insert({
               name: `${organizationName}'s Organization`,
-              logo_url: session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture || null,
+              logo_url: session.user.user_metadata?.avatar_url || 
+                       session.user.user_metadata?.picture || 
+                       null,
             })
             .select()
             .single();
 
           if (orgError) {
             console.error('AuthStore: Error creating organization:', orgError);
-            // Continue without organization - can be created later
+            // Continue without organization - will retry on next login
           }
 
           // Step 2: Create user profile with organization link
           const newUserData = {
             id: session.user.id,
             email: session.user.email || '',
-            name: session.user.user_metadata?.full_name || session.user.user_metadata?.name || session.user.email?.split('@')[0] || 'New User',
-            avatar_url: session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture || null,
-            role: 'admin',
-            user_type: user_type,
-            oauth_provider: provider,
+            name: session.user.user_metadata?.full_name || 
+                  session.user.user_metadata?.name || 
+                  session.user.email?.split('@')[0] || 
+                  'New User',
+            avatar_url: session.user.user_metadata?.avatar_url || 
+                       session.user.user_metadata?.picture || 
+                       null,
+            role: 'admin',  // Required field
+            user_type: user_type,  // 'organizer' by default
+            oauth_provider: provider || 'discord',
             organization_id: newOrganization?.id || null,
           };
 
@@ -156,6 +167,39 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
           if (createError) {
             console.error('AuthStore: Error creating user profile:', createError);
+            
+            // Check if it's a duplicate key error (user was already created)
+            if (createError.code === '23505') {
+              console.log('AuthStore: User already exists (race condition), fetching...');
+              // Try fetching again
+              const { data: existingUser } = await supabase
+                .from('users')
+                .select('*')
+                .eq('id', session.user.id)
+                .single();
+              
+              if (existingUser) {
+                let orgData = null;
+                if (existingUser.organization_id) {
+                  const { data: org } = await supabase
+                    .from('organizations')
+                    .select('*')
+                    .eq('id', existingUser.organization_id)
+                    .single();
+                  orgData = org;
+                }
+                set({
+                  user: existingUser,
+                  organization: orgData,
+                  session,
+                  loading: false,
+                  initialized: true,
+                  isInitializing: false
+                });
+                return;
+              }
+            }
+            
             set({ user: null, organization: null, session, loading: false, initialized: true, isInitializing: false });
             return;
           }

@@ -11,6 +11,7 @@ interface AppState {
   stats: Stats;
   analyticsData: AnalyticsData | null;
   loading: boolean;
+  currentOrganizationId: string | null; // Track current organization for stats
   
   // Actions
   fetchTournaments: (organizationId: string) => Promise<void>;
@@ -28,6 +29,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   tournaments: [],
   applications: [],
   liveStreams: [],
+  currentOrganizationId: null,
   stats: {
     totalApplications: 0,
     approved: 0,
@@ -50,10 +52,11 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   fetchApplications: async (organizationId: string) => {
     try {
-      set({ loading: true });
+      set({ loading: true, currentOrganizationId: organizationId });
       const applications = await applicationApi.getByOrganization(organizationId);
       set({ applications, loading: false });
-      await get().refreshStats();
+      // Pass organizationId to refreshStats for proper filtering
+      await get().refreshStats(organizationId);
     } catch (error) {
       console.error('Error fetching applications:', error);
       set({ loading: false });
@@ -133,7 +136,10 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   refreshStats: async (organizationId?: string) => {
     try {
-      const stats = await applicationApi.getStats(organizationId);
+      // Use provided organizationId or fall back to currentOrganizationId
+      const orgId = organizationId || get().currentOrganizationId;
+      // Pass undefined for tournamentId (first param), organizationId as second param
+      const stats = await applicationApi.getStats(undefined, orgId || undefined);
       set({ stats });
     } catch (error) {
       console.error('Error refreshing stats:', error);
