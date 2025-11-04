@@ -11,59 +11,54 @@ export const dynamic = 'force-dynamic';
 
 export default function HomePage() {
   const router = useRouter();
-  const { user, initialized, initialize } = useAuthStore();
+  const { user, initialized, initialize, loading, isInitializing } = useAuthStore();
   const [initError, setInitError] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  // Handle mounting
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
+    if (!mounted) return;
+    
     console.log('HomePage mounted');
-    console.log('Initialized:', initialized);
+    console.log('Initialized:', initialized, 'Loading:', loading, 'IsInitializing:', isInitializing);
     console.log('User:', user);
     
-    // Initialize auth if not already done
-    if (!initialized) {
+    // Initialize auth if not already done or initializing
+    if (!initialized && !isInitializing) {
       console.log('Calling initialize...');
       initialize().catch(err => {
         console.error('Initialize failed:', err);
         setInitError(true);
       });
     }
-  }, [initialized, initialize]);
+  }, [mounted, initialized, loading, isInitializing, initialize]);
 
   useEffect(() => {
+    if (!mounted) return;
+    
     // Redirect to dashboard if user is logged in
     if (initialized && user) {
       console.log('User authenticated, redirecting to dashboard...');
       router.replace('/dashboard');
     }
-  }, [user, initialized, router]);
+  }, [mounted, user, initialized, router]);
 
   // Show login page if:
   // 1. Auth is initialized and there's no user, OR
-  // 2. There was an error initializing, OR
-  // 3. Still loading after 5 seconds (fallback)
-  const [showLogin, setShowLogin] = useState(false);
-  
-  useEffect(() => {
-    if (initialized && !user) {
-      setShowLogin(true);
-    }
-    
-    if (initError) {
-      setShowLogin(true);
-    }
-    
-    // Fallback timeout - show login after 5 seconds if still loading
-    const timeout = setTimeout(() => {
-      if (!initialized) {
-        console.warn('Auth initialization timeout - showing login page');
-        setShowLogin(true);
-      }
-    }, 5000);
+  // 2. There was an error initializing
+  const showLogin = (initialized && !user) || initError;
 
-    return () => clearTimeout(timeout);
-  }, [initialized, user, initError]);
+  // Don't render anything until mounted (prevents hydration issues)
+  if (!mounted) {
+    return null;
+  }
 
-  if (!showLogin) {
+  // Show loading only if not initialized and no error
+  if (!initialized && !initError) {
     return (
       <div className="min-h-screen bg-[#121212] flex items-center justify-center">
         <div className="text-center">

@@ -9,6 +9,7 @@ interface AuthState {
   session: any | null;
   loading: boolean;
   initialized: boolean;
+  isInitializing: boolean;
   setUser: (user: User | null) => void;
   setOrganization: (org: Organization | null) => void;
   initialize: () => Promise<void>;
@@ -21,14 +22,22 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   session: null,
   loading: true,
   initialized: false,
+  isInitializing: false,
 
   setUser: (user) => set({ user }),
   
   setOrganization: (organization) => set({ organization }),
 
   initialize: async () => {
+    // Prevent multiple simultaneous initializations
+    const state = get();
+    if (state.initialized || state.isInitializing) {
+      console.log('AuthStore: Already initialized or initializing, skipping...');
+      return;
+    }
+    
     try {
-      set({ loading: true });
+      set({ loading: true, isInitializing: true });
       
       const session = await getCurrentSession();
       
@@ -44,7 +53,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
         if (fetchError && fetchError.code !== 'PGRST116') {
           console.error('AuthStore: Error fetching user profile:', JSON.stringify(fetchError, null, 2));
-          set({ user: null, organization: null, session, loading: false, initialized: true });
+          set({ user: null, organization: null, session, loading: false, initialized: true, isInitializing: false });
           return;
         }
 
@@ -94,7 +103,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             }
           }
 
-          set({ user: userData, organization: organizationData, session, loading: false, initialized: true });
+          set({ user: userData, organization: organizationData, session, loading: false, initialized: true, isInitializing: false });
         } else {
           // User profile not found, so create it
           console.log('AuthStore: No user profile found, creating one...');
@@ -147,7 +156,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
           if (createError) {
             console.error('AuthStore: Error creating user profile:', createError);
-            set({ user: null, organization: null, session, loading: false, initialized: true });
+            set({ user: null, organization: null, session, loading: false, initialized: true, isInitializing: false });
             return;
           }
 
@@ -157,16 +166,17 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             organization: newOrganization || null,
             session,
             loading: false,
-            initialized: true
+            initialized: true,
+            isInitializing: false
           });
         }
       } else {
         console.log('AuthStore: No session found.');
-        set({ user: null, organization: null, session: null, loading: false, initialized: true });
+        set({ user: null, organization: null, session: null, loading: false, initialized: true, isInitializing: false });
       }
     } catch (error) {
       console.error('AuthStore: Unexpected error during initialization:', error);
-      set({ user: null, organization: null, session: null, loading: false, initialized: true });
+      set({ user: null, organization: null, session: null, loading: false, initialized: true, isInitializing: false });
     }
   },
 
