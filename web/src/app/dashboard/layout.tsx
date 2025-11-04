@@ -51,10 +51,14 @@ export default function DashboardLayout({
     
     if (user && organization) {
       console.log('Fetching data for organization:', organization.id);
-      fetchTournaments(organization.id);
-      fetchApplications(organization.id);
+      fetchTournaments(organization.id).catch(err => {
+        console.error('Failed to fetch tournaments:', err);
+      });
+      fetchApplications(organization.id).catch(err => {
+        console.error('Failed to fetch applications:', err);
+      });
     } else if (user && !organization) {
-      console.log('User has no organization assigned');
+      console.log('User has no organization assigned - will be created on next auth check');
     }
   }, [mounted, user, organization, fetchTournaments, fetchApplications]);
 

@@ -58,18 +58,18 @@ const Overview: React.FC = () => {
   const { stats, applications = [], tournaments = [] } = useAppStore();
   
   const applicationStatusData = [
-    { name: 'Pending', count: stats.pending, fill: '#FFCB82' },
-    { name: 'Approved', count: stats.approved, fill: '#387B66' },
-    { name: 'Rejected', count: stats.rejected, fill: '#ef4444' },
+    { name: 'Pending', count: stats?.pending || 0, fill: '#FFCB82' },
+    { name: 'Approved', count: stats?.approved || 0, fill: '#387B66' },
+    { name: 'Rejected', count: stats?.rejected || 0, fill: '#ef4444' },
   ];
 
   return (
     <div className="space-y-8">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card title="Total Applications" value={stats.totalApplications} icon={<ApplicationIcon />} />
-        <Card title="Approved" value={stats.approved} icon={<CheckCircleIcon />} />
-        <Card title="Rejected" value={stats.rejected} icon={<XCircleIcon />} />
-        <Card title="Pending" value={stats.pending} icon={<ClockIcon />} />
+        <Card title="Total Applications" value={stats?.totalApplications || 0} icon={<ApplicationIcon />} />
+        <Card title="Approved" value={stats?.approved || 0} icon={<CheckCircleIcon />} />
+        <Card title="Rejected" value={stats?.rejected || 0} icon={<XCircleIcon />} />
+        <Card title="Pending" value={stats?.pending || 0} icon={<ClockIcon />} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
