@@ -45,6 +45,7 @@ export async function signInWithProvider(
     provider: provider,
     options: {
       redirectTo: `${window.location.origin}/auth/callback`,
+      skipBrowserRedirect: false,
     },
   });
 

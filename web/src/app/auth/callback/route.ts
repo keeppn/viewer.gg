@@ -93,8 +93,28 @@ export async function GET(request: NextRequest) {
         console.log('Existing user found:', existingUser.id)
       }
 
-      // Redirect to dashboard using replace (no hash fragment)
+      // Create response with session cookie
       const response = NextResponse.redirect(new URL('/dashboard', requestUrl.origin))
+
+      // Set the session cookie
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session) {
+        response.cookies.set('sb-access-token', session.access_token, {
+          path: '/',
+          maxAge: 60 * 60 * 24 * 7, // 7 days
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'lax'
+        })
+        
+        response.cookies.set('sb-refresh-token', session.refresh_token, {
+          path: '/',
+          maxAge: 60 * 60 * 24 * 7, // 7 days
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'lax'
+        })
+      }
 
       // Set no-cache headers to prevent stale auth state
       response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, private')
@@ -111,7 +131,8 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  // No code parameter
+  // No code parameter - this is the issue!
+  // Supabase sends tokens in hash fragment, not query params
   console.error('No code parameter in callback URL')
   return NextResponse.redirect(new URL('/?error=Invalid callback', requestUrl.origin))
 }
