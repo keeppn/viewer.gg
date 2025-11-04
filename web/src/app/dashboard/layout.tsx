@@ -6,9 +6,8 @@ import { useAuthStore } from '@/store/authStore';
 import { useAppStore } from '@/store/appStore';
 import Layout from '@/components/layout/Layout';
 
-// Disable caching for dashboard
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+// Note: dynamic and revalidate exports don't work in Client Components
+// These are Server Component features only
 
 export default function DashboardLayout({
   children,
