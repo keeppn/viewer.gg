@@ -55,7 +55,7 @@ const TournamentApplicationSummary: React.FC<{ tournaments: Tournament[], applic
 }
 
 const Overview: React.FC = () => {
-  const { stats, applications, tournaments } = useAppStore();
+  const { stats, applications = [], tournaments = [] } = useAppStore();
   
   const applicationStatusData = [
     { name: 'Pending', count: stats.pending, fill: '#FFCB82' },
