@@ -18,21 +18,39 @@ export default function DashboardLayout({
   const { user, organization, loading, initialized, initialize, isInitializing } = useAuthStore();
   const { fetchTournaments, fetchApplications } = useAppStore();
   const [mounted, setMounted] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
+  const MAX_RETRIES = 3;
 
   // Handle mounting
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Initialize auth only if not already initialized
+  // Initialize auth with retry logic
   useEffect(() => {
     if (!mounted) return;
     
-    if (!initialized && !isInitializing) {
-      console.log('DashboardLayout: Initializing auth...');
-      initialize();
-    }
-  }, [mounted, initialized, isInitializing, initialize]);
+    const initAuth = async () => {
+      if (!initialized && !isInitializing) {
+        console.log('DashboardLayout: Initializing auth... (retry:', retryCount, ')');
+        try {
+          await initialize();
+        } catch (error) {
+          console.error('Auth initialization failed:', error);
+          if (retryCount < MAX_RETRIES) {
+            setTimeout(() => {
+              setRetryCount(prev => prev + 1);
+            }, 2000);
+          } else {
+            console.error('Max retries reached. Redirecting to login...');
+            router.push('/');
+          }
+        }
+      }
+    };
+    
+    initAuth();
+  }, [mounted, initialized, isInitializing, initialize, retryCount, router]);
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -66,13 +84,24 @@ export default function DashboardLayout({
     return null;
   }
 
-  // Show loading only while auth is initializing
+  // Show loading with timeout protection
   if (!initialized || loading) {
+    // Add a timeout to prevent infinite loading
+    setTimeout(() => {
+      if (!initialized && retryCount >= MAX_RETRIES) {
+        console.error('Auth initialization timeout. Please clear cache and try again.');
+        router.push('/clear-auth');
+      }
+    }, 10000); // 10 second timeout
+    
     return (
       <div className="min-h-screen bg-[#121212] flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block w-12 h-12 border-4 border-[#387B66] border-t-transparent rounded-full animate-spin mb-4"></div>
           <div className="text-white text-xl">Loading...</div>
+          {retryCount > 0 && (
+            <div className="text-gray-400 text-sm mt-2">Retry attempt {retryCount}/{MAX_RETRIES}</div>
+          )}
         </div>
       </div>
     );
