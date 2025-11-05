@@ -18,7 +18,7 @@ const ManageTournamentForm: React.FC<ManageTournamentFormProps> = ({ tournament,
     const [newFieldLabel, setNewFieldLabel] = useState('');
     const [newFieldType, setNewFieldType] = useState<'text' | 'url' | 'number'>('text');
 
-    const publicFormUrl = `${window.location.origin}/tournaments/${tournament.id}/apply`;
+    const publicFormUrl = `${window.location.origin}/apply/${tournament.id}`;
 
     const handleAddField = () => {
         if (!newFieldLabel) return;
