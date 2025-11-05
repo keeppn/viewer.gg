@@ -18,7 +18,7 @@ const ManageTournamentForm: React.FC<ManageTournamentFormProps> = ({ tournament,
     const [newFieldLabel, setNewFieldLabel] = useState('');
     const [newFieldType, setNewFieldType] = useState<'text' | 'url' | 'number'>('text');
 
-    const publicFormUrl = `${window.location.origin}/tournaments/${tournament.id}/apply`;
+    const publicFormUrl = `${window.location.origin}/apply/${tournament.id}`;
 
     const handleAddField = () => {
         if (!newFieldLabel) return;
@@ -48,14 +48,25 @@ const ManageTournamentForm: React.FC<ManageTournamentFormProps> = ({ tournament,
         setFormFields(newFields);
     }
 
-    const handleSave = () => {
-        onSave({
-            ...tournament,
-            title,
-            game,
-            start_date: startDate,
-            form_fields: formFields
-        });
+    const handleSave = async () => {
+        try {
+            const updatedTournament = {
+                ...tournament,
+                title,
+                game,
+                start_date: startDate,
+                form_fields: formFields
+            };
+            
+            console.log('Saving tournament with form_fields:', formFields);
+            
+            await onSave(updatedTournament);
+            // Show success message
+            alert('Tournament saved successfully! Custom form fields have been updated.');
+        } catch (error) {
+            console.error('Error saving tournament:', error);
+            alert('Failed to save tournament. Please try again.');
+        }
     };
 
     const handleCopy = () => {

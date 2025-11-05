@@ -8,7 +8,6 @@ import AuthLayout from './AuthLayout';
 
 const Login: React.FC = () => {
   const router = useRouter();
-  const { loading } = useAuthStore();
   const [isAuthenticating, setIsAuthenticating] = useState(false);
 
   const handleAuthenticate = async (provider: string, userType: 'organizer' | null) => {
@@ -24,7 +23,7 @@ const Login: React.FC = () => {
     }
   };
 
-  if (loading || isAuthenticating) {
+  if (isAuthenticating) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#0a0e13] via-[#1a2332] to-[#0f1419] flex items-center justify-center">
         <div className="text-center">

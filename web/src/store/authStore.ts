@@ -39,7 +39,16 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       set({ loading: true, isInitializing: true });
       
-      const session = await getCurrentSession();
+      // First, try to get the session from Supabase (this checks cookies/localStorage)
+      const { data: { session: currentSession }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError) {
+        console.error('AuthStore: Error getting session:', sessionError);
+        set({ user: null, organization: null, session: null, loading: false, initialized: true, isInitializing: false });
+        return;
+      }
+      
+      const session = currentSession || await getCurrentSession();
       
       if (session) {
         console.log('AuthStore: Session found, user ID:', session.user.id);

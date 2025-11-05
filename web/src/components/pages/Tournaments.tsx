@@ -49,8 +49,8 @@ const Tournaments: React.FC = () => {
   const { tournaments, addTournament, updateTournament } = useAppStore();
   const [editingTournamentId, setEditingTournamentId] = useState<string | null>(null);
   
-  const handleSaveTournament = (tournament: Tournament) => {
-    updateTournament(tournament);
+  const handleSaveTournament = async (tournament: Tournament) => {
+    await updateTournament(tournament);
     setEditingTournamentId(null);
   }
 

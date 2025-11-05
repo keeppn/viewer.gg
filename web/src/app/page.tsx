@@ -2,72 +2,50 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuthStore } from '@/store/authStore';
+import { supabase } from '@/lib/supabase';
 import Login from '@/components/pages/Login';
-
-// Force dynamic rendering - no static generation or caching
-export const dynamic = 'force-dynamic';
-
 
 export default function HomePage() {
   const router = useRouter();
-  const { user, initialized, initialize, loading, isInitializing } = useAuthStore();
-  const [initError, setInitError] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  // Handle mounting
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const [showLogin, setShowLogin] = useState(false);
 
   useEffect(() => {
-    if (!mounted) return;
-    
-    console.log('HomePage mounted');
-    console.log('Initialized:', initialized, 'Loading:', loading, 'IsInitializing:', isInitializing);
-    console.log('User:', user);
-    
-    // Initialize auth if not already done or initializing
-    if (!initialized && !isInitializing) {
-      console.log('Calling initialize...');
-      initialize().catch(err => {
-        console.error('Initialize failed:', err);
-        setInitError(true);
-      });
-    }
-  }, [mounted, initialized, loading, isInitializing, initialize]);
+    // Simple approach - just check session and show login if not found
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        console.log('Session found, redirecting...');
+        router.push('/dashboard');
+      } else {
+        console.log('No session, showing login');
+        setShowLogin(true);
+      }
+    }).catch((error) => {
+      console.error('Auth check error:', error);
+      setShowLogin(true);
+    });
 
-  useEffect(() => {
-    if (!mounted) return;
-    
-    // Redirect to dashboard if user is logged in
-    if (initialized && user) {
-      console.log('User authenticated, redirecting to dashboard...');
-      router.replace('/dashboard');
-    }
-  }, [mounted, user, initialized, router]);
+    // Listen for sign in
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        router.push('/dashboard');
+      }
+    });
 
-  // Show login page if:
-  // 1. Auth is initialized and there's no user, OR
-  // 2. There was an error initializing
-  const showLogin = (initialized && !user) || initError;
+    return () => subscription.unsubscribe();
+  }, [router]);
 
-  // Don't render anything until mounted (prevents hydration issues)
-  if (!mounted) {
-    return null;
+  // If showLogin is true, show the login page
+  if (showLogin) {
+    return <Login />;
   }
 
-  // Show loading only if not initialized and no error
-  if (!initialized && !initError) {
-    return (
-      <div className="min-h-screen bg-[#121212] flex items-center justify-center">
-        <div className="text-center">
-          <div className="inline-block w-12 h-12 border-4 border-[#387B66] border-t-transparent rounded-full animate-spin mb-4"></div>
-          <div className="text-white text-xl">Loading...</div>
-        </div>
+  // Otherwise show loading
+  return (
+    <div className="min-h-screen bg-[#121212] flex items-center justify-center">
+      <div className="text-center">
+        <div className="inline-block w-12 h-12 border-4 border-[#387B66] border-t-transparent rounded-full animate-spin mb-4"></div>
+        <div className="text-white text-xl">Loading...</div>
       </div>
-    );
-  }
-
-  return <Login />;
+    </div>
+  );
 }
