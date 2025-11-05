@@ -47,3 +47,31 @@ body {
 * {
   scroll-behavior: smooth;
 }
+
+/* Mobile optimization */
+@media (max-width: 640px) {
+  /* Prevent text from being too small on mobile */
+  body {
+    -webkit-text-size-adjust: 100%;
+    -moz-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  
+  /* Improve touch targets */
+  button, a, input, select, textarea {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Prevent horizontal scroll on mobile */
+body {
+  overflow-x: hidden;
+}
+
+/* Better mobile table scrolling */
+@media (max-width: 640px) {
+  table {
+    font-size: 14px;
+  }
+}
