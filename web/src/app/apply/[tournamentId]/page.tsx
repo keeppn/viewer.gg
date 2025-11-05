@@ -55,6 +55,11 @@ export default function ApplyPage() {
         }
 
         setTournament(data);
+        
+        // Debug: Log the form fields to see what's being loaded
+        console.log('Tournament loaded:', data);
+        console.log('Form fields:', data.form_fields);
+        
         setLoading(false);
       } catch (err) {
         console.error('Unexpected error:', err);
