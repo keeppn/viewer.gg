@@ -45,7 +45,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ user, isOpen, onClose, onLogout }) 
                 {user?.avatar_url ? (
                   <img 
                     src={user.avatar_url} 
-                    alt={user.display_name}
+                    alt={user.name}
                     className="w-12 h-12 rounded-full border-2 border-[#00F0FF]/50"
                   />
                 ) : (
@@ -55,7 +55,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ user, isOpen, onClose, onLogout }) 
                 )}
                 <div className="flex-1 min-w-0">
                   <p className="text-white font-semibold truncate">
-                    {user?.display_name || 'User'}
+                    {user?.name || 'User'}
                   </p>
                   <p className="text-gray-400 text-sm truncate">
                     {user?.email}
