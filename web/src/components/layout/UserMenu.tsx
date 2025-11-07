@@ -22,7 +22,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ user, isOpen, onClose, onLogout }) 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40"
+            className="fixed inset-0 z-[100]"
             onClick={onClose}
           />
           
@@ -32,7 +32,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ user, isOpen, onClose, onLogout }) 
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="absolute right-0 top-full mt-2 w-64 rounded-xl overflow-hidden z-50 backdrop-blur-xl"
+            className="absolute right-0 top-full mt-2 w-64 rounded-xl overflow-hidden z-[110] backdrop-blur-xl"
             style={{
               background: 'linear-gradient(135deg, rgba(10, 14, 27, 0.98), rgba(30, 10, 60, 0.95))',
               border: '1px solid rgba(0, 240, 255, 0.3)',

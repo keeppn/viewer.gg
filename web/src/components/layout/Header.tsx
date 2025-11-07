@@ -48,7 +48,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
   };
 
   return (
-    <header className="relative p-3 sm:p-4 flex justify-between items-center border-b backdrop-blur-xl overflow-hidden"
+    <header className="relative p-3 sm:p-4 flex justify-between items-center border-b backdrop-blur-xl z-50"
       style={{
         background: 'linear-gradient(90deg, rgba(10, 14, 27, 0.95), rgba(30, 10, 60, 0.85))',
         borderColor: 'rgba(0, 240, 255, 0.2)',
