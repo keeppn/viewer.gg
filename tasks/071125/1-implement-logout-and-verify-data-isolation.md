@@ -1,5 +1,6 @@
 ---
 status: pending
+completion_percentage: 50
 ---
 
 # Implement Logout Functionality and Verify Data Isolation
