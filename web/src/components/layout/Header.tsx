@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
-import { usePathname } from 'next/navigation';
+import React, { useState, useEffect, useRef } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BellIcon, UserCircleIcon, SearchIcon } from '../icons/Icons';
+import { useAuthStore } from '@/store/authStore';
+import UserMenu from './UserMenu';
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -11,8 +13,39 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
   const pathname = usePathname();
+  const router = useRouter();
   const currentPage = pathname.split('/').pop() || 'Overview';
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+  
+  const { user, signOut } = useAuthStore();
+
+  // Close user menu on outside click
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setIsUserMenuOpen(false);
+      }
+    };
+
+    if (isUserMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isUserMenuOpen]);
+
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      router.push('/');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
 
   return (
     <header className="relative p-3 sm:p-4 flex justify-between items-center border-b backdrop-blur-xl overflow-hidden"
@@ -160,45 +193,93 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
             />
           </motion.button>
           
-          {/* User Profile */}
-          <motion.div 
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.98 }}
-            className="hidden sm:flex items-center space-x-2 px-3 py-2 rounded-xl cursor-pointer transition-all duration-300 group overflow-hidden relative"
-            style={{
-              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02))',
-              border: '1px solid rgba(0, 240, 255, 0.2)',
-            }}
-          >
-            <motion.div
-              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
+          {/* User Profile - Desktop */}
+          <div ref={userMenuRef} className="relative hidden sm:block">
+            <motion.button
+              onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
+              className="flex items-center space-x-2 px-3 py-2 rounded-xl cursor-pointer transition-all duration-300 group overflow-hidden relative"
               style={{
-                background: 'linear-gradient(135deg, rgba(0, 240, 255, 0.1), rgba(153, 69, 255, 0.1))',
+                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02))',
+                border: '1px solid rgba(0, 240, 255, 0.2)',
               }}
+            >
+              <motion.div
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(0, 240, 255, 0.1), rgba(153, 69, 255, 0.1))',
+                }}
+              />
+              {user?.avatar_url ? (
+                <img 
+                  src={user.avatar_url} 
+                  alt={user.display_name}
+                  className="w-6 h-6 rounded-full border border-[#00F0FF]/50 relative z-10"
+                />
+              ) : (
+                <div className="relative z-10 text-[#00F0FF]">
+                  <UserCircleIcon />
+                </div>
+              )}
+              <span className="text-white font-medium relative z-10">
+                {user?.display_name || 'Admin'}
+              </span>
+              <motion.svg
+                className="w-4 h-4 text-gray-400 relative z-10"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                animate={{ rotate: isUserMenuOpen ? 180 : 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </motion.svg>
+            </motion.button>
+
+            <UserMenu
+              user={user}
+              isOpen={isUserMenuOpen}
+              onClose={() => setIsUserMenuOpen(false)}
+              onLogout={handleLogout}
             />
-            <div className="relative z-10 text-[#00F0FF]">
-              <UserCircleIcon />
-            </div>
-            <span className="text-white font-medium relative z-10">Admin</span>
-          </motion.div>
+          </div>
 
           {/* Mobile User Icon Only */}
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            className="sm:hidden text-gray-400 hover:text-[#00F0FF] transition-colors p-2 rounded-lg relative overflow-hidden group"
-            style={{
-              background: 'rgba(255, 255, 255, 0.03)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-            }}
-          >
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-[#00F0FF]/10 to-[#9945FF]/10 opacity-0 group-hover:opacity-100 transition-opacity"
+          <div ref={userMenuRef} className="relative sm:hidden">
+            <motion.button
+              onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              className="text-gray-400 hover:text-[#00F0FF] transition-colors p-2 rounded-lg relative overflow-hidden group"
+              style={{
+                background: 'rgba(255, 255, 255, 0.03)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+              }}
+            >
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-[#00F0FF]/10 to-[#9945FF]/10 opacity-0 group-hover:opacity-100 transition-opacity"
+              />
+              {user?.avatar_url ? (
+                <img 
+                  src={user.avatar_url} 
+                  alt={user.display_name}
+                  className="w-6 h-6 rounded-full border border-[#00F0FF]/50 relative z-10"
+                />
+              ) : (
+                <div className="relative z-10">
+                  <UserCircleIcon />
+                </div>
+              )}
+            </motion.button>
+
+            <UserMenu
+              user={user}
+              isOpen={isUserMenuOpen}
+              onClose={() => setIsUserMenuOpen(false)}
+              onLogout={handleLogout}
             />
-            <div className="relative z-10">
-              <UserCircleIcon />
-            </div>
-          </motion.button>
+          </div>
         </div>
       </div>
 
