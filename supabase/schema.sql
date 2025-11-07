@@ -57,7 +57,7 @@ CREATE TABLE applications (
   status TEXT NOT NULL CHECK (status IN ('Pending', 'Approved', 'Rejected')) DEFAULT 'Pending',
   submission_date TIMESTAMPTZ DEFAULT NOW(),
   reviewed_date TIMESTAMPTZ,
-  reviewed_by UUID REFERENCES users(id),
+  reviewed_by UUID REFERENCES users(id) ON DELETE SET NULL,
   custom_data JSONB DEFAULT '{}'::jsonb,
   previous_experience TEXT,
   availability_confirmed BOOLEAN DEFAULT true,
