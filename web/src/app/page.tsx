@@ -3,25 +3,24 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import Login from '@/components/pages/Login';
 
 export default function HomePage() {
   const router = useRouter();
-  const [showLogin, setShowLogin] = useState(false);
+  const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
-    // Simple approach - just check session and show login if not found
+    // Simple approach - just check session and redirect accordingly
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
-        console.log('Session found, redirecting...');
+        console.log('Session found, redirecting to dashboard...');
         router.push('/dashboard');
       } else {
-        console.log('No session, showing login');
-        setShowLogin(true);
+        console.log('No session, redirecting to login...');
+        router.push('/login');
       }
     }).catch((error) => {
       console.error('Auth check error:', error);
-      setShowLogin(true);
+      router.push('/login');
     });
 
     // Listen for sign in
@@ -34,12 +33,7 @@ export default function HomePage() {
     return () => subscription.unsubscribe();
   }, [router]);
 
-  // If showLogin is true, show the login page
-  if (showLogin) {
-    return <Login />;
-  }
-
-  // Otherwise show loading
+  // Show loading while checking
   return (
     <div className="min-h-screen bg-[#121212] flex items-center justify-center">
       <div className="text-center">

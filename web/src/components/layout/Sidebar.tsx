@@ -122,23 +122,17 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           className="relative flex items-center p-6 mb-4 z-10"
         >
           <motion.div 
-            className="p-2.5 rounded-xl shadow-lg relative overflow-hidden"
+            className="relative w-10 h-10 flex items-center justify-center"
             whileHover={{ scale: 1.05, rotate: 5 }}
-            style={{
-              background: 'linear-gradient(135deg, #00F0FF, #9945FF)',
-              boxShadow: '0 0 20px rgba(0, 240, 255, 0.5), 0 0 40px rgba(153, 69, 255, 0.3)'
-            }}
           >
-            <motion.div
-              animate={{
-                rotate: [0, 360],
+            <img 
+              src="/viewer-logo/viewer-logo-transparent.svg" 
+              alt="Viewer.gg Logo" 
+              className="w-full h-full object-contain"
+              style={{
+                filter: 'drop-shadow(0 0 10px rgba(0, 240, 255, 0.5))'
               }}
-              transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
             />
-            <div className="relative z-10">
-              <LogoIcon />
-            </div>
           </motion.div>
           <h1 className="text-2xl font-bold ml-3 text-transparent bg-clip-text bg-gradient-to-r from-[#00F0FF] via-[#9945FF] to-[#FFB800] font-[family-name:var(--font-display)]"
             style={{
@@ -248,23 +242,17 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 className="relative flex items-center p-6 mb-4 z-10"
               >
                 <motion.div 
-                  className="p-2.5 rounded-xl shadow-lg relative overflow-hidden"
+                  className="relative w-10 h-10 flex items-center justify-center"
                   whileHover={{ scale: 1.05, rotate: 5 }}
-                  style={{
-                    background: 'linear-gradient(135deg, #00F0FF, #9945FF)',
-                    boxShadow: '0 0 20px rgba(0, 240, 255, 0.5), 0 0 40px rgba(153, 69, 255, 0.3)'
-                  }}
                 >
-                  <motion.div
-                    animate={{
-                      rotate: [0, 360],
+                  <img 
+                    src="/viewer-logo/viewer-logo-transparent.svg" 
+                    alt="Viewer.gg Logo" 
+                    className="w-full h-full object-contain"
+                    style={{
+                      filter: 'drop-shadow(0 0 10px rgba(0, 240, 255, 0.5))'
                     }}
-                    transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
                   />
-                  <div className="relative z-10">
-                    <LogoIcon />
-                  </div>
                 </motion.div>
                 <h1 className="text-2xl font-bold ml-3 text-transparent bg-clip-text bg-gradient-to-r from-[#00F0FF] via-[#9945FF] to-[#FFB800] font-[family-name:var(--font-display)]"
                   style={{

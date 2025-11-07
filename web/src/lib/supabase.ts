@@ -76,3 +76,58 @@ export async function getCurrentSession() {
   if (error) throw error;
   return session;
 }
+
+/**
+ * Sign up with email and password
+ * @param email - User email
+ * @param password - User password
+ * @param fullName - User's full name (optional)
+ */
+export async function signUpWithEmail(
+  email: string,
+  password: string,
+  fullName?: string
+) {
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        full_name: fullName,
+        user_type: 'organizer',
+      },
+      emailRedirectTo: `${window.location.origin}/auth/callback`,
+    },
+  });
+
+  if (error) throw error;
+  return data;
+}
+
+/**
+ * Sign in with email and password
+ * @param email - User email
+ * @param password - User password
+ */
+export async function signInWithEmail(email: string, password: string) {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  if (error) throw error;
+  return data;
+}
+
+/**
+ * Send password reset email
+ * @param email - User email
+ */
+export async function resetPassword(email: string) {
+  const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${window.location.origin}/auth/reset-password`,
+  });
+
+  if (error) throw error;
+  return data;
+}
