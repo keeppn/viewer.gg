@@ -50,7 +50,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ user, isOpen, onClose, onLogout }) 
                   />
                 ) : (
                   <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#00F0FF]/20 to-[#9945FF]/20 flex items-center justify-center border-2 border-[#00F0FF]/50">
-                    <UserCircleIcon size={24} />
+                    <UserCircleIcon />
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
