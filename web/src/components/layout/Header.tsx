@@ -214,7 +214,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
               {user?.avatar_url ? (
                 <img 
                   src={user.avatar_url} 
-                  alt={user.display_name}
+                  alt={user.name}
                   className="w-6 h-6 rounded-full border border-[#00F0FF]/50 relative z-10"
                 />
               ) : (
@@ -223,7 +223,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                 </div>
               )}
               <span className="text-white font-medium relative z-10">
-                {user?.display_name || 'Admin'}
+                {user?.name || 'Admin'}
               </span>
               <motion.svg
                 className="w-4 h-4 text-gray-400 relative z-10"
