@@ -30,12 +30,14 @@ export default function ApplyPage() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [discordIdError, setDiscordIdError] = useState<string | null>(null);
   const [formData, setFormData] = useState<{[key: string]: string}>({
     streamerName: '',
     email: '',
     platform: 'Twitch',
     channelUrl: '',
     discordUsername: '',
+    discordUserId: '',
   });
 
   useEffect(() => {
@@ -76,11 +78,28 @@ export default function ApplyPage() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+
+    // Validate Discord User ID format if it's being changed
+    if (name === 'discordUserId') {
+      if (value === '') {
+        setDiscordIdError(null); // Optional field, empty is valid
+      } else if (!/^\d{17,19}$/.test(value)) {
+        setDiscordIdError('Discord User ID must be 17-19 digits (numbers only)');
+      } else {
+        setDiscordIdError(null);
+      }
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!tournament) return;
+
+    // Validate Discord ID before submission if provided
+    if (formData.discordUserId && !/^\d{17,19}$/.test(formData.discordUserId)) {
+      setError('Please enter a valid Discord User ID (17-19 digits)');
+      return;
+    }
 
     setSubmitting(true);
     setError(null);
@@ -101,6 +120,7 @@ export default function ApplyPage() {
         channel_url: formData.channelUrl,
         email: formData.email,
         discord_username: formData.discordUsername,
+        discord_user_id: formData.discordUserId || undefined, // Only include if provided
         avg_viewers: 0,
         follower_count: 0,
         primary_languages: ['English'],
@@ -251,6 +271,46 @@ export default function ApplyPage() {
                     className="w-full bg-[#121212] text-white rounded-md p-3 border border-white/20 focus:border-[#387B66] focus:outline-none transition-colors"
                     placeholder="username#0000"
                   />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Discord User ID
+                  </label>
+                  <input
+                    type="text"
+                    name="discordUserId"
+                    value={formData.discordUserId}
+                    onChange={handleChange}
+                    className={`w-full bg-[#121212] text-white rounded-md p-3 border ${
+                      discordIdError 
+                        ? 'border-red-500/50 focus:border-red-500' 
+                        : 'border-white/20 focus:border-[#387B66]'
+                    } focus:outline-none transition-colors`}
+                    placeholder="123456789012345678"
+                    pattern="\d{17,19}"
+                  />
+                  {discordIdError && (
+                    <p className="text-red-400 text-sm mt-1">{discordIdError}</p>
+                  )}
+                  <p className="text-gray-400 text-xs mt-2">
+                    Your Discord User ID is a 17-19 digit number. To find it:
+                    <br />
+                    1. Open Discord and enable Developer Mode (User Settings → Advanced → Developer Mode)
+                    <br />
+                    2. Right-click your username and select &apos;Copy User ID&apos;
+                    <br />
+                    3. Paste the number here
+                    <br />
+                    <a 
+                      href="https://support.discord.com/hc/en-us/articles/206346498" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-[#387B66] hover:text-[#2d6350] underline"
+                    >
+                      Learn more about finding your Discord ID →
+                    </a>
+                  </p>
                 </div>
               </div>
             </div>

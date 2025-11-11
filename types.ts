@@ -70,6 +70,7 @@ export interface StreamerProfile {
   channel_url: string;
   email: string;
   discord_username: string;
+  discord_user_id?: string; // Discord snowflake ID (17-19 digits) for bot role assignment
   avg_viewers: number;
   follower_count: number;
   subscriber_count?: number;
