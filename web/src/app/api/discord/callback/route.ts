@@ -8,7 +8,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { exchangeCodeForToken, fetchGuilds } from '@/lib/discord/oauth';
-import { findOrCreateRole } from '@/lib/discord/roles';
+import { findOrCreateRole } from '@/lib/discord/rest';
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
     const guild = guilds[0];
 
     // Find or create the "Approved Co-Streamer" role
-    const role = await findOrCreateRole(guild.id);
+    const role = await findOrCreateRole(guild.id, 'Approved Co-Streamer', 0x00FF00);
 
     // Store Discord configuration in database
     const { error: configError } = await supabase

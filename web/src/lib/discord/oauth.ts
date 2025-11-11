@@ -5,8 +5,6 @@
  * TOs use this to authorize the bot with required permissions.
  */
 
-import { getBotClientId } from './bot';
-
 /**
  * Required permissions for the bot
  * MANAGE_ROLES (268435456) - Assign roles to members
@@ -29,7 +27,11 @@ export function getAuthorizationUrl(
   redirectUri: string,
   state?: string
 ): string {
-  const clientId = getBotClientId();
+  const clientId = process.env.DISCORD_CLIENT_ID;
+  
+  if (!clientId) {
+    throw new Error('DISCORD_CLIENT_ID is not configured');
+  }
   
   const params = new URLSearchParams({
     client_id: clientId,
@@ -58,11 +60,11 @@ export async function exchangeCodeForToken(
   code: string,
   redirectUri: string
 ) {
-  const clientId = getBotClientId();
-  const clientSecret = process.env.DISCORD_BOT_CLIENT_SECRET;
+  const clientId = process.env.DISCORD_CLIENT_ID;
+  const clientSecret = process.env.DISCORD_CLIENT_SECRET;
 
-  if (!clientSecret) {
-    throw new Error('DISCORD_BOT_CLIENT_SECRET is not configured');
+  if (!clientId || !clientSecret) {
+    throw new Error('DISCORD_CLIENT_ID or DISCORD_CLIENT_SECRET is not configured');
   }
 
   const response = await fetch('https://discord.com/api/oauth2/token', {

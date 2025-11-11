@@ -1,127 +1,56 @@
 /**
  * Discord Role Assignment API
- * 
- * Assigns the "Approved Co-Streamer" role to a Discord user
- * when their application is approved.
+ * POST /api/discord/assign-role
+ * Assigns role to Discord user using REST API
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { assignRoleToMember } from '@/lib/discord/roles';
+import { findOrCreateRole, addMemberRole } from '@/lib/discord/rest';
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createClient();
-    
-    // Get authenticated user
-    const { data: { user }, error: userError } = await supabase.auth.getUser();
-    
-    if (userError || !user) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
     // Parse request body
     const body = await request.json();
-    const { application_id } = body;
+    const { guild_id, discord_user_id, role_name, application_id, tournament_id } = body;
 
-    if (!application_id) {
+    if (!guild_id || !discord_user_id) {
       return NextResponse.json(
-        { error: 'application_id is required' },
+        { error: 'Missing required fields: guild_id, discord_user_id' },
         { status: 400 }
       );
     }
 
+    const roleName = role_name || 'Approved Co-Streamer';
 
-    // Fetch application with tournament info
-    const { data: application, error: appError } = await supabase
-      .from('applications')
-      .select(`
-        *,
-        tournaments (
-          organizer_id,
-          discord_configs (
-            guild_id,
-            approved_role_id
-          )
-        )
-      `)
-      .eq('id', application_id)
-      .single();
+    console.log('[Discord API] Assigning role:', {
+      guild_id,
+      discord_user_id,
+      role_name: roleName,
+    });
 
-    if (appError || !application) {
-      return NextResponse.json(
-        { error: 'Application not found' },
-        { status: 404 }
-      );
-    }
-
-    // Verify user is the tournament organizer
-    if (application.tournaments.organizer_id !== user.id) {
-      return NextResponse.json(
-        { error: 'Forbidden: Not tournament organizer' },
-        { status: 403 }
-      );
-    }
-
-    // Check if Discord is configured
-    const discordConfig = application.tournaments.discord_configs?.[0];
+    // Find or create the role
+    const role = await findOrCreateRole(guild_id, roleName, 0x00FF00);
     
-    if (!discordConfig) {
-      return NextResponse.json(
-        { error: 'Discord not configured for this tournament' },
-        { status: 400 }
-      );
-    }
-
-    // Get Discord user ID from application
-    const discordUserId = application.discord_user_id;
-    
-    if (!discordUserId) {
-      return NextResponse.json(
-        { error: 'No Discord ID found in application' },
-        { status: 400 }
-      );
-    }
-
-
-    // Assign the role
-    const result = await assignRoleToMember(
-      discordConfig.guild_id,
-      discordUserId,
-      discordConfig.approved_role_id
-    );
-
-    // Log the action to discord_messages table
-    await supabase
-      .from('discord_messages')
-      .insert({
-        application_id: application_id,
-        discord_user_id: discordUserId,
-        message_type: 'approval',
-        success: result.success,
-        error_message: result.success ? null : result.message,
-      });
-
-    if (!result.success) {
-      return NextResponse.json(
-        { error: result.message },
-        { status: 500 }
-      );
-    }
+    // Assign role to member
+    await addMemberRole(guild_id, discord_user_id, role.id);
 
     return NextResponse.json({
       success: true,
-      message: result.message,
+      message: `Role "${roleName}" assigned successfully`,
+      role_id: role.id,
     });
 
   } catch (error) {
-    console.error('Role assignment error:', error);
+    console.error('[Discord API] Error:', error);
+    
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Unknown error' },
+      { 
+        error: 'Failed to assign role',
+        message: errorMessage,
+      },
       { status: 500 }
     );
   }
