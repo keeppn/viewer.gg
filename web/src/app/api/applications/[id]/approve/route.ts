@@ -8,9 +8,12 @@ import { assignDiscordRole } from '@/lib/discord/roleAssignment';
  */
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Await params for Next.js 15+ compatibility
+    const { id } = await params;
+    
     const supabase = await createClient();
     
     // Get current user
@@ -34,7 +37,7 @@ export async function POST(
           organization:organization_id(*)
         )
       `)
-      .eq('id', params.id)
+      .eq('id', id)
       .single();
     
     if (appError || !application) {
@@ -56,7 +59,7 @@ export async function POST(
     const { data: updatedApp, error: updateError } = await supabase
       .from('applications')
       .update({ status: 'Approved' })
-      .eq('id', params.id)
+      .eq('id', id)
       .select(`
         *,
         streamer:streamer_id(*),
