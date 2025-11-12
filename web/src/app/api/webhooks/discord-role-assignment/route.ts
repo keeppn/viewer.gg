@@ -1,8 +1,7 @@
 // Webhook handler for automatic Discord role assignment
 import { NextRequest, NextResponse } from 'next/server';
 import { headers } from 'next/headers';
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import { createClient } from '@/lib/supabase/server';
 import DiscordIntegrationService from '@/lib/services/discord-integration.service';
 
 // This webhook is triggered when a tournament application is approved
@@ -15,8 +14,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const supabase = createRouteHandlerClient({ cookies });
-  const discordService = new DiscordIntegrationService();
+  const supabase = await createClient();
+  const discordService = await new DiscordIntegrationService().init();
 
   try {
     const body = await request.json();
@@ -50,7 +49,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, message: 'Streamer Discord ID not found' });
     }
 
-    // Handle the action    if (action === 'approved') {
+    // Handle the action
+    if (action === 'approved') {
       // Assign role to approved streamer
       await discordService.assignTournamentRole(
         integration.selected_server_id,
@@ -76,7 +76,8 @@ export async function POST(request: NextRequest) {
 
     } else if (action === 'rejected' || action === 'revoked') {
       // Remove role from rejected/revoked streamer
-      try {        await discordService.removeTournamentRole(
+      try {
+        await discordService.removeTournamentRole(
           integration.selected_server_id,
           streamerProfile.discord_id,
           integration.selected_role_id,

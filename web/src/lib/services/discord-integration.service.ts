@@ -1,12 +1,12 @@
 // Discord Integration Service for managing OAuth tokens and role assignments
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import { createClient } from '@/lib/supabase/server';
 
 export class DiscordIntegrationService {
   private supabase: any;
   
-  constructor() {
-    this.supabase = createServerComponentClient({ cookies });
+  async init() {
+    this.supabase = await createClient();
+    return this;
   }
 
   /**
@@ -24,7 +24,8 @@ export class DiscordIntegrationService {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: new URLSearchParams({
-          client_id: process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID!,          client_secret: process.env.DISCORD_CLIENT_SECRET!,
+          client_id: process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID!,
+          client_secret: process.env.DISCORD_CLIENT_SECRET!,
           grant_type: 'refresh_token',
           refresh_token: integration.refresh_token,
         }),
@@ -51,7 +52,8 @@ export class DiscordIntegrationService {
     return integration.access_token;
   }
 
-  /**   * Assign role to user when tournament application is approved
+  /**
+   * Assign role to user when tournament application is approved
    */
   async assignTournamentRole(
     guildId: string,

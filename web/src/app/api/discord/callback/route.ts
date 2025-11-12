@@ -1,7 +1,6 @@
 // Discord OAuth callback handler route
 import { NextRequest, NextResponse } from 'next/server';
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import { createClient } from '@/lib/supabase/server';
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -24,7 +23,7 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const supabase = createRouteHandlerClient({ cookies });
+  const supabase = await createClient();
 
   try {
     // Verify state parameter to prevent CSRF attacks    // Get stored state from session or database
