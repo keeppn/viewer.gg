@@ -6,7 +6,7 @@ import DiscordIntegrationService from '@/lib/services/discord-integration.servic
 
 // This webhook is triggered when a tournament application is approved
 export async function POST(request: NextRequest) {
-  const headersList = headers();
+  const headersList = await headers();
   const webhookSecret = headersList.get('x-webhook-secret');
 
   // Verify webhook secret
