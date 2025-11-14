@@ -18,43 +18,53 @@ const Settings: React.FC = () => {
     console.log('[Settings] Component rendering, loading:', loading);
 
     useEffect(() => {
-        console.log('[Settings] useEffect triggered - starting initialization');
+        console.log('[Settings] useEffect triggered');
+
+        let isMounted = true;
 
         const initializePage = async () => {
+            if (!isMounted) return;
+
+            console.log('[Settings] Starting initialization');
             setLoading(true);
 
-            // Check for success/error from callback FIRST
-            const success = searchParams.get('success');
-            const errorParam = searchParams.get('error');
+            try {
+                // Load organization data
+                await loadOrganizationData();
 
-            console.log('[Settings] URL params:', { success, errorParam });
+                if (!isMounted) return;
 
-            // Load organization data
-            await loadOrganizationData();
+                // Check for success/error params AFTER loading
+                const success = searchParams.get('success');
+                const errorParam = searchParams.get('error');
 
-            // Handle success/error AFTER data is loaded
-            if (success === 'bot_connected') {
-                console.log('[Settings] Bot connected, clearing URL params');
-                // Clear URL param immediately without showing alert
-                window.history.replaceState({}, '', '/dashboard/settings');
-            } else if (errorParam) {
-                console.log('[Settings] Error param found:', errorParam);
-                setError(`Discord connection failed: ${errorParam}`);
-                window.history.replaceState({}, '', '/dashboard/settings');
+                console.log('[Settings] URL params:', { success, errorParam });
+
+                if (success === 'bot_connected') {
+                    console.log('[Settings] Bot connected successfully');
+                    // Use router to navigate cleanly
+                    router.replace('/dashboard/settings', { scroll: false });
+                } else if (errorParam) {
+                    console.log('[Settings] Error:', errorParam);
+                    setError(`Discord connection failed: ${errorParam}`);
+                    router.replace('/dashboard/settings', { scroll: false });
+                }
+            } catch (err: any) {
+                console.error('[Settings] Initialization failed:', err);
+                if (isMounted) {
+                    setError(err.message);
+                    setLoading(false);
+                }
             }
         };
 
-        initializePage().catch(err => {
-            console.error('[Settings] Initialization failed:', err);
-            setError(err.message);
-            setLoading(false);
-        });
+        initializePage();
 
-        // Cleanup function - will run when component unmounts (navigating away)
         return () => {
-            console.log('[Settings] Component unmounting/cleaning up');
+            console.log('[Settings] Cleanup - component unmounting');
+            isMounted = false;
         };
-    }, []); // Empty deps - run once on mount, cleanup on unmount
+    }, [router, searchParams]); // Re-run when URL changes
 
     const loadOrganizationData = async () => {
         try {
