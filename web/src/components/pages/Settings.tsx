@@ -15,7 +15,7 @@ const Settings: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
 
     // Force log to verify component is rendering
-    console.log('[Settings] Component rendering, loading:', loading);
+    console.log('[Settings] Component rendering, loading:', loading, 'organization:', organization?.name || 'NULL', 'discordConfig:', discordConfig ? 'EXISTS' : 'NULL');
 
     useEffect(() => {
         console.log('[Settings] useEffect triggered');
@@ -228,6 +228,7 @@ const Settings: React.FC = () => {
     };
 
     if (loading) {
+        console.log('[Settings] Rendering LOADING state');
         return (
             <div className="max-w-2xl mx-auto">
                 <div className="text-center py-12">
@@ -239,6 +240,7 @@ const Settings: React.FC = () => {
     }
 
     if (!organization) {
+        console.log('[Settings] Rendering NO ORGANIZATION state');
         return (
             <div className="max-w-2xl mx-auto">
                 <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-6">
@@ -278,6 +280,7 @@ const Settings: React.FC = () => {
         );
     }
 
+    console.log('[Settings] Rendering MAIN CONTENT');
     return (
         <div className="max-w-2xl mx-auto space-y-8">
             {error && (
