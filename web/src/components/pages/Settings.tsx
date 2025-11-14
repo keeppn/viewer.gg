@@ -2,13 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
+import { supabase } from '@/lib/supabase';
 import Button from '@/components/common/Button';
 
 const Settings: React.FC = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const supabase = createClient();
     
     const [loading, setLoading] = useState(true);
     const [organization, setOrganization] = useState<any>(null);
