@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { createServiceRoleClient } from '@/lib/supabase/server';
 
 /**
  * Discord Bot OAuth Callback Handler
@@ -67,7 +67,8 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const supabase = await createClient();
+  // Use service role client to bypass RLS (safe because org_id comes from our state parameter)
+  const supabase = createServiceRoleClient();
 
   try {
     // Verify the organization exists (using organization ID from state parameter)
