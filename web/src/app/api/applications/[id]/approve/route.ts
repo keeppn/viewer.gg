@@ -89,9 +89,9 @@ export async function POST(
     // Check if Discord integration is configured
     const { data: discordConfig } = await supabase
       .from('discord_configs')
-      .select('guild_id, approved_role_id, enabled')
+      .select('guild_id, default_role_id, is_connected')
       .eq('organization_id', updatedApp.tournament.organization.id)
-      .eq('enabled', true)
+      .eq('is_connected', true)
       .maybeSingle();
     
     // Determine if we should attempt Discord role assignment
