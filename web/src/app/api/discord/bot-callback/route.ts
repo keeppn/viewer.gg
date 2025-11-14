@@ -59,15 +59,29 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Get user's organization
+    // Get user's organization_id from users table (same pattern as Settings.tsx)
+    const { data: userData, error: userError } = await supabase
+      .from('users')
+      .select('organization_id')
+      .eq('id', user.id)
+      .single();
+
+    if (userError || !userData?.organization_id) {
+      console.error('[Discord Bot Callback] No organization_id found for user:', userError);
+      return NextResponse.redirect(
+        new URL('/dashboard/settings?error=no_organization', request.url)
+      );
+    }
+
+    // Get organization details
     const { data: organization, error: orgError } = await supabase
       .from('organizations')
       .select('id, name')
-      .eq('owner_id', user.id)
+      .eq('id', userData.organization_id)
       .single();
 
     if (orgError || !organization) {
-      console.error('[Discord Bot Callback] No organization found:', orgError);
+      console.error('[Discord Bot Callback] Organization not found:', orgError);
       return NextResponse.redirect(
         new URL('/dashboard/settings?error=no_organization', request.url)
       );
