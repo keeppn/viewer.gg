@@ -13,18 +13,11 @@ const Settings: React.FC = () => {
     const [organization, setOrganization] = useState<any>(null);
     const [discordConfig, setDiscordConfig] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
-    const initializedRef = React.useRef(false);
 
     // Force log to verify component is rendering
     console.log('[Settings] Component rendering, loading:', loading);
 
     useEffect(() => {
-        // Skip if already initialized
-        if (initializedRef.current) {
-            console.log('[Settings] Already initialized, skipping');
-            return;
-        }
-
         console.log('[Settings] useEffect triggered - starting initialization');
 
         const initializePage = async () => {
@@ -39,19 +32,15 @@ const Settings: React.FC = () => {
             // Load organization data
             await loadOrganizationData();
 
-            // Mark as initialized
-            initializedRef.current = true;
-
             // Handle success/error AFTER data is loaded
             if (success === 'bot_connected') {
-                console.log('[Settings] Bot connected, showing success message');
-                alert('✅ Discord bot connected successfully!');
-                // Clear URL param
-                router.replace('/dashboard/settings');
+                console.log('[Settings] Bot connected, clearing URL params');
+                // Clear URL param immediately without showing alert
+                window.history.replaceState({}, '', '/dashboard/settings');
             } else if (errorParam) {
                 console.log('[Settings] Error param found:', errorParam);
                 setError(`Discord connection failed: ${errorParam}`);
-                router.replace('/dashboard/settings');
+                window.history.replaceState({}, '', '/dashboard/settings');
             }
         };
 
@@ -61,23 +50,11 @@ const Settings: React.FC = () => {
             setLoading(false);
         });
 
-        // Reload page when it becomes visible (handles browser back button)
-        const handleVisibilityChange = () => {
-            if (document.visibilityState === 'visible' && initializedRef.current) {
-                console.log('[Settings] Page became visible after being hidden, reloading...');
-                initializedRef.current = false;
-                setLoading(true);
-                // Trigger re-initialization
-                window.location.reload();
-            }
-        };
-
-        document.addEventListener('visibilitychange', handleVisibilityChange);
-
+        // Cleanup function - will run when component unmounts (navigating away)
         return () => {
-            document.removeEventListener('visibilitychange', handleVisibilityChange);
+            console.log('[Settings] Component unmounting/cleaning up');
         };
-    }, []);
+    }, []); // Empty deps - run once on mount, cleanup on unmount
 
     const loadOrganizationData = async () => {
         try {
