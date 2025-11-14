@@ -29,25 +29,26 @@ const Settings: React.FC = () => {
             setLoading(true);
 
             try {
-                // Load organization data
-                await loadOrganizationData();
-
-                if (!isMounted) return;
-
-                // Check for success/error params AFTER loading
+                // Check URL params FIRST (before loading)
                 const success = searchParams.get('success');
                 const errorParam = searchParams.get('error');
 
                 console.log('[Settings] URL params:', { success, errorParam });
 
+                // Clear params immediately to prevent re-triggering
+                if (success || errorParam) {
+                    console.log('[Settings] Clearing URL params');
+                    router.replace('/dashboard/settings', { scroll: false });
+                }
+
+                // Load organization data
+                await loadOrganizationData();
+
+                if (!isMounted) return;
+
+                // Show message if success
                 if (success === 'bot_connected') {
                     console.log('[Settings] Bot connected successfully');
-                    // Use router to navigate cleanly
-                    router.replace('/dashboard/settings', { scroll: false });
-                } else if (errorParam) {
-                    console.log('[Settings] Error:', errorParam);
-                    setError(`Discord connection failed: ${errorParam}`);
-                    router.replace('/dashboard/settings', { scroll: false });
                 }
             } catch (err: any) {
                 console.error('[Settings] Initialization failed:', err);
@@ -64,7 +65,7 @@ const Settings: React.FC = () => {
             console.log('[Settings] Cleanup - component unmounting');
             isMounted = false;
         };
-    }, [router, searchParams]); // Re-run when URL changes
+    }, []); // Empty array - only run ONCE on mount
 
     const loadOrganizationData = async () => {
         try {
