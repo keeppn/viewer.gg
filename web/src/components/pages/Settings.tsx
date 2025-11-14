@@ -38,11 +38,27 @@ const Settings: React.FC = () => {
                 return;
             }
 
-            // Get organization
+            // First, get user profile to find their organization_id
+            const { data: userData, error: userError } = await supabase
+                .from('users')
+                .select('organization_id')
+                .eq('id', user.id)
+                .single();
+
+            if (userError) {
+                console.error('Error loading user profile:', userError);
+                throw new Error('User profile not found');
+            }
+
+            if (!userData?.organization_id) {
+                throw new Error('No organization found for this user');
+            }
+
+            // Get organization using organization_id from user profile
             const { data: org, error: orgError } = await supabase
                 .from('organizations')
                 .select('*')
-                .eq('owner_id', user.id)
+                .eq('id', userData.organization_id)
                 .single();
 
             if (orgError) throw orgError;
