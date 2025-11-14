@@ -121,13 +121,17 @@ const Settings: React.FC = () => {
         const clientId = process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID || process.env.NEXT_PUBLIC_DISCORD_BOT_CLIENT_ID;
         const redirectUri = `${window.location.origin}/api/discord/bot-callback`;
         const permissions = '268435456'; // MANAGE_ROLES permission (0x10000000 in hex)
-        
+
+        // Use state parameter to pass organization ID securely
+        // This allows the callback to know which organization is connecting
+        const state = btoa(JSON.stringify({ org_id: organization.id }));
+
         // Important: Use 'bot' scope to add the bot to a server
         // guild_id will be in the callback URL parameters
-        const discordAuthUrl = `https://discord.com/oauth2/authorize?client_id=${clientId}&permissions=${permissions}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=bot`;
-        
+        const discordAuthUrl = `https://discord.com/oauth2/authorize?client_id=${clientId}&permissions=${permissions}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=bot&state=${encodeURIComponent(state)}`;
+
         console.log('Redirecting to Discord:', discordAuthUrl);
-        
+
         // Redirect to Discord
         window.location.href = discordAuthUrl;
     };

@@ -20,8 +20,9 @@ export async function GET(request: NextRequest) {
   const code = searchParams.get('code');
   const guildId = searchParams.get('guild_id');
   const error = searchParams.get('error');
+  const stateParam = searchParams.get('state');
 
-  console.log('[Discord Bot Callback] Received:', { code: !!code, guildId, error });
+  console.log('[Discord Bot Callback] Received:', { code: !!code, guildId, error, state: !!stateParam });
 
   // Handle OAuth errors
   if (error) {
@@ -46,38 +47,34 @@ export async function GET(request: NextRequest) {
     );
   }
 
+  if (!stateParam) {
+    console.error('[Discord Bot Callback] Missing state parameter');
+    return NextResponse.redirect(
+      new URL('/dashboard/settings?error=missing_state', request.url)
+    );
+  }
+
+  // Decode state parameter to get organization ID
+  let organizationId: string;
+  try {
+    const stateData = JSON.parse(atob(stateParam));
+    organizationId = stateData.org_id;
+    console.log('[Discord Bot Callback] Decoded organization ID from state:', organizationId);
+  } catch (err) {
+    console.error('[Discord Bot Callback] Failed to decode state parameter:', err);
+    return NextResponse.redirect(
+      new URL('/dashboard/settings?error=invalid_state', request.url)
+    );
+  }
+
   const supabase = await createClient();
 
   try {
-    // Get current authenticated user
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    
-    if (authError || !user) {
-      console.error('[Discord Bot Callback] No authenticated user');
-      return NextResponse.redirect(
-        new URL('/dashboard/settings?error=not_authenticated', request.url)
-      );
-    }
-
-    // Get user's organization_id from users table (same pattern as Settings.tsx)
-    const { data: userData, error: userError } = await supabase
-      .from('users')
-      .select('organization_id')
-      .eq('id', user.id)
-      .single();
-
-    if (userError || !userData?.organization_id) {
-      console.error('[Discord Bot Callback] No organization_id found for user:', userError);
-      return NextResponse.redirect(
-        new URL('/dashboard/settings?error=no_organization', request.url)
-      );
-    }
-
-    // Get organization details
+    // Verify the organization exists (using organization ID from state parameter)
     const { data: organization, error: orgError } = await supabase
       .from('organizations')
       .select('id, name')
-      .eq('id', userData.organization_id)
+      .eq('id', organizationId)
       .single();
 
     if (orgError || !organization) {
