@@ -16,25 +16,24 @@ const Settings: React.FC = () => {
 
     useEffect(() => {
         const initializePage = async () => {
-            // Load organization data first
-            await loadOrganizationData();
-
-            // Check for success/error from callback AFTER org is loaded
+            // Check for success/error from callback FIRST
             const success = searchParams.get('success');
             const errorParam = searchParams.get('error');
 
+            // Load organization data
+            await loadOrganizationData();
+
+            // Handle success/error AFTER data is loaded
             if (success === 'bot_connected') {
-                // Show success message
-                alert('✅ Discord bot connected successfully!');
-                // Force hard refresh to clear all caches and show new config
-                window.location.href = '/dashboard/settings';
-                return;
+                // Clear URL param immediately to prevent re-triggering
+                router.replace('/dashboard/settings');
+                // Show success message after a brief delay
+                setTimeout(() => {
+                    alert('✅ Discord bot connected successfully!');
+                }, 100);
             } else if (errorParam) {
                 setError(`Discord connection failed: ${errorParam}`);
-                // Clear error from URL after showing message
-                setTimeout(() => {
-                    window.location.href = '/dashboard/settings';
-                }, 2000);
+                router.replace('/dashboard/settings');
             }
         };
 
@@ -114,15 +113,24 @@ const Settings: React.FC = () => {
 
     const loadDiscordConfig = async (orgId?: string) => {
         try {
-            const { data: config } = await supabase
+            const targetOrgId = orgId || organization?.id;
+            console.log('[Settings] Loading Discord config for org:', targetOrgId);
+
+            const { data: config, error } = await supabase
                 .from('discord_configs')
                 .select('*')
-                .eq('organization_id', orgId || organization?.id)
+                .eq('organization_id', targetOrgId)
                 .maybeSingle();
+
+            console.log('[Settings] Discord config result:', { config, error });
+
+            if (error) {
+                console.error('[Settings] Error querying discord_configs:', error);
+            }
 
             setDiscordConfig(config);
         } catch (err: any) {
-            console.error('Error loading Discord config:', err);
+            console.error('[Settings] Exception loading Discord config:', err);
         }
     };
 
