@@ -210,6 +210,7 @@ export interface DiscordConfig {
   guild_id: string;
   guild_name: string;
   bot_token: string;
+  role_name?: string;
   default_role_id?: string;
   announcement_channel_id?: string;
   is_connected: boolean;

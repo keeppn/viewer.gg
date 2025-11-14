@@ -71,14 +71,19 @@ export const applicationApi = {
 
   // Update application status
   async updateStatus(
-    id: string, 
-    status: ApplicationStatus, 
+    id: string,
+    status: ApplicationStatus,
     reviewedBy: string,
     notes?: string
   ): Promise<Application> {
+    // First, get the application to access tournament and form data
+    const application = await this.getById(id);
+    if (!application) throw new Error('Application not found');
+
+    // Update the database
     const { data, error } = await supabase
       .from('applications')
-      .update({ 
+      .update({
         status,
         reviewed_by: reviewedBy,
         reviewed_date: new Date().toISOString(),
@@ -89,6 +94,49 @@ export const applicationApi = {
       .single();
 
     if (error) throw error;
+
+    // If approved, assign Discord role
+    if (status === 'Approved' && application.form_data) {
+      try {
+        // Get Discord config for the organization
+        const { data: discordConfig } = await supabase
+          .from('discord_configs')
+          .select('*')
+          .eq('organization_id', application.tournament?.organization_id)
+          .single();
+
+        if (discordConfig && application.form_data.discord_user_id) {
+          console.log('[Applications] Assigning Discord role to approved streamer...');
+
+          // Call the assign-role endpoint
+          const response = await fetch('/api/discord/assign-role', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              guild_id: discordConfig.guild_id,
+              discord_user_id: application.form_data.discord_user_id,
+              role_name: discordConfig.role_name || 'Approved Co-Streamer',
+              application_id: id,
+              tournament_id: application.tournament_id,
+            }),
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            console.error('[Applications] Failed to assign Discord role:', errorData);
+            // Don't throw error - application is still approved even if role assignment fails
+          } else {
+            console.log('[Applications] Discord role assigned successfully');
+          }
+        }
+      } catch (discordError) {
+        console.error('[Applications] Error assigning Discord role:', discordError);
+        // Don't throw error - application is still approved
+      }
+    }
+
     return data;
   },
 

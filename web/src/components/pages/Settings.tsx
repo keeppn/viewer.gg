@@ -240,6 +240,25 @@ const Settings: React.FC = () => {
         }
     };
 
+    const handleUpdateRoleName = async (roleName: string) => {
+        if (!discordConfig || !organization) return;
+
+        try {
+            const { error } = await supabase
+                .from('discord_configs')
+                .update({ role_name: roleName })
+                .eq('organization_id', organization.id);
+
+            if (error) throw error;
+
+            // Update local state
+            setDiscordConfig({ ...discordConfig, role_name: roleName });
+        } catch (err: any) {
+            console.error('[Settings] Error updating role name:', err);
+            alert('Failed to update role name: ' + err.message);
+        }
+    };
+
     if (loading) {
         console.log('[Settings] Rendering LOADING state');
         return (
@@ -334,13 +353,31 @@ const Settings: React.FC = () => {
                                     Disconnect
                                 </Button>
                             </div>
+
+                            {/* Role Name Configuration */}
+                            <div className="mt-4 bg-[#1A1A1A] p-4 rounded-lg border border-white/10">
+                                <label className="block text-sm font-medium text-gray-300 mb-2">
+                                    Discord Role Name
+                                </label>
+                                <p className="text-gray-400 text-xs mb-3">
+                                    When you approve a streamer, they will be assigned this role in your Discord server.
+                                    The role will be created automatically if it doesn&apos;t exist.
+                                </p>
+                                <input
+                                    type="text"
+                                    value={discordConfig.role_name || 'Approved Co-Streamer'}
+                                    onChange={(e) => handleUpdateRoleName(e.target.value)}
+                                    placeholder="e.g., Approved Co-Streamer"
+                                    className="w-full px-4 py-2 bg-[#121212] border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#387B66] transition-colors"
+                                />
+                            </div>
                         </div>
 
                         <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
                             <p className="text-blue-400 text-sm">
-                                <strong>ℹ️ How it works:</strong> When you approve a streamer application, 
-                                the bot will automatically assign them the &quot;Approved Co-streamers&quot; role 
-                                in your Discord server (if they provided their Discord User ID).
+                                <strong>ℹ️ How it works:</strong> When you approve a streamer application,
+                                the bot will automatically assign them the configured role in your Discord server
+                                (if they provided their Discord User ID).
                             </p>
                         </div>
                     </div>
