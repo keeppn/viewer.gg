@@ -23,34 +23,62 @@ export default function DashboardLayout({
   useEffect(() => {
     console.log('[DashboardLayout] useEffect triggered');
 
+    let isMounted = true;
+
     const checkAndInitialize = async () => {
       try {
         console.log('[DashboardLayout] Checking session...');
-        // First check if we have a session
-        const { data: { session } } = await supabase.auth.getSession();
+
+        // Add timeout to prevent infinite hanging
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error('Session check timeout after 10 seconds')), 10000);
+        });
+
+        // First check if we have a session with timeout protection
+        const sessionPromise = supabase.auth.getSession();
+        const result = await Promise.race([sessionPromise, timeoutPromise]) as any;
+        const { data: { session } } = result;
+
+        console.log('[DashboardLayout] Session check completed:', session ? 'FOUND' : 'NULL');
 
         if (!session) {
           console.log('DashboardLayout: No session found, redirecting to login...');
-          router.push('/');
+          if (isMounted) {
+            router.push('/');
+          }
           return;
         }
 
         console.log('[DashboardLayout] Session found, setting hasSession=true');
-        setHasSession(true);
+        if (isMounted) {
+          setHasSession(true);
+        }
 
         console.log('[DashboardLayout] Calling initialize()...');
         // Initialize the auth store to get user profile and organization
         await initialize();
+
         console.log('[DashboardLayout] Initialize complete, setting checking=false');
-        setChecking(false);
+        if (isMounted) {
+          setChecking(false);
+        }
 
       } catch (error) {
         console.error('Dashboard initialization error:', error);
-        router.push('/');
+        console.error('Error details:', error instanceof Error ? error.message : String(error));
+        if (isMounted) {
+          // Instead of redirecting, show error state
+          setChecking(false);
+          setHasSession(false);
+        }
       }
     };
 
     checkAndInitialize();
+
+    return () => {
+      isMounted = false;
+    };
   }, [initialize, router]);
 
   // Fetch data when user and organization are ready
