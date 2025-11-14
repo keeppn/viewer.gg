@@ -208,19 +208,29 @@ const Settings: React.FC = () => {
     const handleDisconnectBot = async () => {
         if (!discordConfig || !organization) return;
 
-        const confirmed = confirm('Are you sure you want to disconnect the Discord bot? This will disable automatic role assignments.');
+        const confirmed = confirm('Are you sure you want to disconnect the Discord bot? The bot will leave your Discord server and automatic role assignments will be disabled.');
         if (!confirmed) return;
 
         try {
-            const { error } = await supabase
-                .from('discord_configs')
-                .delete()
-                .eq('id', discordConfig.id);
+            // Call API to disconnect bot and make it leave the Discord server
+            const response = await fetch('/api/discord/disconnect', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    organizationId: organization.id,
+                }),
+            });
 
-            if (error) throw error;
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to disconnect bot');
+            }
 
             setDiscordConfig(null);
-            alert('Discord bot disconnected successfully');
+            alert('Discord bot disconnected and removed from your server successfully');
         } catch (err: any) {
             console.error('Error disconnecting bot:', err);
             alert('Failed to disconnect bot: ' + err.message);
