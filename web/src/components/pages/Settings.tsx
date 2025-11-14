@@ -23,7 +23,10 @@ const Settings: React.FC = () => {
         let isMounted = true;
 
         const initializePage = async () => {
-            if (!isMounted) return;
+            if (!isMounted) {
+                console.log('[Settings] Component unmounted before initialization');
+                return;
+            }
 
             console.log('[Settings] Starting initialization');
             setLoading(true);
@@ -36,9 +39,14 @@ const Settings: React.FC = () => {
                 console.log('[Settings] URL params:', { success, errorParam });
 
                 // Load organization data FIRST
+                console.log('[Settings] About to call loadOrganizationData...');
                 await loadOrganizationData();
+                console.log('[Settings] loadOrganizationData completed');
 
-                if (!isMounted) return;
+                if (!isMounted) {
+                    console.log('[Settings] Component unmounted after data load');
+                    return;
+                }
 
                 // Clear URL params AFTER loading is complete
                 if (success || errorParam) {
@@ -53,6 +61,7 @@ const Settings: React.FC = () => {
                 }
             } catch (err: any) {
                 console.error('[Settings] Initialization failed:', err);
+                console.error('[Settings] Error stack:', err?.stack);
                 if (isMounted) {
                     setError(err.message);
                     setLoading(false);
@@ -60,7 +69,13 @@ const Settings: React.FC = () => {
             }
         };
 
-        initializePage();
+        initializePage().catch(err => {
+            console.error('[Settings] Uncaught error in initializePage:', err);
+            if (isMounted) {
+                setError('Failed to initialize settings');
+                setLoading(false);
+            }
+        });
 
         return () => {
             console.log('[Settings] Cleanup - component unmounting');
@@ -71,9 +86,15 @@ const Settings: React.FC = () => {
     const loadOrganizationData = async () => {
         try {
             console.log('[Settings] Starting loadOrganizationData...');
-            
+
+            // Add timeout to prevent infinite hanging
+            const timeoutPromise = new Promise((_, reject) => {
+                setTimeout(() => reject(new Error('Data loading timeout after 10 seconds')), 10000);
+            });
+
             // Get session first to verify auth state
-            const { data: { session } } = await supabase.auth.getSession();
+            const sessionPromise = supabase.auth.getSession();
+            const { data: { session } } = await Promise.race([sessionPromise, timeoutPromise]) as any;
             console.log('[Settings] Session:', session ? 'EXISTS' : 'NULL', session?.user?.id);
             
             const { data: { user } } = await supabase.auth.getUser();
