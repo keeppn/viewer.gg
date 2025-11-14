@@ -212,6 +212,7 @@ const Settings: React.FC = () => {
         if (!confirmed) return;
 
         try {
+            console.log('[Settings] Calling disconnect API...');
             // Call API to disconnect bot and make it leave the Discord server
             const response = await fetch('/api/discord/disconnect', {
                 method: 'POST',
@@ -224,15 +225,17 @@ const Settings: React.FC = () => {
             });
 
             const data = await response.json();
+            console.log('[Settings] Disconnect API response:', data);
 
             if (!response.ok) {
+                console.error('[Settings] Disconnect failed:', data);
                 throw new Error(data.error || 'Failed to disconnect bot');
             }
 
             setDiscordConfig(null);
             alert('Discord bot disconnected and removed from your server successfully');
         } catch (err: any) {
-            console.error('Error disconnecting bot:', err);
+            console.error('[Settings] Error disconnecting bot:', err);
             alert('Failed to disconnect bot: ' + err.message);
         }
     };

@@ -37,26 +37,33 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const guildId = discordConfig.guild_id;
+    console.log(`[Disconnect] Making bot leave guild: ${guildId}`);
+
     // Discord API: Leave guild
-    const discordResponse = await fetch(
-      `https://discord.com/api/v10/users/@me/guilds/${discordConfig.guild_id}`,
-      {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bot ${botToken}`,
-        },
-      }
-    );
+    const discordApiUrl = `https://discord.com/api/v10/users/@me/guilds/${guildId}`;
+    console.log(`[Disconnect] Discord API URL: ${discordApiUrl}`);
+
+    const discordResponse = await fetch(discordApiUrl, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bot ${botToken}`,
+      },
+    });
+
+    console.log(`[Disconnect] Discord API response status: ${discordResponse.status}`);
 
     if (!discordResponse.ok && discordResponse.status !== 404) {
       // 404 means bot was already removed, which is fine
       const errorText = await discordResponse.text();
-      console.error('Discord API error:', discordResponse.status, errorText);
+      console.error('[Disconnect] Discord API error:', discordResponse.status, errorText);
       return NextResponse.json(
-        { error: 'Failed to remove bot from Discord server' },
+        { error: `Failed to remove bot from Discord server: ${errorText}`, details: errorText },
         { status: discordResponse.status }
       );
     }
+
+    console.log('[Disconnect] Bot successfully left guild (or was already gone)');
 
     // Delete the Discord config from database
     const { error: deleteError } = await supabase
