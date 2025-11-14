@@ -96,8 +96,16 @@ export const applicationApi = {
     if (error) throw error;
 
     // If approved, assign Discord role
-    if (status === 'Approved' && application.form_data) {
+    if (status === 'Approved' && application.custom_data) {
       try {
+        // Extract Discord User ID from custom_data
+        const discordUserId = application.custom_data.discord_user_id || application.custom_data.discordUserId;
+
+        if (!discordUserId) {
+          console.log('[Applications] No Discord User ID found in application');
+          return data;
+        }
+
         // Get Discord config for the organization
         const { data: discordConfig } = await supabase
           .from('discord_configs')
@@ -105,7 +113,7 @@ export const applicationApi = {
           .eq('organization_id', application.tournament?.organization_id)
           .single();
 
-        if (discordConfig && application.form_data.discord_user_id) {
+        if (discordConfig) {
           console.log('[Applications] Assigning Discord role to approved streamer...');
 
           // Call the assign-role endpoint
@@ -116,7 +124,7 @@ export const applicationApi = {
             },
             body: JSON.stringify({
               guild_id: discordConfig.guild_id,
-              discord_user_id: application.form_data.discord_user_id,
+              discord_user_id: discordUserId,
               role_name: discordConfig.role_name || 'Approved Co-Streamer',
               application_id: id,
               tournament_id: application.tournament_id,
