@@ -32,43 +32,69 @@ const Settings: React.FC = () => {
 
     const loadOrganizationData = async () => {
         try {
+            console.log('[Settings] Starting loadOrganizationData...');
+            
+            // Get session first to verify auth state
+            const { data: { session } } = await supabase.auth.getSession();
+            console.log('[Settings] Session:', session ? 'EXISTS' : 'NULL', session?.user?.id);
+            
             const { data: { user } } = await supabase.auth.getUser();
+            console.log('[Settings] User from getUser():', user ? 'EXISTS' : 'NULL', user?.id);
+            
             if (!user) {
+                console.error('[Settings] No user found, redirecting to login');
                 router.push('/login');
                 return;
             }
 
             // First, get user profile to find their organization_id
+            console.log('[Settings] Querying users table for user:', user.id);
             const { data: userData, error: userError } = await supabase
                 .from('users')
                 .select('organization_id')
                 .eq('id', user.id)
                 .single();
 
+            console.log('[Settings] User query result:', { userData, userError });
+
             if (userError) {
-                console.error('Error loading user profile:', userError);
-                throw new Error('User profile not found');
+                console.error('[Settings] Error loading user profile:', userError);
+                console.error('[Settings] Error details:', JSON.stringify(userError, null, 2));
+                throw new Error(`User profile not found: ${userError.message} (${userError.code})`);
             }
 
             if (!userData?.organization_id) {
+                console.error('[Settings] User profile found but no organization_id:', userData);
                 throw new Error('No organization found for this user');
             }
 
+            console.log('[Settings] Found organization_id:', userData.organization_id);
+
             // Get organization using organization_id from user profile
+            console.log('[Settings] Querying organizations table for org:', userData.organization_id);
             const { data: org, error: orgError } = await supabase
                 .from('organizations')
                 .select('*')
                 .eq('id', userData.organization_id)
                 .single();
 
-            if (orgError) throw orgError;
+            console.log('[Settings] Organization query result:', { org, orgError });
+
+            if (orgError) {
+                console.error('[Settings] Error loading organization:', orgError);
+                console.error('[Settings] Error details:', JSON.stringify(orgError, null, 2));
+                throw new Error(`Organization not found: ${orgError.message} (${orgError.code})`);
+            }
+            
+            console.log('[Settings] Successfully loaded organization:', org.name);
             setOrganization(org);
 
             // Load Discord config if exists
             await loadDiscordConfig(org.id);
             
         } catch (err: any) {
-            console.error('Error loading organization:', err);
+            console.error('[Settings] Error loading organization:', err);
+            console.error('[Settings] Error stack:', err.stack);
             setError(err.message);
         } finally {
             setLoading(false);
@@ -144,7 +170,37 @@ const Settings: React.FC = () => {
         return (
             <div className="max-w-2xl mx-auto">
                 <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-6">
-                    <p className="text-red-400">No organization found. Please contact support.</p>
+                    <h2 className="text-red-400 font-bold text-lg mb-2">No Organization Found</h2>
+                    <p className="text-red-300 mb-4">
+                        {error || 'Unable to load your organization. Please check the console for details.'}
+                    </p>
+                    <div className="text-gray-400 text-sm mb-4">
+                        <p>Possible causes:</p>
+                        <ul className="list-disc ml-5 mt-2">
+                            <li>Your user profile may not be linked to an organization</li>
+                            <li>Database permissions (RLS policies) may be blocking access</li>
+                            <li>The organization record may not exist in the database</li>
+                        </ul>
+                    </div>
+                    <div className="flex gap-4">
+                        <Button 
+                            variant="primary"
+                            onClick={() => window.location.reload()}
+                        >
+                            Retry Loading
+                        </Button>
+                        <Button 
+                            variant="secondary"
+                            onClick={() => router.push('/dashboard')}
+                        >
+                            Back to Dashboard
+                        </Button>
+                    </div>
+                    <div className="mt-4 p-4 bg-black/30 rounded border border-white/10">
+                        <p className="text-gray-400 text-xs font-mono">
+                            Check the browser console (F12) for detailed error logs.
+                        </p>
+                    </div>
                 </div>
             </div>
         );
