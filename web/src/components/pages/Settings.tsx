@@ -29,22 +29,23 @@ const Settings: React.FC = () => {
             setLoading(true);
 
             try {
-                // Check URL params FIRST (before loading)
+                // Check URL params
                 const success = searchParams.get('success');
                 const errorParam = searchParams.get('error');
 
                 console.log('[Settings] URL params:', { success, errorParam });
 
-                // Clear params immediately to prevent re-triggering
-                if (success || errorParam) {
-                    console.log('[Settings] Clearing URL params');
-                    router.replace('/dashboard/settings', { scroll: false });
-                }
-
-                // Load organization data
+                // Load organization data FIRST
                 await loadOrganizationData();
 
                 if (!isMounted) return;
+
+                // Clear URL params AFTER loading is complete
+                if (success || errorParam) {
+                    console.log('[Settings] Clearing URL params after loading');
+                    // Use window.history instead of router to avoid component unmount
+                    window.history.replaceState({}, '', '/dashboard/settings');
+                }
 
                 // Show message if success
                 if (success === 'bot_connected') {
