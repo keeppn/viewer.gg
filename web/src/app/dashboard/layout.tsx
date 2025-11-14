@@ -18,24 +18,32 @@ export default function DashboardLayout({
   const [checking, setChecking] = useState(true);
   const [hasSession, setHasSession] = useState(false);
 
+  console.log('[DashboardLayout] Rendering - checking:', checking, 'hasSession:', hasSession, 'user:', user ? 'EXISTS' : 'NULL', 'organization:', organization ? 'EXISTS' : 'NULL');
+
   useEffect(() => {
+    console.log('[DashboardLayout] useEffect triggered');
+
     const checkAndInitialize = async () => {
       try {
+        console.log('[DashboardLayout] Checking session...');
         // First check if we have a session
         const { data: { session } } = await supabase.auth.getSession();
-        
+
         if (!session) {
           console.log('DashboardLayout: No session found, redirecting to login...');
           router.push('/');
           return;
         }
 
+        console.log('[DashboardLayout] Session found, setting hasSession=true');
         setHasSession(true);
-        
+
+        console.log('[DashboardLayout] Calling initialize()...');
         // Initialize the auth store to get user profile and organization
         await initialize();
+        console.log('[DashboardLayout] Initialize complete, setting checking=false');
         setChecking(false);
-        
+
       } catch (error) {
         console.error('Dashboard initialization error:', error);
         router.push('/');
@@ -60,12 +68,13 @@ export default function DashboardLayout({
 
   // Show loading while checking authentication
   if (checking) {
+    console.log('[DashboardLayout] Rendering: Loading dashboard (checking=true)');
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#121212] via-[#0D0D0D] to-[#0A0A0A] flex items-center justify-center relative overflow-hidden">
         {/* Ambient background effects */}
         <div className="absolute top-0 -left-4 w-96 h-96 bg-[#387B66]/5 rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#FFCB82]/5 rounded-full blur-3xl" />
-        
+
         <div className="text-center relative z-10">
           <div className="relative inline-block">
             <div className="w-16 h-16 border-4 border-[#387B66]/20 border-t-[#387B66] rounded-full animate-spin mb-6"></div>
@@ -81,11 +90,12 @@ export default function DashboardLayout({
 
   // If we have a session but no user yet, show loading
   if (hasSession && !user) {
+    console.log('[DashboardLayout] Rendering: Setting up profile (hasSession=true, user=null)');
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#121212] via-[#0D0D0D] to-[#0A0A0A] flex items-center justify-center relative overflow-hidden">
         <div className="absolute top-0 -left-4 w-96 h-96 bg-[#387B66]/5 rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#FFCB82]/5 rounded-full blur-3xl" />
-        
+
         <div className="text-center relative z-10">
           <div className="relative inline-block">
             <div className="w-16 h-16 border-4 border-[#387B66]/20 border-t-[#387B66] rounded-full animate-spin mb-6"></div>
@@ -101,8 +111,10 @@ export default function DashboardLayout({
 
   // If no session at all, don't render (will redirect)
   if (!hasSession) {
+    console.log('[DashboardLayout] Rendering: null (hasSession=false, will redirect)');
     return null;
   }
 
+  console.log('[DashboardLayout] Rendering: Layout with children');
   return <Layout>{children}</Layout>;
 }
