@@ -16,9 +16,8 @@ export default function DashboardLayout({
   const { initialize, user, organization } = useAuthStore();
   const { fetchTournaments, fetchApplications } = useAppStore();
   const [checking, setChecking] = useState(true);
-  const [hasSession, setHasSession] = useState(false);
 
-  console.log('[DashboardLayout] Rendering - checking:', checking, 'hasSession:', hasSession, 'user:', user ? 'EXISTS' : 'NULL', 'organization:', organization ? 'EXISTS' : 'NULL');
+  console.log('[DashboardLayout] Rendering - checking:', checking, 'user:', user ? 'EXISTS' : 'NULL', 'organization:', organization ? 'EXISTS' : 'NULL');
 
   useEffect(() => {
     console.log('[DashboardLayout] useEffect triggered');
@@ -27,38 +26,13 @@ export default function DashboardLayout({
 
     const checkAndInitialize = async () => {
       try {
-        console.log('[DashboardLayout] Checking session...');
-
-        // Add timeout to prevent infinite hanging
-        const timeoutPromise = new Promise((_, reject) => {
-          setTimeout(() => reject(new Error('Session check timeout after 10 seconds')), 10000);
-        });
-
-        // First check if we have a session with timeout protection
-        const sessionPromise = supabase.auth.getSession();
-        const result = await Promise.race([sessionPromise, timeoutPromise]) as any;
-        const { data: { session } } = result;
-
-        console.log('[DashboardLayout] Session check completed:', session ? 'FOUND' : 'NULL');
-
-        if (!session) {
-          console.log('DashboardLayout: No session found, redirecting to login...');
-          if (isMounted) {
-            router.push('/');
-          }
-          return;
-        }
-
-        console.log('[DashboardLayout] Session found, setting hasSession=true');
-        if (isMounted) {
-          setHasSession(true);
-        }
-
         console.log('[DashboardLayout] Calling initialize()...');
-        // Initialize the auth store to get user profile and organization
+
+        // Let AuthStore handle session checking - it already does this properly
         await initialize();
 
-        console.log('[DashboardLayout] Initialize complete, setting checking=false');
+        console.log('[DashboardLayout] Initialize complete');
+
         if (isMounted) {
           setChecking(false);
         }
@@ -67,9 +41,7 @@ export default function DashboardLayout({
         console.error('Dashboard initialization error:', error);
         console.error('Error details:', error instanceof Error ? error.message : String(error));
         if (isMounted) {
-          // Instead of redirecting, show error state
           setChecking(false);
-          setHasSession(false);
         }
       }
     };
@@ -94,7 +66,7 @@ export default function DashboardLayout({
     }
   }, [user, organization, fetchTournaments, fetchApplications]);
 
-  // Show loading while checking authentication
+  // Show loading while initializing auth
   if (checking) {
     console.log('[DashboardLayout] Rendering: Loading dashboard (checking=true)');
     return (
@@ -116,30 +88,10 @@ export default function DashboardLayout({
     );
   }
 
-  // If we have a session but no user yet, show loading
-  if (hasSession && !user) {
-    console.log('[DashboardLayout] Rendering: Setting up profile (hasSession=true, user=null)');
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-[#121212] via-[#0D0D0D] to-[#0A0A0A] flex items-center justify-center relative overflow-hidden">
-        <div className="absolute top-0 -left-4 w-96 h-96 bg-[#387B66]/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#FFCB82]/5 rounded-full blur-3xl" />
-
-        <div className="text-center relative z-10">
-          <div className="relative inline-block">
-            <div className="w-16 h-16 border-4 border-[#387B66]/20 border-t-[#387B66] rounded-full animate-spin mb-6"></div>
-            <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-t-[#FFCB82] rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
-          </div>
-          <div className="text-white text-2xl font-semibold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
-            Setting up profile...
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // If no session at all, don't render (will redirect)
-  if (!hasSession) {
-    console.log('[DashboardLayout] Rendering: null (hasSession=false, will redirect)');
+  // After initialization, if no user found, redirect to login
+  if (!user) {
+    console.log('[DashboardLayout] Rendering: No user after init, redirecting to login');
+    router.push('/');
     return null;
   }
 
