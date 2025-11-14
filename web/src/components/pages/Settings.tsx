@@ -8,36 +8,75 @@ import Button from '@/components/common/Button';
 const Settings: React.FC = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
-    
+
     const [loading, setLoading] = useState(true);
     const [organization, setOrganization] = useState<any>(null);
     const [discordConfig, setDiscordConfig] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
+    const initializedRef = React.useRef(false);
+
+    // Force log to verify component is rendering
+    console.log('[Settings] Component rendering, loading:', loading);
 
     useEffect(() => {
+        // Skip if already initialized
+        if (initializedRef.current) {
+            console.log('[Settings] Already initialized, skipping');
+            return;
+        }
+
+        console.log('[Settings] useEffect triggered - starting initialization');
+
         const initializePage = async () => {
+            setLoading(true);
+
             // Check for success/error from callback FIRST
             const success = searchParams.get('success');
             const errorParam = searchParams.get('error');
 
+            console.log('[Settings] URL params:', { success, errorParam });
+
             // Load organization data
             await loadOrganizationData();
 
+            // Mark as initialized
+            initializedRef.current = true;
+
             // Handle success/error AFTER data is loaded
             if (success === 'bot_connected') {
-                // Clear URL param immediately to prevent re-triggering
+                console.log('[Settings] Bot connected, showing success message');
+                alert('✅ Discord bot connected successfully!');
+                // Clear URL param
                 router.replace('/dashboard/settings');
-                // Show success message after a brief delay
-                setTimeout(() => {
-                    alert('✅ Discord bot connected successfully!');
-                }, 100);
             } else if (errorParam) {
+                console.log('[Settings] Error param found:', errorParam);
                 setError(`Discord connection failed: ${errorParam}`);
                 router.replace('/dashboard/settings');
             }
         };
 
-        initializePage();
+        initializePage().catch(err => {
+            console.error('[Settings] Initialization failed:', err);
+            setError(err.message);
+            setLoading(false);
+        });
+
+        // Reload page when it becomes visible (handles browser back button)
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === 'visible' && initializedRef.current) {
+                console.log('[Settings] Page became visible after being hidden, reloading...');
+                initializedRef.current = false;
+                setLoading(true);
+                // Trigger re-initialization
+                window.location.reload();
+            }
+        };
+
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+
+        return () => {
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+        };
     }, []);
 
     const loadOrganizationData = async () => {
