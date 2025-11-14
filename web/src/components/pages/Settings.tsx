@@ -15,19 +15,31 @@ const Settings: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        loadOrganizationData();
-        
-        // Check for success/error from callback
-        const success = searchParams.get('success');
-        const errorParam = searchParams.get('error');
-        
-        if (success === 'bot_connected') {
-            // Refresh discord config
-            loadDiscordConfig();
-        } else if (errorParam) {
-            setError(`Discord connection failed: ${errorParam}`);
-        }
-    }, [searchParams]);
+        const initializePage = async () => {
+            // Load organization data first
+            await loadOrganizationData();
+
+            // Check for success/error from callback AFTER org is loaded
+            const success = searchParams.get('success');
+            const errorParam = searchParams.get('error');
+
+            if (success === 'bot_connected') {
+                // Show success message
+                alert('✅ Discord bot connected successfully!');
+                // Force hard refresh to clear all caches and show new config
+                window.location.href = '/dashboard/settings';
+                return;
+            } else if (errorParam) {
+                setError(`Discord connection failed: ${errorParam}`);
+                // Clear error from URL after showing message
+                setTimeout(() => {
+                    window.location.href = '/dashboard/settings';
+                }, 2000);
+            }
+        };
+
+        initializePage();
+    }, []);
 
     const loadOrganizationData = async () => {
         try {
