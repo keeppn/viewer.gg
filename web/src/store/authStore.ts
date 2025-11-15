@@ -35,21 +35,30 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       console.log('AuthStore: Already initialized or initializing, skipping...');
       return;
     }
-    
+
     try {
       set({ loading: true, isInitializing: true });
-      
+
       // First, try to get the session from Supabase (this checks cookies/localStorage)
-      const { data: { session: currentSession }, error: sessionError } = await supabase.auth.getSession();
-      
+      let { data: { session: currentSession }, error: sessionError } = await supabase.auth.getSession();
+
+      // If no session found, retry after a short delay (handles cross-origin redirect timing)
+      if (!currentSession && !sessionError) {
+        console.log('AuthStore: No session on first try, retrying after delay...');
+        await new Promise(resolve => setTimeout(resolve, 500)); // Wait 500ms
+        const retry = await supabase.auth.getSession();
+        currentSession = retry.data.session;
+        sessionError = retry.error;
+      }
+
       if (sessionError) {
         console.error('AuthStore: Error getting session:', sessionError);
         set({ user: null, organization: null, session: null, loading: false, initialized: true, isInitializing: false });
         return;
       }
-      
+
       const session = currentSession || await getCurrentSession();
-      
+
       if (session) {
         console.log('AuthStore: Session found, user ID:', session.user.id);
 
