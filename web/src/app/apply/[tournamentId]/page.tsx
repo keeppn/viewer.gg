@@ -120,7 +120,7 @@ export default function ApplyPage() {
         channel_url: formData.channelUrl,
         email: formData.email,
         discord_username: formData.discordUsername,
-        discord_user_id: formData.discordUserId || undefined, // Only include if provided
+        discord_user_id: formData.discordUserId, // Required field
         avg_viewers: 0,
         follower_count: 0,
         primary_languages: ['English'],
@@ -285,7 +285,7 @@ export default function ApplyPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Discord User ID
+                    Discord User ID <span className="text-red-400">*</span>
                   </label>
                   <input
                     type="text"
@@ -293,12 +293,13 @@ export default function ApplyPage() {
                     value={formData.discordUserId}
                     onChange={handleChange}
                     className={`w-full bg-[#121212] text-white rounded-md p-3 border ${
-                      discordIdError 
-                        ? 'border-red-500/50 focus:border-red-500' 
+                      discordIdError
+                        ? 'border-red-500/50 focus:border-red-500'
                         : 'border-white/20 focus:border-[#387B66]'
                     } focus:outline-none transition-colors`}
                     placeholder="123456789012345678"
                     pattern="\d{17,19}"
+                    required
                   />
                   {discordIdError && (
                     <p className="text-red-400 text-sm mt-1">{discordIdError}</p>
