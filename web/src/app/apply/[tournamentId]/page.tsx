@@ -113,6 +113,11 @@ export default function ApplyPage() {
         }
       });
 
+      // IMPORTANT: Add Discord User ID to custom_data for role assignment
+      if (formData.discordUserId) {
+        customData.discord_user_id = formData.discordUserId;
+      }
+
       // Prepare streamer profile
       const streamerProfile = {
         name: formData.streamerName,
