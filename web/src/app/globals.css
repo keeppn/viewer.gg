@@ -1,51 +1,49 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 @import "tailwindcss";
 
 /* ============================================
-   🎮 VIEWER.GG ULTRA HIGH-TECH DESIGN SYSTEM
+   🎮 VIEWER.GG MODERN DESIGN SYSTEM
    ============================================ */
 
 :root {
-  /* Primary Colors (Esports Theme) */
-  --primary-neon-cyan: #00F0FF;
-  --primary-neon-purple: #9945FF;
-  --primary-neon-green: #39FF14;
+  /* Primary Colors (Modern Theme) */
+  --primary-lime: #DAFF7C;
+  --primary-purple: #9381FF;
+  --primary-cyan: #00F0FF;
   --primary-gold: #FFB800;
-  
+
   /* Background & Base Colors */
-  --bg-dark-primary: #0A0E1B;
-  --bg-dark-secondary: #12172A;
-  --bg-dark-tertiary: #1A1F35;
-  --bg-gradient-start: #0F1629;
-  --bg-gradient-end: #1E0A3C;
-  
-  /* Glassmorphism Effects */
-  --glass-white-5: rgba(255, 255, 255, 0.05);
-  --glass-white-10: rgba(255, 255, 255, 0.1);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-shadow: 0 8px 32px 0 rgba(0, 240, 255, 0.15);
-  
+  --bg-dark-primary: #1F1F1F;
+  --bg-dark-secondary: #2A2A2A;
+  --bg-dark-tertiary: #333333;
+  --bg-gradient-start: #1F1F1F;
+  --bg-gradient-end: #2A2A2A;
+
+  /* Card & Surface Colors */
+  --card-background: #2A2A2A;
+  --card-border: rgba(255, 255, 255, 0.1);
+
   /* Alert & Status Colors */
   --status-live: #FF073A;
-  --status-success: #39FF14;
+  --status-success: #DAFF7C;
   --status-warning: #FFB800;
   --status-error: #FF3E3E;
   --status-info: #00D4FF;
-  
+
   /* Typography */
-  --font-display: 'Orbitron', 'Rajdhani', sans-serif;
-  --font-body: 'Inter', 'Roboto', sans-serif;
+  --font-display: 'Poppins', sans-serif;
+  --font-body: 'Poppins', 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-  
+
   /* Legacy compatibility */
   --background: var(--bg-dark-primary);
   --foreground: #ededed;
 }
 
 @theme inline {
-  --color-primary-cyan: var(--primary-neon-cyan);
-  --color-primary-purple: var(--primary-neon-purple);
-  --color-primary-green: var(--primary-neon-green);
+  --color-primary-lime: var(--primary-lime);
+  --color-primary-purple: var(--primary-purple);
+  --color-primary-cyan: var(--primary-cyan);
   --color-primary-gold: var(--primary-gold);
   --color-bg-dark: var(--bg-dark-primary);
   --color-bg-secondary: var(--bg-dark-secondary);
@@ -56,8 +54,7 @@
 }
 
 body {
-  background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
-  background-attachment: fixed;
+  background: var(--bg-dark-primary);
   color: var(--foreground);
   font-family: var(--font-body);
   overflow-x: hidden;
