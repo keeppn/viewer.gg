@@ -126,14 +126,24 @@ export default function ApplyPage() {
         primary_languages: ['English'],
       };
 
+      console.log('[Application Form] Submitting with Discord User ID:', {
+        discord_user_id: formData.discordUserId,
+        streamerProfile,
+      });
+
       // Submit application via API
-      await applicationApi.create({
+      const result = await applicationApi.create({
         tournament_id: tournament.id,
         streamer: streamerProfile,
         custom_data: customData,
         status: 'Pending',
         availability_confirmed: false,
         submission_date: new Date().toISOString(),
+      });
+
+      console.log('[Application Form] Application created:', {
+        id: result.id,
+        streamer: result.streamer,
       });
 
       // Show success and redirect
