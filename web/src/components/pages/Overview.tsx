@@ -128,7 +128,7 @@ const Overview: React.FC = () => {
                   color: '#fff',
                   fontWeight: 600
                 }}
-                cursor={{ fill: 'rgba(147,129,255,0.1)', radius: [10, 10, 0, 0] }}
+                cursor={{ fill: 'rgba(147,129,255,0.1)' }}
                 labelStyle={{ color: '#DAFF7C', fontWeight: 700 }}
               />
               <Bar
