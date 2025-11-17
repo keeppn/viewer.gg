@@ -29,6 +29,7 @@ export default function ApplyPage() {
   const [tournament, setTournament] = useState<Tournament | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [discordIdError, setDiscordIdError] = useState<string | null>(null);
   const [formData, setFormData] = useState<{[key: string]: string}>({
@@ -136,9 +137,9 @@ export default function ApplyPage() {
         submission_date: new Date().toISOString(),
       });
 
-      // Show success and redirect
-      alert('Application submitted successfully! You will be notified via email.');
-      router.push('/');
+      // Show success message
+      setSubmitted(true);
+      setSubmitting(false);
     } catch (err: any) {
       console.error('Error submitting application:', err);
       setError(err.message || 'Failed to submit application. Please try again.');
@@ -152,6 +153,34 @@ export default function ApplyPage() {
         <div className="text-center">
           <div className="inline-block w-12 h-12 border-4 border-[#387B66] border-t-transparent rounded-full animate-spin mb-4"></div>
           <div className="text-white text-xl">Loading tournament...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (submitted) {
+    return (
+      <div className="min-h-screen bg-[#121212] flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-[#1E1E1E] p-8 rounded-lg border border-[#387B66]/30 text-center">
+          <div className="mb-6">
+            <div className="w-16 h-16 bg-[#387B66]/20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-[#387B66]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h2 className="text-3xl font-bold text-white mb-4">Thank You for Applying!</h2>
+            <p className="text-gray-300 text-lg mb-2">
+              Your application has been submitted successfully.
+            </p>
+            <p className="text-gray-400">
+              We'll review your application and notify you via email at <span className="text-[#387B66] font-medium">{formData.email}</span>.
+            </p>
+          </div>
+          <div className="pt-6 border-t border-white/10">
+            <p className="text-gray-400 text-sm">
+              You can close this page now. Good luck!
+            </p>
+          </div>
         </div>
       </div>
     );
