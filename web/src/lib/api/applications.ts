@@ -49,9 +49,10 @@ export const applicationApi = {
 
   // Create new application
   async create(application: Omit<Application, 'id' | 'created_at' | 'updated_at'>): Promise<Application> {
+    const streamer = application.streamer as any;
     console.log('[Applications Create] Submitting application with data:', {
       streamer: application.streamer,
-      discord_user_id: application.streamer?.discord_user_id,
+      discord_user_id: streamer?.discord_user_id,
       custom_data: application.custom_data,
     });
 
@@ -70,10 +71,11 @@ export const applicationApi = {
       throw error;
     }
 
+    const savedStreamer = data.streamer as any;
     console.log('[Applications Create] Application saved successfully:', {
       id: data.id,
       streamer: data.streamer,
-      discord_user_id_saved: data.streamer?.discord_user_id,
+      discord_user_id_saved: savedStreamer?.discord_user_id,
     });
 
     // Increment application count on tournament
