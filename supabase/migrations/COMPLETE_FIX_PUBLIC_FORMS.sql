@@ -45,7 +45,7 @@ DROP POLICY IF EXISTS "tournaments_select_public" ON tournaments;
 DROP POLICY IF EXISTS "Public can view tournaments" ON tournaments;
 DROP POLICY IF EXISTS "tournaments_select_anon" ON tournaments;
 
-RAISE NOTICE '=== Dropped all existing public policies ===';
+DO $$ BEGIN RAISE NOTICE '=== Dropped all existing public policies ==='; END $$;
 
 -- ============================================
 -- STEP 3: CREATE CORRECT POLICIES
@@ -69,7 +69,7 @@ FOR INSERT
 TO public  -- Applies to BOTH anon and authenticated
 WITH CHECK (true);
 
-RAISE NOTICE '=== Created new public policies ===';
+DO $$ BEGIN RAISE NOTICE '=== Created new public policies ==='; END $$;
 
 -- ============================================
 -- STEP 4: GRANT TABLE-LEVEL PERMISSIONS
@@ -90,7 +90,7 @@ GRANT EXECUTE ON FUNCTION increment_tournament_applications(uuid) TO anon;
 -- Grant EXECUTE on uuid generation function (might be needed)
 GRANT EXECUTE ON FUNCTION uuid_generate_v4() TO anon;
 
-RAISE NOTICE '=== Granted all necessary permissions to anon role ===';
+DO $$ BEGIN RAISE NOTICE '=== Granted all necessary permissions to anon role ==='; END $$;
 
 -- ============================================
 -- STEP 5: VERIFY THE FIX
