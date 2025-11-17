@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
 /* ============================================
@@ -6,18 +6,18 @@
    ============================================ */
 
 :root {
-  /* Primary Colors (Esports Theme) */
-  --primary-neon-cyan: #00F0FF;
-  --primary-neon-purple: #9945FF;
-  --primary-neon-green: #39FF14;
-  --primary-gold: #FFB800;
-  
+  /* Primary Colors (Clean Modern Theme) */
+  --primary-lime: #DAFF7C;
+  --primary-purple: #9381FF;
+  --primary-accent: #DAFF7C;
+  --secondary-accent: #9381FF;
+
   /* Background & Base Colors */
-  --bg-dark-primary: #0A0E1B;
-  --bg-dark-secondary: #12172A;
-  --bg-dark-tertiary: #1A1F35;
-  --bg-gradient-start: #0F1629;
-  --bg-gradient-end: #1E0A3C;
+  --bg-dark-primary: #1F1F1F;
+  --bg-dark-secondary: #2A2A2A;
+  --bg-dark-tertiary: #353535;
+  --bg-gradient-start: #1F1F1F;
+  --bg-gradient-end: #1F1F1F;
   
   /* Glassmorphism Effects */
   --glass-white-5: rgba(255, 255, 255, 0.05);
@@ -33,9 +33,9 @@
   --status-info: #00D4FF;
   
   /* Typography */
-  --font-display: 'Orbitron', 'Rajdhani', sans-serif;
-  --font-body: 'Inter', 'Roboto', sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --font-display: 'Poppins', sans-serif;
+  --font-body: 'Poppins', sans-serif;
+  --font-mono: 'Inter', sans-serif;
   
   /* Legacy compatibility */
   --background: var(--bg-dark-primary);
@@ -43,10 +43,8 @@
 }
 
 @theme inline {
-  --color-primary-cyan: var(--primary-neon-cyan);
-  --color-primary-purple: var(--primary-neon-purple);
-  --color-primary-green: var(--primary-neon-green);
-  --color-primary-gold: var(--primary-gold);
+  --color-primary: var(--primary-lime);
+  --color-secondary: var(--primary-purple);
   --color-bg-dark: var(--bg-dark-primary);
   --color-bg-secondary: var(--bg-dark-secondary);
   --color-bg-tertiary: var(--bg-dark-tertiary);
@@ -56,8 +54,7 @@
 }
 
 body {
-  background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
-  background-attachment: fixed;
+  background: var(--bg-dark-primary);
   color: var(--foreground);
   font-family: var(--font-body);
   overflow-x: hidden;
