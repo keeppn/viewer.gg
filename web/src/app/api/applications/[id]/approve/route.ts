@@ -31,7 +31,6 @@ export async function POST(
       .from('applications')
       .select(`
         *,
-        streamer:streamer_id(*),
         tournament:tournament_id(
           *,
           organization:organization_id(*)
@@ -62,7 +61,6 @@ export async function POST(
       .eq('id', id)
       .select(`
         *,
-        streamer:streamer_id(*),
         tournament:tournament_id(
           *,
           organization:organization_id(*)

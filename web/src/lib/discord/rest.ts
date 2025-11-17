@@ -25,10 +25,12 @@ interface DiscordMember {
  */
 export async function getGuildRoles(guildId: string): Promise<DiscordRole[]> {
   const botToken = process.env.DISCORD_BOT_TOKEN;
-  
+
   if (!botToken) {
     throw new Error('DISCORD_BOT_TOKEN not configured');
   }
+
+  console.log('[Discord REST] Fetching guild roles for guild:', guildId);
 
   const response = await fetch(`${DISCORD_API_BASE}/guilds/${guildId}/roles`, {
     headers: {
@@ -38,11 +40,35 @@ export async function getGuildRoles(guildId: string): Promise<DiscordRole[]> {
   });
 
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(`Discord API error: ${error.message || response.statusText}`);
+    const errorText = await response.text();
+    let errorMessage = response.statusText;
+
+    try {
+      const error = JSON.parse(errorText);
+      errorMessage = error.message || errorMessage;
+      console.error('[Discord REST] Failed to fetch guild roles:', {
+        status: response.status,
+        error,
+      });
+    } catch {
+      console.error('[Discord REST] Failed to fetch guild roles (non-JSON):', {
+        status: response.status,
+        text: errorText,
+      });
+    }
+
+    if (response.status === 403) {
+      throw new Error(`Discord API error (403): Bot doesn't have permission to view roles. ${errorMessage}`);
+    } else if (response.status === 404) {
+      throw new Error(`Discord API error (404): Guild not found or bot not in guild. ${errorMessage}`);
+    } else {
+      throw new Error(`Discord API error (${response.status}): ${errorMessage}`);
+    }
   }
 
-  return response.json();
+  const roles = await response.json();
+  console.log(`[Discord REST] Found ${roles.length} roles in guild`);
+  return roles;
 }
 
 /**
@@ -90,10 +116,17 @@ export async function addMemberRole(
   roleId: string
 ): Promise<void> {
   const botToken = process.env.DISCORD_BOT_TOKEN;
-  
+
   if (!botToken) {
     throw new Error('DISCORD_BOT_TOKEN not configured');
   }
+
+  console.log('[Discord REST] Adding member role:', {
+    guildId,
+    userId,
+    roleId,
+    endpoint: `${DISCORD_API_BASE}/guilds/${guildId}/members/${userId}/roles/${roleId}`,
+  });
 
   const response = await fetch(
     `${DISCORD_API_BASE}/guilds/${guildId}/members/${userId}/roles/${roleId}`,
@@ -109,14 +142,41 @@ export async function addMemberRole(
   if (!response.ok) {
     const errorText = await response.text();
     let errorMessage = response.statusText;
-    
+    let errorCode = null;
+
     try {
       const error = JSON.parse(errorText);
       errorMessage = error.message || errorMessage;
-    } catch {}
-    
-    throw new Error(`Discord API error: ${errorMessage}`);
+      errorCode = error.code;
+
+      console.error('[Discord REST] API Error Response:', {
+        status: response.status,
+        statusText: response.statusText,
+        code: errorCode,
+        message: errorMessage,
+        fullError: error,
+      });
+    } catch {
+      console.error('[Discord REST] API Error (non-JSON):', {
+        status: response.status,
+        statusText: response.statusText,
+        text: errorText,
+      });
+    }
+
+    // Provide helpful error messages based on common issues
+    if (response.status === 403) {
+      throw new Error(`Discord API error (403 Forbidden): Bot lacks permissions to manage roles or role hierarchy issue. ${errorMessage}`);
+    } else if (response.status === 404) {
+      throw new Error(`Discord API error (404 Not Found): User not in server or invalid guild/user/role ID. ${errorMessage}`);
+    } else if (response.status === 401) {
+      throw new Error(`Discord API error (401 Unauthorized): Invalid bot token. ${errorMessage}`);
+    } else {
+      throw new Error(`Discord API error (${response.status}): ${errorMessage}`);
+    }
   }
+
+  console.log('[Discord REST] Role added successfully');
 }
 
 /**
@@ -158,15 +218,28 @@ export async function findOrCreateRole(
   roleName: string,
   color: number = 0x00FF00
 ): Promise<DiscordRole> {
+  console.log('[Discord REST] Finding or creating role:', { guildId, roleName });
+
   // Get all roles
   const roles = await getGuildRoles(guildId);
-  
+
   // Find existing role
   const existingRole = roles.find(r => r.name === roleName);
   if (existingRole) {
+    console.log('[Discord REST] Found existing role:', {
+      id: existingRole.id,
+      name: existingRole.name,
+      position: existingRole.position,
+    });
     return existingRole;
   }
-  
+
   // Create new role
-  return createGuildRole(guildId, roleName, color);
+  console.log('[Discord REST] Role not found, creating new role:', roleName);
+  const newRole = await createGuildRole(guildId, roleName, color);
+  console.log('[Discord REST] Created new role:', {
+    id: newRole.id,
+    name: newRole.name,
+  });
+  return newRole;
 }
