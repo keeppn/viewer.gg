@@ -100,7 +100,8 @@ export const applicationApi = {
       try {
         // Extract Discord User ID from streamer JSONB field
         // Check both snake_case and camelCase variations
-        const discordUserId = application.streamer?.discord_user_id || application.streamer?.discordUserId;
+        const streamer = application.streamer as any;
+        const discordUserId = streamer?.discord_user_id || streamer?.discordUserId;
 
         console.log('[Applications] Checking Discord User ID:', {
           streamer: application.streamer,
