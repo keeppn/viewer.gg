@@ -103,14 +103,22 @@ export const applicationApi = {
         const streamer = application.streamer as any;
         const discordUserId = streamer?.discord_user_id || streamer?.discordUserId;
 
-        console.log('[Applications] Checking Discord User ID:', {
+        console.log('[Applications] Full application data:', {
+          id: application.id,
           streamer: application.streamer,
-          discordUserId,
+          custom_data: application.custom_data,
+          streamer_keys: application.streamer ? Object.keys(application.streamer) : [],
+        });
+
+        console.log('[Applications] Checking Discord User ID:', {
+          discord_user_id: streamer?.discord_user_id,
+          discordUserId: streamer?.discordUserId,
+          found: discordUserId,
           hasStreamer: !!application.streamer,
         });
 
         if (!discordUserId) {
-          console.log('[Applications] No Discord User ID found in application');
+          console.log('[Applications] No Discord User ID found in application. Application needs to be resubmitted with Discord User ID.');
           return data;
         }
 
