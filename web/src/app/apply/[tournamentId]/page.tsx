@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
 import { applicationApi } from '@/lib/api/applications';
 import Button from '@/components/common/Button';
 
@@ -43,25 +42,31 @@ export default function ApplyPage() {
   useEffect(() => {
     async function fetchTournament() {
       try {
-        const { data, error } = await supabase
-          .from('tournaments')
-          .select('*')
-          .eq('id', tournamentId)
-          .single();
+        // Use public API endpoint to fetch tournament (works for unauthenticated users)
+        const response = await fetch(`/api/tournaments/${tournamentId}/public`);
 
-        if (error) {
-          console.error('Error fetching tournament:', error);
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error('Error fetching tournament:', errorData);
+          setError(errorData.error || 'Tournament not found');
+          setLoading(false);
+          return;
+        }
+
+        const { tournament: data } = await response.json();
+
+        if (!data) {
           setError('Tournament not found');
           setLoading(false);
           return;
         }
 
         setTournament(data);
-        
+
         // Debug: Log the form fields to see what's being loaded
         console.log('Tournament loaded:', data);
         console.log('Form fields:', data.form_fields);
-        
+
         setLoading(false);
       } catch (err) {
         console.error('Unexpected error:', err);
