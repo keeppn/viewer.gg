@@ -89,10 +89,10 @@ const Overview: React.FC = () => {
     <div className="space-y-6">
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card title="Total Applications" value={stats?.totalApplications || 0} icon={<ApplicationIcon />} />
-        <Card title="Approved" value={stats?.approved || 0} icon={<CheckCircleIcon />} />
-        <Card title="Rejected" value={stats?.rejected || 0} icon={<XCircleIcon />} />
-        <Card title="Pending" value={stats?.pending || 0} icon={<ClockIcon />} />
+        <Card title="Total Applications" value={stats?.totalApplications || 0} icon={<ApplicationIcon />} accentColor="purple" />
+        <Card title="Approved" value={stats?.approved || 0} icon={<CheckCircleIcon />} accentColor="lime" />
+        <Card title="Rejected" value={stats?.rejected || 0} icon={<XCircleIcon />} accentColor="red" />
+        <Card title="Pending" value={stats?.pending || 0} icon={<ClockIcon />} accentColor="orange" />
       </div>
 
       {/* Charts Section */}

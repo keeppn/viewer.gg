@@ -22,7 +22,7 @@ const NavItem: React.FC<{
   return (
     <Link href={path} onClick={onClose}>
       <div
-        className={`relative flex items-center px-4 py-3.5 my-1.5 rounded-[12px] cursor-pointer transition-all duration-300 group ${
+        className={`relative flex items-center px-3 py-2 my-0.5 rounded-[10px] cursor-pointer transition-all duration-300 group ${
           isActive
             ? 'bg-gradient-to-r from-[#9381FF]/20 to-[#DAFF7C]/10 shadow-lg shadow-[#9381FF]/10'
             : 'hover:bg-gradient-to-r hover:from-[#9381FF]/5 hover:to-transparent'
@@ -35,7 +35,7 @@ const NavItem: React.FC<{
 
         {/* Icon with premium styling */}
         <div
-          className={`relative w-11 h-11 flex items-center justify-center rounded-[10px] flex-shrink-0 transition-all duration-300 ${
+          className={`relative w-9 h-9 flex items-center justify-center rounded-[8px] flex-shrink-0 transition-all duration-300 ${
             isActive
               ? 'bg-gradient-to-br from-[#9381FF]/20 to-[#DAFF7C]/20 shadow-lg shadow-[#9381FF]/20'
               : 'bg-white/5 group-hover:bg-gradient-to-br group-hover:from-[#9381FF]/10 group-hover:to-[#DAFF7C]/10'
@@ -44,7 +44,7 @@ const NavItem: React.FC<{
           <img
             src={iconPath}
             alt={name}
-            className={`w-6 h-6 object-contain transition-all duration-300 ${
+            className={`w-5 h-5 object-contain transition-all duration-300 ${
               isActive
                 ? 'brightness-125 drop-shadow-[0_0_8px_rgba(147,129,255,0.6)]'
                 : 'brightness-90 group-hover:brightness-110 group-hover:drop-shadow-[0_0_6px_rgba(147,129,255,0.4)]'
@@ -53,7 +53,7 @@ const NavItem: React.FC<{
         </div>
 
         <span
-          className={`ml-4 font-semibold text-sm transition-all duration-300 ${
+          className={`ml-3 font-semibold text-xs transition-all duration-300 ${
             isActive
               ? 'text-transparent bg-clip-text bg-gradient-to-r from-[#DAFF7C] to-[#9381FF]'
               : 'text-white/70 group-hover:text-white'
@@ -62,9 +62,9 @@ const NavItem: React.FC<{
           {name}
         </span>
 
-        {/* Glow effect on hover */}
+        {/* Glow effect on active */}
         {isActive && (
-          <div className="absolute inset-0 rounded-[12px] bg-gradient-to-r from-[#9381FF]/0 via-[#DAFF7C]/5 to-[#9381FF]/0 animate-pulse" />
+          <div className="absolute inset-0 rounded-[10px] bg-gradient-to-r from-[#9381FF]/0 via-[#DAFF7C]/5 to-[#9381FF]/0 animate-pulse" />
         )}
       </div>
     </Link>
@@ -93,7 +93,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-[#9381FF]/5 to-transparent pointer-events-none" />
 
         {/* Logo Section */}
-        <div className="flex items-center justify-center px-6 py-10 mb-8 relative">
+        <div className="flex items-center justify-center px-6 py-8 mb-6 relative">
           <div className="relative w-24 h-24 flex items-center justify-center">
             <div className="absolute inset-0 bg-gradient-to-br from-[#DAFF7C]/20 to-[#9381FF]/20 rounded-full blur-xl animate-pulse" />
             <img
@@ -105,7 +105,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-4 overflow-y-auto scrollbar-thin scrollbar-thumb-[#9381FF]/30 scrollbar-track-transparent">
+        <nav className="flex-1 px-3 overflow-y-auto scrollbar-thin scrollbar-thumb-[#9381FF]/30 scrollbar-track-transparent">
           <ul>
             {pages.map(({ name, iconPath, path }) => (
               <NavItem
@@ -120,12 +120,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         </nav>
 
         {/* Footer */}
-        <div className="m-4 p-4 rounded-[12px] text-center bg-gradient-to-br from-[#2A2A2A] to-[#252525] border border-[#9381FF]/20 relative overflow-hidden">
+        <div className="m-4 p-3 rounded-[10px] text-center bg-gradient-to-br from-[#2A2A2A] to-[#252525] border border-[#9381FF]/20 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-[#9381FF]/5 to-transparent" />
-          <p className="relative text-sm font-semibold text-white">
+          <p className="relative text-xs font-semibold text-white">
             © 2024 viewer.gg
           </p>
-          <p className="relative text-xs text-white/70 mt-1">Premium Esports Platform</p>
+          <p className="relative text-[10px] text-white/70 mt-0.5">Premium Esports Platform</p>
         </div>
       </aside>
 
@@ -164,7 +164,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               </button>
 
               {/* Logo Section */}
-              <div className="flex items-center justify-center px-6 py-10 mb-8 relative">
+              <div className="flex items-center justify-center px-6 py-8 mb-6 relative">
                 <div className="relative w-24 h-24 flex items-center justify-center">
                   <div className="absolute inset-0 bg-gradient-to-br from-[#DAFF7C]/20 to-[#9381FF]/20 rounded-full blur-xl animate-pulse" />
                   <img
@@ -176,7 +176,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               </div>
 
               {/* Navigation */}
-              <nav className="flex-1 px-4 overflow-y-auto">
+              <nav className="flex-1 px-3 overflow-y-auto">
                 <ul>
                   {pages.map(({ name, iconPath, path }) => (
                     <NavItem
@@ -191,12 +191,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               </nav>
 
               {/* Footer */}
-              <div className="m-4 p-4 rounded-[12px] text-center bg-gradient-to-br from-[#2A2A2A] to-[#252525] border border-[#9381FF]/20 relative overflow-hidden">
+              <div className="m-4 p-3 rounded-[10px] text-center bg-gradient-to-br from-[#2A2A2A] to-[#252525] border border-[#9381FF]/20 relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-[#9381FF]/5 to-transparent" />
-                <p className="relative text-sm font-semibold text-white">
+                <p className="relative text-xs font-semibold text-white">
                   © 2024 viewer.gg
                 </p>
-                <p className="relative text-xs text-white/70 mt-1">Premium Esports Platform</p>
+                <p className="relative text-[10px] text-white/70 mt-0.5">Premium Esports Platform</p>
               </div>
             </motion.aside>
           </>
