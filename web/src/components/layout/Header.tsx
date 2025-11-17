@@ -74,12 +74,16 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
           onClick={() => setIsSearchOpen(!isSearchOpen)}
           className="p-2 rounded-[10px] text-white/70 hover:text-white hover:bg-white/5 transition-colors"
         >
-          <SearchIcon className="w-5 h-5" />
+          <div className="w-5 h-5">
+            <SearchIcon />
+          </div>
         </button>
 
         {/* Notifications */}
         <button className="p-2 rounded-[10px] text-white/70 hover:text-white hover:bg-white/5 transition-colors relative">
-          <BellIcon className="w-5 h-5" />
+          <div className="w-5 h-5">
+            <BellIcon />
+          </div>
           <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#DAFF7C] rounded-full"></span>
         </button>
 
@@ -89,15 +93,20 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
             onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
             className="flex items-center gap-2 p-2 rounded-[10px] hover:bg-white/5 transition-colors"
           >
-            <UserCircleIcon className="w-6 h-6 text-white/70" />
+            <div className="w-6 h-6 text-white/70">
+              <UserCircleIcon />
+            </div>
             <span className="hidden sm:inline text-sm font-medium text-white">
               {user?.email?.split('@')[0] || 'User'}
             </span>
           </button>
 
-          {isUserMenuOpen && (
-            <UserMenu onLogout={handleLogout} userEmail={user?.email || ''} />
-          )}
+          <UserMenu
+            user={user}
+            isOpen={isUserMenuOpen}
+            onClose={() => setIsUserMenuOpen(false)}
+            onLogout={handleLogout}
+          />
         </div>
       </div>
     </header>
