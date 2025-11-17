@@ -70,17 +70,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         style={{ fontFamily: 'Poppins, sans-serif' }}
       >
         {/* Logo Section */}
-        <div className="flex items-center px-6 py-6 mb-4">
-          <div className="relative w-10 h-10 flex items-center justify-center">
+        <div className="flex items-center justify-center px-6 py-8 mb-6">
+          <div className="relative w-12 h-12 flex items-center justify-center">
             <img
               src="/viewer-logo/viewer-logo-transparent.svg"
               alt="Viewer.gg Logo"
               className="w-full h-full object-contain"
             />
           </div>
-          <h1 className="text-2xl font-semibold ml-3 text-white">
-            viewer.gg
-          </h1>
         </div>
 
         {/* Navigation */}
@@ -139,17 +136,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               </button>
 
               {/* Logo Section */}
-              <div className="flex items-center px-6 py-6 mb-4">
-                <div className="relative w-10 h-10 flex items-center justify-center">
+              <div className="flex items-center justify-center px-6 py-8 mb-6">
+                <div className="relative w-12 h-12 flex items-center justify-center">
                   <img
                     src="/viewer-logo/viewer-logo-transparent.svg"
                     alt="Viewer.gg Logo"
                     className="w-full h-full object-contain"
                   />
                 </div>
-                <h1 className="text-2xl font-semibold ml-3 text-white">
-                  viewer.gg
-                </h1>
               </div>
 
               {/* Navigation */}
