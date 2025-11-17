@@ -27,11 +27,11 @@ export async function POST(
     }
     
     // Get application with all related data
+    // Note: streamer is a JSONB column, not a foreign key
     const { data: application, error: appError } = await supabase
       .from('applications')
       .select(`
         *,
-        streamer:streamer_id(*),
         tournament:tournament_id(
           *,
           organization:organization_id(*)
@@ -56,13 +56,13 @@ export async function POST(
     }
     
     // Update application status to Approved
+    // Note: streamer is a JSONB column, not a foreign key
     const { data: updatedApp, error: updateError } = await supabase
       .from('applications')
       .update({ status: 'Approved' })
       .eq('id', id)
       .select(`
         *,
-        streamer:streamer_id(*),
         tournament:tournament_id(
           *,
           organization:organization_id(*)
@@ -89,7 +89,7 @@ export async function POST(
     // Check if Discord integration is configured
     const { data: discordConfig } = await supabase
       .from('discord_configs')
-      .select('guild_id, default_role_id, is_connected')
+      .select('guild_id, default_role_id, is_connected, role_name')
       .eq('organization_id', updatedApp.tournament.organization.id)
       .eq('is_connected', true)
       .maybeSingle();
@@ -118,6 +118,7 @@ export async function POST(
         const result = await assignDiscordRole({
           guildId: discordConfig.guild_id,
           userId: updatedApp.streamer.discord_user_id,
+          roleName: discordConfig.role_name,
           applicationId: updatedApp.id,
           tournamentId: updatedApp.tournament_id,
         });

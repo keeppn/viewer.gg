@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase/client';
 import { applicationApi } from '@/lib/api/applications';
 import Button from '@/components/common/Button';
 
@@ -43,6 +43,7 @@ export default function ApplyPage() {
   useEffect(() => {
     async function fetchTournament() {
       try {
+        const supabase = createClient();
         const { data, error } = await supabase
           .from('tournaments')
           .select('*')
