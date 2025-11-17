@@ -12,10 +12,22 @@ export async function GET(
   try {
     const { id } = await params;
 
+    console.log('[Public Tournament API] Fetching tournament:', id);
+    console.log('[Public Tournament API] Service role key present:', !!process.env.SUPABASE_SERVICE_ROLE_KEY);
+
+    // Check if service role key is configured
+    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      console.error('[Public Tournament API] SUPABASE_SERVICE_ROLE_KEY not configured');
+      return NextResponse.json(
+        { error: 'Server configuration error - missing service role key' },
+        { status: 500 }
+      );
+    }
+
     // Use service role client to bypass RLS for public tournament access
     const supabase = createServiceRoleClient();
 
-    console.log('[Public Tournament API] Fetching tournament:', id);
+    console.log('[Public Tournament API] Service role client created');
 
     // Fetch tournament data
     const { data: tournament, error } = await supabase
