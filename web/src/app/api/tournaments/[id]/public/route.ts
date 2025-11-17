@@ -1,9 +1,10 @@
-import { createServiceRoleClient } from '@/lib/supabase/server';
+import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 
 /**
  * GET /api/tournaments/[id]/public
  * Publicly accessible endpoint to fetch tournament data for application forms
+ * Uses anon key with RLS disabled on tournaments table for public read access
  */
 export async function GET(
   request: Request,
@@ -13,21 +14,15 @@ export async function GET(
     const { id } = await params;
 
     console.log('[Public Tournament API] Fetching tournament:', id);
-    console.log('[Public Tournament API] Service role key present:', !!process.env.SUPABASE_SERVICE_ROLE_KEY);
 
-    // Check if service role key is configured
-    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-      console.error('[Public Tournament API] SUPABASE_SERVICE_ROLE_KEY not configured');
-      return NextResponse.json(
-        { error: 'Server configuration error - missing service role key' },
-        { status: 500 }
-      );
-    }
+    // Create a simple Supabase client with anon key
+    // This will work if tournaments table has RLS policy allowing public reads
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
 
-    // Use service role client to bypass RLS for public tournament access
-    const supabase = createServiceRoleClient();
-
-    console.log('[Public Tournament API] Service role client created');
+    console.log('[Public Tournament API] Client created, fetching data...');
 
     // Fetch tournament data
     const { data: tournament, error } = await supabase
@@ -36,10 +31,23 @@ export async function GET(
       .eq('id', id)
       .single();
 
-    if (error || !tournament) {
-      console.error('[Public Tournament API] Error:', error);
+    if (error) {
+      console.error('[Public Tournament API] Supabase error:', {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code
+      });
       return NextResponse.json(
-        { error: 'Tournament not found' },
+        { error: `Database error: ${error.message}` },
+        { status: 404 }
+      );
+    }
+
+    if (!tournament) {
+      console.error('[Public Tournament API] No tournament found');
+      return NextResponse.json(
+        { error: 'Tournament not found in database' },
         { status: 404 }
       );
     }
@@ -55,10 +63,13 @@ export async function GET(
       tournament,
     });
 
-  } catch (error) {
-    console.error('[Public Tournament API] Unexpected error:', error);
+  } catch (error: any) {
+    console.error('[Public Tournament API] Unexpected error:', {
+      message: error?.message,
+      stack: error?.stack
+    });
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: `Internal server error: ${error?.message}` },
       { status: 500 }
     );
   }

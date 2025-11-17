@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { applicationApi } from '@/lib/api/applications';
 import Button from '@/components/common/Button';
 
 interface FormField {
@@ -136,15 +135,25 @@ export default function ApplyPage() {
         streamerProfile,
       });
 
-      // Submit application via API
-      const result = await applicationApi.create({
-        tournament_id: tournament.id,
-        streamer: streamerProfile,
-        custom_data: customData,
-        status: 'Pending',
-        availability_confirmed: false,
-        submission_date: new Date().toISOString(),
+      // Submit application via public API
+      const response = await fetch('/api/applications/public', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          tournament_id: tournament.id,
+          streamer: streamerProfile,
+          custom_data: customData,
+        }),
       });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to submit application');
+      }
+
+      const { application: result } = await response.json();
 
       console.log('[Application Form] Application created:', {
         id: result.id,
