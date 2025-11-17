@@ -115,7 +115,7 @@ BEGIN
   FROM pg_policies
   WHERE tablename = 'tournaments'
   AND cmd = 'SELECT'
-  AND roles && ARRAY['public'];
+  AND 'public' = ANY(roles);
 
   RAISE NOTICE '==============================================';
   RAISE NOTICE 'Policy Verification Results:';
