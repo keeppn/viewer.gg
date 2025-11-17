@@ -49,6 +49,12 @@ export const applicationApi = {
 
   // Create new application
   async create(application: Omit<Application, 'id' | 'created_at' | 'updated_at'>): Promise<Application> {
+    console.log('[Applications Create] Submitting application with data:', {
+      streamer: application.streamer,
+      discord_user_id: application.streamer?.discord_user_id,
+      custom_data: application.custom_data,
+    });
+
     const { data, error } = await supabase
       .from('applications')
       .insert({
@@ -59,7 +65,16 @@ export const applicationApi = {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error('[Applications Create] Error saving application:', error);
+      throw error;
+    }
+
+    console.log('[Applications Create] Application saved successfully:', {
+      id: data.id,
+      streamer: data.streamer,
+      discord_user_id_saved: data.streamer?.discord_user_id,
+    });
 
     // Increment application count on tournament
     await supabase.rpc('increment_tournament_applications', {
