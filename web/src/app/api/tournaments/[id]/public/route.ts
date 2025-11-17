@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+import { createServiceRoleClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 
 /**
@@ -12,8 +12,8 @@ export async function GET(
   try {
     const { id } = await params;
 
-    // Use server-side Supabase client (bypasses RLS for public data)
-    const supabase = await createClient();
+    // Use service role client to bypass RLS for public tournament access
+    const supabase = createServiceRoleClient();
 
     console.log('[Public Tournament API] Fetching tournament:', id);
 
