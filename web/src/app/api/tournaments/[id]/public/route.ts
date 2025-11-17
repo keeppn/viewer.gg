@@ -24,18 +24,10 @@ export async function GET(
       .eq('id', id)
       .single();
 
-    if (error) {
+    if (error || !tournament) {
       console.error('[Public Tournament API] Error:', error);
       return NextResponse.json(
         { error: 'Tournament not found' },
-        { status: 404 }
-      );
-    }
-
-    // Only return active/open tournaments
-    if (!tournament || tournament.status !== 'Active') {
-      return NextResponse.json(
-        { error: 'Tournament not found or not accepting applications' },
         { status: 404 }
       );
     }
