@@ -27,7 +27,7 @@ interface AppState {
   refreshStats: (organizationId?: string) => Promise<void>;
 }
 
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes cache
+const CACHE_TTL = 30 * 1000; // 30 seconds cache - short TTL to catch external changes (public form submissions)
 
 export const useAppStore = create<AppState>()(
   persist(
@@ -115,7 +115,8 @@ export const useAppStore = create<AppState>()(
       set({
         applications: applications.map(app =>
           app.id === id ? { ...app, status, reviewed_by: userId, reviewed_date: new Date().toISOString(), notes } : app
-        )
+        ),
+        lastFetchTime: null // Invalidate cache so next fetch gets fresh data
       });
       await get().refreshStats();
     } catch (error) {
@@ -128,7 +129,8 @@ export const useAppStore = create<AppState>()(
     try {
       const newTournament = await tournamentApi.create(tournament);
       set(state => ({
-        tournaments: [newTournament, ...state.tournaments]
+        tournaments: [newTournament, ...state.tournaments],
+        lastFetchTime: null // Invalidate cache so next fetch gets fresh data
       }));
     } catch (error) {
       console.error('Error adding tournament:', error);
@@ -140,7 +142,8 @@ export const useAppStore = create<AppState>()(
     try {
       await tournamentApi.update(tournament.id, tournament);
       set(state => ({
-        tournaments: state.tournaments.map(t => t.id === tournament.id ? tournament : t)
+        tournaments: state.tournaments.map(t => t.id === tournament.id ? tournament : t),
+        lastFetchTime: null // Invalidate cache so next fetch gets fresh data
       }));
     } catch (error) {
       console.error('Error updating tournament:', error);
@@ -152,7 +155,8 @@ export const useAppStore = create<AppState>()(
     try {
       const newApplication = await applicationApi.create(application);
       set(state => ({
-        applications: [newApplication, ...state.applications]
+        applications: [newApplication, ...state.applications],
+        lastFetchTime: null // Invalidate cache so next fetch gets fresh data
       }));
       await get().refreshStats();
     } catch (error) {
