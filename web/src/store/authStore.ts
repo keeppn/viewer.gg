@@ -244,7 +244,15 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   signOut: async () => {
     await supabaseSignOut();
-    set({ user: null, organization: null, session: null });
+    // Fully reset auth state including initialization flags
+    set({
+      user: null,
+      organization: null,
+      session: null,
+      loading: false,
+      initialized: false,  // Reset so next login re-initializes
+      isInitializing: false
+    });
   }
 }));
 
@@ -255,14 +263,21 @@ if (typeof window !== 'undefined') {
     authListener = supabase.auth.onAuthStateChange(async (event, session) => {
         console.log('AuthStore: Auth state changed:', event);
         const store = useAuthStore.getState();
-        
+
         if (event === 'SIGNED_IN') {
             if (session) {
                 await store.initialize();
             }
         } else if (event === 'SIGNED_OUT') {
-            store.setUser(null);
-            store.setOrganization(null);
+            // Fully reset state on sign out
+            useAuthStore.setState({
+                user: null,
+                organization: null,
+                session: null,
+                loading: false,
+                initialized: false,
+                isInitializing: false
+            });
         }
     });
 }
