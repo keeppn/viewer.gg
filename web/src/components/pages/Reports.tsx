@@ -97,12 +97,10 @@ const Reports: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold text-white">Reports</h2>
-      </div>
+    <div className="space-y-5">
+      <p className="text-sm text-white/60">Generate customizable reports for sponsors and stakeholders</p>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Configuration Panel */}
         <div className="lg:col-span-2 space-y-6">
           {/* Tournament Selection */}

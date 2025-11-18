@@ -50,11 +50,9 @@ const LiveStreamCard: React.FC<{ stream: LiveStream }> = ({ stream }) => {
 const Live: React.FC = () => {
     const { liveStreams } = useAppStore();
     return (
-        <div className="space-y-6">
-             <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-semibold text-white">Live Co-streamers</h2>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="space-y-5">
+             <p className="text-sm text-white/60">View all currently live co-streamers for your tournaments</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
                 {liveStreams.map(stream => (
                     <LiveStreamCard key={stream.id} stream={stream} />
                 ))}

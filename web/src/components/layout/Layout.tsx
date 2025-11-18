@@ -32,7 +32,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       
       <div className="flex-1 flex flex-col overflow-hidden relative w-full">
         <Header onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)} />
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gradient-to-br from-[#121212] via-[#0D0D0D] to-[#0A0A0A] p-3 sm:p-4 md:p-6 lg:p-8">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gradient-to-br from-[#121212] via-[#0D0D0D] to-[#0A0A0A] p-4 sm:p-5 md:p-6">
           {children}
         </main>
       </div>

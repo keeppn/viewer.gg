@@ -93,19 +93,19 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-[#9381FF]/5 to-transparent pointer-events-none" />
 
         {/* Logo Section */}
-        <div className="flex items-center justify-center px-6 py-6 mb-3 relative">
-          <div className="relative w-28 h-28 flex items-center justify-center">
+        <div className="flex items-center justify-center px-4 py-4 mb-1 relative">
+          <div className="relative w-16 h-16 flex items-center justify-center">
             <div className="absolute inset-0 bg-gradient-to-br from-[#DAFF7C]/20 to-[#9381FF]/20 rounded-full blur-xl animate-pulse" />
             <img
               src="/viewer-logo/viewer-logo-transparent.svg"
               alt="Viewer.gg Logo"
-              className="relative w-full h-full object-contain drop-shadow-[0_0_20px_rgba(218,255,124,0.4)]"
+              className="relative w-full h-full object-contain drop-shadow-[0_0_15px_rgba(218,255,124,0.4)]"
             />
           </div>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-3 overflow-y-auto scrollbar-thin scrollbar-thumb-[#9381FF]/30 scrollbar-track-transparent">
+        <nav className="flex-1 px-3 pt-2 overflow-y-auto scrollbar-thin scrollbar-thumb-[#9381FF]/30 scrollbar-track-transparent">
           <ul>
             {pages.map(({ name, iconPath, path }) => (
               <NavItem
@@ -164,19 +164,19 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               </button>
 
               {/* Logo Section */}
-              <div className="flex items-center justify-center px-6 py-6 mb-3 relative">
-                <div className="relative w-28 h-28 flex items-center justify-center">
+              <div className="flex items-center justify-center px-4 py-4 mb-1 relative">
+                <div className="relative w-16 h-16 flex items-center justify-center">
                   <div className="absolute inset-0 bg-gradient-to-br from-[#DAFF7C]/20 to-[#9381FF]/20 rounded-full blur-xl animate-pulse" />
                   <img
                     src="/viewer-logo/viewer-logo-transparent.svg"
                     alt="Viewer.gg Logo"
-                    className="relative w-full h-full object-contain drop-shadow-[0_0_20px_rgba(218,255,124,0.4)]"
+                    className="relative w-full h-full object-contain drop-shadow-[0_0_15px_rgba(218,255,124,0.4)]"
                   />
                 </div>
               </div>
 
               {/* Navigation */}
-              <nav className="flex-1 px-3 overflow-y-auto">
+              <nav className="flex-1 px-3 pt-2 overflow-y-auto">
                 <ul>
                   {pages.map(({ name, iconPath, path }) => (
                     <NavItem

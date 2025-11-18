@@ -30,14 +30,14 @@ const TournamentApplicationSummary: React.FC<{ tournaments: Tournament[], applic
     }, [tournaments, applications]);
 
     return (
-        <div className="bg-gradient-to-br from-[#2A2A2A] to-[#252525] p-6 rounded-[12px] border border-[#9381FF]/20 relative overflow-hidden">
+        <div className="bg-gradient-to-br from-[#2A2A2A] to-[#252525] p-5 rounded-[12px] border border-[#9381FF]/20 relative overflow-hidden h-full">
             {/* Purple accent glow */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-[#9381FF]/10 rounded-full blur-3xl" />
 
-            <h3 className="relative text-xl font-semibold mb-6 text-white">
-                Tournament Application Summary
+            <h3 className="relative text-lg font-semibold mb-4 text-white">
+                Tournament Summary
             </h3>
-            <div className="relative space-y-4 max-h-[280px] overflow-y-auto scrollbar-thin scrollbar-thumb-[#9381FF]/30 scrollbar-track-transparent">
+            <div className="relative space-y-3 max-h-[240px] overflow-y-auto scrollbar-thin scrollbar-thumb-[#9381FF]/30 scrollbar-track-transparent">
                 {summaryData.map((t) => (
                     <div
                         key={t.id}
@@ -86,36 +86,39 @@ const Overview: React.FC = () => {
   ];
 
   return (
-    <div className="space-y-6">
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card title="Total Applications" value={stats?.totalApplications || 0} icon={<ApplicationIcon />} accentColor="purple" />
+    <div className="space-y-5">
+      {/* Compact description */}
+      <p className="text-sm text-white/60">Quick overview of your tournament applications and status</p>
+
+      {/* Compact Stats Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <Card title="Applications" value={stats?.totalApplications || 0} icon={<ApplicationIcon />} accentColor="purple" />
         <Card title="Approved" value={stats?.approved || 0} icon={<CheckCircleIcon />} accentColor="lime" />
-        <Card title="Rejected" value={stats?.rejected || 0} icon={<XCircleIcon />} accentColor="red" />
         <Card title="Pending" value={stats?.pending || 0} icon={<ClockIcon />} accentColor="orange" />
+        <Card title="Rejected" value={stats?.rejected || 0} icon={<XCircleIcon />} accentColor="red" />
       </div>
 
-      {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-gradient-to-br from-[#2A2A2A] to-[#252525] p-6 rounded-[12px] border border-[#9381FF]/20 relative overflow-hidden">
+      {/* Charts Section - Compact Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-5">
+        <div className="lg:col-span-3 bg-gradient-to-br from-[#2A2A2A] to-[#252525] p-5 rounded-[12px] border border-[#9381FF]/20 relative overflow-hidden">
           {/* Purple accent glow */}
           <div className="absolute top-0 left-0 w-32 h-32 bg-[#9381FF]/10 rounded-full blur-3xl" />
 
-          <h3 className="relative text-xl font-semibold mb-6 text-white">
+          <h3 className="relative text-lg font-semibold mb-4 text-white">
             Application Status
           </h3>
-          <ResponsiveContainer width="100%" height={250}>
+          <ResponsiveContainer width="100%" height={220}>
             <BarChart data={applicationStatusData} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(147,129,255,0.1)" vertical={false} />
               <XAxis
                 dataKey="name"
                 stroke="#9381FF"
-                tick={{ fill: '#9381FF', fontSize: 13, fontWeight: 500 }}
+                tick={{ fill: '#9381FF', fontSize: 12, fontWeight: 500 }}
                 axisLine={{ stroke: '#9381FF', strokeWidth: 2 }}
               />
               <YAxis
                 stroke="#9381FF"
-                tick={{ fill: '#9CA3AF', fontSize: 12 }}
+                tick={{ fill: '#9CA3AF', fontSize: 11 }}
                 axisLine={false}
               />
               <Tooltip
@@ -123,7 +126,7 @@ const Overview: React.FC = () => {
                   backgroundColor: '#2A2A2A',
                   border: '1px solid rgba(147,129,255,0.3)',
                   borderRadius: '10px',
-                  fontSize: '14px',
+                  fontSize: '13px',
                   boxShadow: '0 4px 12px rgba(147,129,255,0.2)',
                   color: '#fff',
                   fontWeight: 600
@@ -133,31 +136,33 @@ const Overview: React.FC = () => {
               />
               <Bar
                 dataKey="count"
-                barSize={50}
-                radius={[12, 12, 0, 0]}
+                barSize={45}
+                radius={[10, 10, 0, 0]}
               />
             </BarChart>
           </ResponsiveContainer>
         </div>
-        <TournamentApplicationSummary tournaments={tournaments} applications={applications} />
+        <div className="lg:col-span-2">
+          <TournamentApplicationSummary tournaments={tournaments} applications={applications} />
+        </div>
       </div>
 
-      {/* Recent Applications Table */}
-      <div className="bg-gradient-to-br from-[#2A2A2A] to-[#252525] p-6 rounded-[12px] border border-[#9381FF]/20 relative overflow-hidden">
+      {/* Recent Applications Table - Compact */}
+      <div className="bg-gradient-to-br from-[#2A2A2A] to-[#252525] p-5 rounded-[12px] border border-[#9381FF]/20 relative overflow-hidden">
           {/* Purple accent glow */}
           <div className="absolute bottom-0 right-0 w-40 h-40 bg-[#9381FF]/10 rounded-full blur-3xl" />
 
-          <h3 className="relative text-xl font-semibold mb-6 text-white">
+          <h3 className="relative text-lg font-semibold mb-4 text-white">
             Recent Applications
           </h3>
           <div className="relative overflow-x-auto">
               <table className="w-full text-left">
                   <thead>
                       <tr className="border-b border-[#9381FF]/20 text-white/70 uppercase text-xs tracking-wide bg-[#1F1F1F]/50">
-                          <th className="p-4 font-semibold">Streamer</th>
-                          <th className="p-4 font-semibold">Tournament</th>
-                          <th className="p-4 font-semibold hidden sm:table-cell">Date</th>
-                          <th className="p-4 font-semibold">Status</th>
+                          <th className="p-3 font-semibold">Streamer</th>
+                          <th className="p-3 font-semibold">Tournament</th>
+                          <th className="p-3 font-semibold hidden sm:table-cell">Date</th>
+                          <th className="p-3 font-semibold">Status</th>
                       </tr>
                   </thead>
                   <tbody>
@@ -166,14 +171,14 @@ const Overview: React.FC = () => {
                               key={app.id}
                               className="border-b border-white/5 hover:bg-gradient-to-r hover:from-[#9381FF]/5 hover:to-transparent transition-all duration-300"
                           >
-                              <td className="p-4 font-medium text-white text-sm">{app.streamer.name}</td>
-                              <td className="p-4 text-white/70 text-sm">{app.tournament?.title || 'Unknown'}</td>
-                              <td className="p-4 text-white/70 text-sm hidden sm:table-cell">{app.submission_date}</td>
-                              <td className="p-4">
-                                  <span className={`inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full shadow-lg ${
-                                      app.status === 'Approved' ? 'bg-gradient-to-r from-[#DAFF7C]/20 to-[#DAFF7C]/10 text-[#DAFF7C] border border-[#DAFF7C]/30 shadow-[#DAFF7C]/20' :
-                                      app.status === 'Rejected' ? 'bg-gradient-to-r from-red-500/20 to-red-500/10 text-red-400 border border-red-500/30 shadow-red-500/20' :
-                                      'bg-gradient-to-r from-[#9381FF]/20 to-[#9381FF]/10 text-[#9381FF] border border-[#9381FF]/30 shadow-[#9381FF]/20'
+                              <td className="p-3 font-medium text-white text-sm">{app.streamer.name}</td>
+                              <td className="p-3 text-white/70 text-sm">{app.tournament?.title || 'Unknown'}</td>
+                              <td className="p-3 text-white/70 text-xs hidden sm:table-cell">{app.submission_date}</td>
+                              <td className="p-3">
+                                  <span className={`inline-flex items-center px-2.5 py-1 text-xs font-semibold rounded-full ${
+                                      app.status === 'Approved' ? 'bg-gradient-to-r from-[#DAFF7C]/20 to-[#DAFF7C]/10 text-[#DAFF7C] border border-[#DAFF7C]/30' :
+                                      app.status === 'Rejected' ? 'bg-gradient-to-r from-red-500/20 to-red-500/10 text-red-400 border border-red-500/30' :
+                                      'bg-gradient-to-r from-[#9381FF]/20 to-[#9381FF]/10 text-[#9381FF] border border-[#9381FF]/30'
                                   }`}>
                                       {app.status}
                                   </span>
