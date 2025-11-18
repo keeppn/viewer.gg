@@ -72,9 +72,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               className="w-full h-full object-contain"
             />
           </div>
-          <h1 className="text-2xl font-bold ml-3 text-white font-['Poppins']">
-            viewer.gg
-          </h1>
         </div>
 
         {/* Navigation */}
@@ -140,9 +137,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                     className="w-full h-full object-contain"
                   />
                 </div>
-                <h1 className="text-2xl font-bold ml-3 text-white font-['Poppins']">
-                  viewer.gg
-                </h1>
               </div>
 
               {/* Navigation */}
