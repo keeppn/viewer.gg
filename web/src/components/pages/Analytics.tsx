@@ -377,21 +377,18 @@ const Analytics: React.FC = () => {
   };
 
   return (
-    <div className="space-y-4 sm:space-y-6 p-4 sm:p-0">
-      {/* Header with Tournament Selector and Export */}
-      <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
-        <div className="flex-1">
-          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">Analytics Dashboard</h2>
-          <p className="text-sm sm:text-base text-white/60">Comprehensive tournament performance metrics and insights</p>
-        </div>
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+    <div className="space-y-4 sm:space-y-5">
+      {/* Compact Header with Tournament Selector and Export */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <p className="text-sm text-white/60">Track performance metrics and insights for your tournaments</p>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
           {selectedTournamentId && (
             <ExportMenu
               tournamentName={selectedTournament?.title || 'Tournament'}
               onExport={handleExport}
             />
           )}
-          <div className="w-full sm:w-80">
+          <div className="w-full sm:w-72">
             <TournamentSelector
               tournaments={tournaments}
               selectedTournamentId={selectedTournamentId}
@@ -413,20 +410,10 @@ const Analytics: React.FC = () => {
         </div>
       ) : (
         <>
-          {/* Enhanced KPI Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* Compact KPI Cards */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
             <EnhancedStatCard
-              title="Total Hours Watched"
-              value={totalHoursWatched >= 1000 ? `${(totalHoursWatched / 1000).toFixed(1)}K` : totalHoursWatched}
-              suffix={totalHoursWatched < 1000 ? 'hrs' : 'hrs'}
-              icon={<UsersIcon />}
-              color="lime"
-              trend={viewerTrend}
-              sparklineData={generateSparkline(totalHoursWatched)}
-            />
-
-            <EnhancedStatCard
-              title="Peak Concurrent Viewers"
+              title="Peak Viewers"
               value={peakViewers >= 1000 ? `${(peakViewers / 1000).toFixed(1)}K` : peakViewers}
               icon={<TrendingUpIcon />}
               color="purple"
@@ -435,7 +422,7 @@ const Analytics: React.FC = () => {
             />
 
             <EnhancedStatCard
-              title="Average Viewers"
+              title="Avg Viewers"
               value={avgViewers >= 1000 ? `${(avgViewers / 1000).toFixed(1)}K` : avgViewers}
               icon={<UsersIcon />}
               color="blue"
@@ -450,12 +437,9 @@ const Analytics: React.FC = () => {
               color="orange"
               trend={applicationTrend}
             />
-          </div>
 
-          {/* Second row of stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <EnhancedStatCard
-              title="Total Applications"
+              title="Applications"
               value={totalApplications}
               icon={<UserCheckIcon />}
               color="purple"
@@ -463,68 +447,60 @@ const Analytics: React.FC = () => {
             />
 
             <EnhancedStatCard
-              title="Approved Streamers"
-              value={approvedApplications}
-              icon={<UserCheckIcon />}
-              color="lime"
-              trend={approvalTrend}
-            />
-
-            <EnhancedStatCard
               title="Approval Rate"
               value={totalApplications > 0 ? Math.round((approvedApplications / totalApplications) * 100) : 0}
               suffix="%"
               icon={<TrendingUpIcon />}
-              color="blue"
+              color="lime"
+              trend={approvalTrend}
             />
           </div>
 
-          {/* Viewership Timeline */}
-          <ViewershipTimeline
-            data={analyticsData?.viewership_by_hour || []}
-          />
+          {/* Main Analytics Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5">
+            {/* Viewership Timeline - Full Width */}
+            <div className="lg:col-span-3">
+              <ViewershipTimeline
+                data={analyticsData?.viewership_by_hour || []}
+              />
+            </div>
 
-          {/* Engagement Metrics */}
-          <EngagementMetrics
-            totalHoursStreamed={totalHoursStreamed}
-            totalViewers={currentViewers}
-            peakViewers={peakViewers}
-            averageViewers={avgViewers}
-            streamCount={liveStreamersCount}
-          />
+            {/* Streamer Leaderboard - 2 cols */}
+            <div className="lg:col-span-2">
+              <StreamerLeaderboard streams={liveStreams} />
+            </div>
 
-          {/* Tournament Comparison */}
-          {tournaments.length >= 2 && (
-            <TournamentComparison
-              tournaments={tournaments}
-              onCompare={handleCompare}
-            />
-          )}
+            {/* Platform Comparison - 1 col */}
+            <div className="lg:col-span-1">
+              <PlatformComparison data={platformData} />
+            </div>
 
-          {/* Stream Health Monitor */}
+            {/* Engagement Metrics - 2 cols */}
+            <div className="lg:col-span-2">
+              <EngagementMetrics
+                totalHoursStreamed={totalHoursStreamed}
+                totalViewers={currentViewers}
+                peakViewers={peakViewers}
+                averageViewers={avgViewers}
+                streamCount={liveStreamersCount}
+              />
+            </div>
+
+            {/* Language Breakdown - 1 col */}
+            <div className="lg:col-span-1">
+              <LanguageBreakdown data={languageData} />
+            </div>
+
+            {/* Time Heatmap - Full Width */}
+            <div className="lg:col-span-3">
+              <TimeHeatmap data={timeHeatmapData} />
+            </div>
+          </div>
+
+          {/* Stream Health Monitor - Only show if there are live streams */}
           {liveStreams.length > 0 && (
             <StreamHealthMonitor streams={liveStreams} />
           )}
-
-          {/* Streamer Leaderboard */}
-          <StreamerLeaderboard streams={liveStreams} />
-
-          {/* Platform, Funnel & Language Row */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <PlatformComparison data={platformData} />
-
-            <ApplicationFunnel
-              totalApplications={totalApplications}
-              approved={approvedApplications}
-              liveStreamers={liveStreamersCount}
-            />
-          </div>
-
-          {/* Time Heatmap & Language Breakdown */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <TimeHeatmap data={timeHeatmapData} />
-            <LanguageBreakdown data={languageData} />
-          </div>
 
           {/* Live Streamers Table */}
           {liveStreams.length > 0 && (

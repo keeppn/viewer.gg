@@ -219,7 +219,6 @@ const TournamentList: React.FC<{ tournaments: Tournament[], onManage: (id: strin
       {/* Header with view toggle */}
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-white mb-1">Tournaments</h2>
           <p className="text-white/60 text-sm">Manage your tournament events and applications</p>
         </div>
 
