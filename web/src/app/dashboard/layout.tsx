@@ -13,19 +13,28 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
-  const { initialize, user, organization } = useAuthStore();
+  const { initialize, user, organization, initialized, loading } = useAuthStore();
   const { fetchTournaments, fetchApplications } = useAppStore();
   const [checking, setChecking] = useState(true);
 
-  console.log('[DashboardLayout] Rendering - checking:', checking, 'user:', user ? 'EXISTS' : 'NULL', 'organization:', organization ? 'EXISTS' : 'NULL');
+  console.log('[DashboardLayout] Rendering - checking:', checking, 'initialized:', initialized, 'user:', user ? 'EXISTS' : 'NULL', 'organization:', organization ? 'EXISTS' : 'NULL');
 
   useEffect(() => {
-    console.log('[DashboardLayout] useEffect triggered');
+    console.log('[DashboardLayout] useEffect triggered - initialized:', initialized);
 
     let isMounted = true;
 
     const checkAndInitialize = async () => {
       try {
+        // PERFORMANCE FIX: Skip if already initialized to prevent double loading screens
+        if (initialized && user) {
+          console.log('[DashboardLayout] Already initialized, skipping...');
+          if (isMounted) {
+            setChecking(false);
+          }
+          return;
+        }
+
         console.log('[DashboardLayout] Calling initialize()...');
 
         // Let AuthStore handle session checking - it already does this properly
@@ -51,7 +60,7 @@ export default function DashboardLayout({
     return () => {
       isMounted = false;
     };
-  }, [initialize, router]);
+  }, [initialize, initialized, user, router]);
 
   // Fetch data when user and organization are ready
   useEffect(() => {

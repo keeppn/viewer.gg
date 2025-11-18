@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServiceRoleClient } from '@/lib/supabase/server';
+import { createServiceRoleClient, createClient } from '@/lib/supabase/server';
+import { verifyStateToken } from '@/lib/security/state-token';
 
 /**
  * Discord Bot OAuth Callback Handler
@@ -54,21 +55,64 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  // Decode state parameter to get organization ID
+  // SECURITY FIX: Verify signed state parameter to prevent tampering
+  // This prevents attackers from modifying org_id and hijacking bot connections
   let organizationId: string;
   try {
-    const stateData = JSON.parse(atob(stateParam));
+    const stateData = await verifyStateToken(stateParam);
     organizationId = stateData.org_id;
-    console.log('[Discord Bot Callback] Decoded organization ID from state:', organizationId);
+    console.log('[Discord Bot Callback] Verified organization ID from signed state:', organizationId);
   } catch (err) {
-    console.error('[Discord Bot Callback] Failed to decode state parameter:', err);
+    console.error('[Discord Bot Callback] State verification failed:', err);
     return NextResponse.redirect(
       new URL('/dashboard/settings?error=invalid_state', request.url)
     );
   }
 
-  // Use service role client to bypass RLS (safe because org_id comes from our state parameter)
+  // SECURITY FIX: Verify user authorization before allowing bot connection
+  // This prevents users from connecting bots to organizations they don't own
+  const sessionClient = await createClient();
+  const { data: { session }, error: sessionError } = await sessionClient.auth.getSession();
+
+  if (!session || sessionError) {
+    console.error('[Discord Bot Callback] No valid session:', sessionError);
+    return NextResponse.redirect(
+      new URL('/dashboard/settings?error=unauthorized', request.url)
+    );
+  }
+
+  const userId = session.user.id;
+  console.log('[Discord Bot Callback] Session verified for user:', userId);
+
+  // Use service role client to verify user owns the organization
   const supabase = createServiceRoleClient();
+
+  // Verify user owns this organization
+  const { data: userRecord, error: userError } = await supabase
+    .from('users')
+    .select('organization_id')
+    .eq('id', userId)
+    .single();
+
+  if (userError || !userRecord) {
+    console.error('[Discord Bot Callback] Failed to load user:', userError);
+    return NextResponse.redirect(
+      new URL('/dashboard/settings?error=user_not_found', request.url)
+    );
+  }
+
+  if (userRecord.organization_id !== organizationId) {
+    console.error('[Discord Bot Callback] Authorization failed:', {
+      userId,
+      requestedOrgId: organizationId,
+      userOrgId: userRecord.organization_id
+    });
+    return NextResponse.redirect(
+      new URL('/dashboard/settings?error=forbidden', request.url)
+    );
+  }
+
+  console.log('[Discord Bot Callback] Authorization successful - user owns organization');
 
   try {
     // Verify the organization exists (using organization ID from state parameter)

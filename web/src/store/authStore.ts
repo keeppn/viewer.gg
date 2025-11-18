@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import { User, Organization } from '../types';
 import { getCurrentSession, signOut as supabaseSignOut } from '../lib/supabase';
 import { supabase } from '../lib/supabase';
@@ -16,7 +17,9 @@ interface AuthState {
   signOut: () => Promise<void>;
 }
 
-export const useAuthStore = create<AuthState>((set, get) => ({
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set, get) => ({
   user: null,
   organization: null,
   session: null,
@@ -244,9 +247,21 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   signOut: async () => {
     await supabaseSignOut();
-    set({ user: null, organization: null, session: null });
+    set({ user: null, organization: null, session: null, initialized: false, loading: false });
   }
-}));
+}),
+    {
+      name: 'auth-store',
+      // Only persist user, organization, and initialized state
+      // Don't persist session (Supabase handles this), loading, or isInitializing
+      partialize: (state) => ({
+        user: state.user,
+        organization: state.organization,
+        initialized: state.initialized,
+      }),
+    }
+  )
+);
 
 // Listen to auth state changes
 let authListener: any = null;

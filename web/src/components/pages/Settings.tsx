@@ -183,26 +183,33 @@ const Settings: React.FC = () => {
         }
     };
 
-    const handleConnectBot = () => {
+    const handleConnectBot = async () => {
         if (!organization) return;
 
-        // Build Discord bot OAuth URL - using bot scope to add bot to server
-        const clientId = process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID || process.env.NEXT_PUBLIC_DISCORD_BOT_CLIENT_ID;
-        const redirectUri = `${window.location.origin}/api/discord/bot-callback`;
-        const permissions = '268435456'; // MANAGE_ROLES permission (0x10000000 in hex)
+        try {
+            // Build Discord bot OAuth URL - using bot scope to add bot to server
+            const clientId = process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID || process.env.NEXT_PUBLIC_DISCORD_BOT_CLIENT_ID;
+            const redirectUri = `${window.location.origin}/api/discord/bot-callback`;
+            const permissions = '268435456'; // MANAGE_ROLES permission (0x10000000 in hex)
 
-        // Use state parameter to pass organization ID securely
-        // This allows the callback to know which organization is connecting
-        const state = btoa(JSON.stringify({ org_id: organization.id }));
+            // SECURITY FIX: Use signed JWT state parameter to prevent tampering
+            // This prevents attackers from modifying org_id and hijacking connections
+            // Token expires after 5 minutes for additional security
+            const { signStateToken } = await import('@/lib/security/state-token');
+            const state = await signStateToken({ org_id: organization.id });
 
-        // Important: Use 'bot' scope to add the bot to a server
-        // guild_id will be in the callback URL parameters
-        const discordAuthUrl = `https://discord.com/oauth2/authorize?client_id=${clientId}&permissions=${permissions}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=bot&state=${encodeURIComponent(state)}`;
+            // Important: Use 'bot' scope to add the bot to a server
+            // guild_id will be in the callback URL parameters
+            const discordAuthUrl = `https://discord.com/oauth2/authorize?client_id=${clientId}&permissions=${permissions}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=bot&state=${encodeURIComponent(state)}`;
 
-        console.log('Redirecting to Discord:', discordAuthUrl);
+            console.log('[Settings] Redirecting to Discord with signed state token');
 
-        // Redirect to Discord
-        window.location.href = discordAuthUrl;
+            // Redirect to Discord
+            window.location.href = discordAuthUrl;
+        } catch (error) {
+            console.error('[Settings] Error creating state token:', error);
+            alert('Failed to initiate Discord connection. Please try again.');
+        }
     };
 
     const handleDisconnectBot = async () => {
