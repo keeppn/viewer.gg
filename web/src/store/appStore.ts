@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import { Tournament, Application, LiveStream, Stats, AnalyticsData } from '../types';
 import { tournamentApi } from '../lib/api/tournaments';
 import { applicationApi } from '../lib/api/applications';
@@ -12,7 +13,8 @@ interface AppState {
   analyticsData: AnalyticsData | null;
   loading: boolean;
   currentOrganizationId: string | null; // Track current organization for stats
-  
+  lastFetchTime: number | null; // Track when data was last fetched for cache invalidation
+
   // Actions
   fetchTournaments: (organizationId: string) => Promise<void>;
   fetchApplications: (organizationId: string) => Promise<void>;
@@ -25,11 +27,16 @@ interface AppState {
   refreshStats: (organizationId?: string) => Promise<void>;
 }
 
-export const useAppStore = create<AppState>((set, get) => ({
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes cache
+
+export const useAppStore = create<AppState>()(
+  persist(
+    (set, get) => ({
   tournaments: [],
   applications: [],
   liveStreams: [],
   currentOrganizationId: null,
+  lastFetchTime: null,
   stats: {
     totalApplications: 0,
     approved: 0,
@@ -41,9 +48,19 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   fetchTournaments: async (organizationId: string) => {
     try {
+      // Check cache - only fetch if cache is stale or organization changed
+      const { lastFetchTime, currentOrganizationId } = get();
+      const now = Date.now();
+      const isCacheValid = lastFetchTime && (now - lastFetchTime) < CACHE_TTL && currentOrganizationId === organizationId;
+
+      if (isCacheValid) {
+        console.log('[AppStore] Using cached tournaments data');
+        return;
+      }
+
       set({ loading: true });
       const tournaments = await tournamentApi.getAll(organizationId);
-      set({ tournaments, loading: false });
+      set({ tournaments, loading: false, lastFetchTime: now, currentOrganizationId: organizationId });
     } catch (error) {
       console.error('Error fetching tournaments:', error);
       set({ loading: false });
@@ -52,9 +69,19 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   fetchApplications: async (organizationId: string) => {
     try {
+      // Check cache - only fetch if cache is stale or organization changed
+      const { lastFetchTime, currentOrganizationId } = get();
+      const now = Date.now();
+      const isCacheValid = lastFetchTime && (now - lastFetchTime) < CACHE_TTL && currentOrganizationId === organizationId;
+
+      if (isCacheValid) {
+        console.log('[AppStore] Using cached applications data');
+        return;
+      }
+
       set({ loading: true, currentOrganizationId: organizationId });
       const applications = await applicationApi.getByOrganization(organizationId);
-      set({ applications, loading: false });
+      set({ applications, loading: false, lastFetchTime: now });
       // Pass organizationId to refreshStats for proper filtering
       await get().refreshStats(organizationId);
     } catch (error) {
@@ -145,4 +172,17 @@ export const useAppStore = create<AppState>((set, get) => ({
       console.error('Error refreshing stats:', error);
     }
   }
-}));
+}),
+    {
+      name: 'app-store',
+      // Persist data for caching, but exclude loading state
+      partialize: (state) => ({
+        tournaments: state.tournaments,
+        applications: state.applications,
+        stats: state.stats,
+        currentOrganizationId: state.currentOrganizationId,
+        lastFetchTime: state.lastFetchTime,
+      }),
+    }
+  )
+);
