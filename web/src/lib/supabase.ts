@@ -42,12 +42,22 @@ export async function signInWithProvider(
   localStorage.setItem('pending_user_type', userType);
   localStorage.setItem('pending_oauth_provider', provider);
 
+  const options: any = {
+    redirectTo: `${window.location.origin}/auth/callback`,
+    skipBrowserRedirect: false,
+  };
+
+  // For Google: Force account selection screen to prevent cached account issues
+  if (provider === 'google') {
+    options.queryParams = {
+      prompt: 'select_account',  // Forces Google to show account picker
+      access_type: 'offline',    // Better token refresh handling
+    };
+  }
+
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: provider,
-    options: {
-      redirectTo: `${window.location.origin}/auth/callback`,
-      skipBrowserRedirect: false,
-    },
+    options,
   });
 
   if (error) throw error;
@@ -55,8 +65,17 @@ export async function signInWithProvider(
 }
 
 export async function signOut() {
+  // Clear pending OAuth data from localStorage
+  localStorage.removeItem('pending_user_type');
+  localStorage.removeItem('pending_oauth_provider');
+
+  // Sign out from Supabase (clears session, cookies, localStorage)
   const { error } = await supabase.auth.signOut();
   if (error) throw error;
+
+  // Force clear any remaining session data
+  localStorage.clear();
+  sessionStorage.clear();
 }
 
 export async function getCurrentUser() {
