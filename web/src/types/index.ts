@@ -25,15 +25,16 @@ export interface Organization {
 }
 
 // Tournament & Application Forms
-export type FormFieldType = 'text' | 'textarea' | 'url' | 'number' | 'radio' | 'checkbox' | 'dropdown' | 'email';
+export type FormFieldType = 'text' | 'textarea' | 'url' | 'number' | 'radio' | 'checkbox' | 'select' | 'dropdown' | 'email' | 'phone' | 'date';
 
 export interface FormField {
   id: string;
   label: string;
   type: FormFieldType;
   required: boolean;
+  description?: string; // Optional help text shown below the label
   placeholder?: string;
-  options?: string[]; // For radio, checkbox, dropdown
+  options?: string[]; // For radio, checkbox, dropdown, select
   validation?: {
     min?: number;
     max?: number;
