@@ -15,7 +15,7 @@ const TournamentApplicationSummary: React.FC<{ tournaments: Tournament[], applic
             const approved = relevantApps.filter(app => app.status === 'Approved').length;
             const pending = relevantApps.filter(app => app.status === 'Pending').length;
             const rejected = relevantApps.filter(app => app.status === 'Rejected').length;
-
+            
             return {
                 ...tournament,
                 total,
@@ -30,42 +30,39 @@ const TournamentApplicationSummary: React.FC<{ tournaments: Tournament[], applic
     }, [tournaments, applications]);
 
     return (
-        <div className="bg-gradient-to-br from-[#2A2A2A] to-[#252525] p-6 rounded-[12px] border border-[#9381FF]/20 relative overflow-hidden">
-            {/* Purple accent glow */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-[#9381FF]/10 rounded-full blur-3xl" />
-
-            <h3 className="relative text-xl font-semibold mb-6 text-white">
-                Tournament Application Summary
+         <div className="bg-[#2A2A2A] p-4 rounded-[10px]">
+            <h3 className="text-lg font-semibold mb-4 text-white">
+                Tournament Applications
             </h3>
-            <div className="relative space-y-4 max-h-[280px] overflow-y-auto scrollbar-thin scrollbar-thumb-[#9381FF]/30 scrollbar-track-transparent">
+            <div className="space-y-3 max-h-[280px] overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
                 {summaryData.map((t) => (
                     <div
                         key={t.id}
-                        className="bg-[#1F1F1F] p-4 rounded-[10px] border border-[#9381FF]/10 hover:border-[#9381FF]/30 hover:shadow-lg hover:shadow-[#9381FF]/10 transition-all duration-300"
+                        className="bg-[#1F1F1F] p-3 rounded-[10px]"
                     >
-                        <div className="flex justify-between items-center mb-3">
-                            <div className="flex-1">
-                                <p className="font-semibold text-white text-sm truncate">{t.title}</p>
-                                <p className="text-xs text-[#9381FF] mt-0.5">{t.game}</p>
+                        <div className="flex justify-between items-center mb-2">
+                            <div className="flex-1 min-w-0">
+                                <p className="font-medium text-white text-sm truncate">{t.title}</p>
+                                <p className="text-xs text-white/50 mt-0.5">{t.game}</p>
                             </div>
-                            <span className="text-xs font-semibold px-3 py-1 rounded-full bg-gradient-to-r from-[#DAFF7C]/20 to-[#9381FF]/10 text-[#DAFF7C] border border-[#DAFF7C]/30 shadow-lg shadow-[#DAFF7C]/10">
-                                {t.total} Apps
+                            <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#DAFF7C]/10 text-[#DAFF7C] ml-2">
+                                {t.total}
                             </span>
                         </div>
-                        <div className="w-full bg-[#1A1A1A] rounded-full h-2.5 flex overflow-hidden shadow-inner">
+                        <div className="w-full bg-white/10 rounded-[10px] h-[5px] flex overflow-hidden">
                            <div
-                               className="bg-gradient-to-r from-[#DAFF7C] to-[#c4e96e] h-2.5 shadow-[0_0_10px_rgba(218,255,124,0.5)]"
                                style={{ width: `${t.approvedPercent}%` }}
+                               className="bg-[#DAFF7C] h-full"
                                title={`Approved: ${t.approved}`}
                            />
                            <div
-                               className="bg-gradient-to-r from-[#9381FF] to-[#7d6dd9] h-2.5 shadow-[0_0_10px_rgba(147,129,255,0.5)]"
                                style={{ width: `${t.pendingPercent}%` }}
+                               className="bg-[#9381FF] h-full"
                                title={`Pending: ${t.pending}`}
                            />
                            <div
-                               className="bg-gradient-to-r from-red-500 to-red-600 h-2.5"
                                style={{ width: `${t.rejectedPercent}%` }}
+                               className="bg-red-500 h-full"
                                title={`Rejected: ${t.rejected}`}
                            />
                         </div>
@@ -78,7 +75,7 @@ const TournamentApplicationSummary: React.FC<{ tournaments: Tournament[], applic
 
 const Overview: React.FC = () => {
   const { stats, applications = [], tournaments = [] } = useAppStore();
-
+  
   const applicationStatusData = [
     { name: 'Pending', count: stats?.pending || 0, fill: '#9381FF' },
     { name: 'Approved', count: stats?.approved || 0, fill: '#DAFF7C' },
@@ -86,94 +83,81 @@ const Overview: React.FC = () => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card title="Total Applications" value={stats?.totalApplications || 0} icon={<ApplicationIcon />} accentColor="purple" />
-        <Card title="Approved" value={stats?.approved || 0} icon={<CheckCircleIcon />} accentColor="lime" />
-        <Card title="Rejected" value={stats?.rejected || 0} icon={<XCircleIcon />} accentColor="red" />
-        <Card title="Pending" value={stats?.pending || 0} icon={<ClockIcon />} accentColor="orange" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Card title="Total Applications" value={stats?.totalApplications || 0} icon={<ApplicationIcon />} color="#DAFF7C" />
+        <Card title="Approved" value={stats?.approved || 0} icon={<CheckCircleIcon />} color="#DAFF7C" />
+        <Card title="Rejected" value={stats?.rejected || 0} icon={<XCircleIcon />} color="#ef4444" />
+        <Card title="Pending" value={stats?.pending || 0} icon={<ClockIcon />} color="#9381FF" />
       </div>
 
       {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-gradient-to-br from-[#2A2A2A] to-[#252525] p-6 rounded-[12px] border border-[#9381FF]/20 relative overflow-hidden">
-          {/* Purple accent glow */}
-          <div className="absolute top-0 left-0 w-32 h-32 bg-[#9381FF]/10 rounded-full blur-3xl" />
-
-          <h3 className="relative text-xl font-semibold mb-6 text-white">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="lg:col-span-2 bg-[#2A2A2A] p-4 rounded-[10px]">
+          <h3 className="text-lg font-semibold mb-4 text-white">
             Application Status
           </h3>
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={applicationStatusData} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(147,129,255,0.1)" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
               <XAxis
                 dataKey="name"
-                stroke="#9381FF"
-                tick={{ fill: '#9381FF', fontSize: 13, fontWeight: 500 }}
-                axisLine={{ stroke: '#9381FF', strokeWidth: 2 }}
+                stroke="#888"
+                tick={{ fill: '#999', fontSize: 12 }}
               />
-              <YAxis
-                stroke="#9381FF"
-                tick={{ fill: '#9CA3AF', fontSize: 12 }}
-                axisLine={false}
-              />
+              <YAxis stroke="#888" tick={{ fill: '#999', fontSize: 12 }} />
               <Tooltip
                 contentStyle={{
                   backgroundColor: '#2A2A2A',
-                  border: '1px solid rgba(147,129,255,0.3)',
+                  border: '1px solid rgba(255,255,255,0.1)',
                   borderRadius: '10px',
                   fontSize: '14px',
-                  boxShadow: '0 4px 12px rgba(147,129,255,0.2)',
-                  color: '#fff',
-                  fontWeight: 600
+                  color: '#fff'
                 }}
-                cursor={{ fill: 'rgba(147,129,255,0.1)' }}
-                labelStyle={{ color: '#DAFF7C', fontWeight: 700 }}
+                cursor={{ fill: 'rgba(218, 255, 124, 0.1)' }}
               />
               <Bar
                 dataKey="count"
-                barSize={50}
-                radius={[12, 12, 0, 0]}
+                barSize={40}
+                radius={[10, 10, 0, 0]}
+                fill="#DAFF7C"
               />
             </BarChart>
           </ResponsiveContainer>
         </div>
         <TournamentApplicationSummary tournaments={tournaments} applications={applications} />
       </div>
-
+      
       {/* Recent Applications Table */}
-      <div className="bg-gradient-to-br from-[#2A2A2A] to-[#252525] p-6 rounded-[12px] border border-[#9381FF]/20 relative overflow-hidden">
-          {/* Purple accent glow */}
-          <div className="absolute bottom-0 right-0 w-40 h-40 bg-[#9381FF]/10 rounded-full blur-3xl" />
-
-          <h3 className="relative text-xl font-semibold mb-6 text-white">
+       <div className="bg-[#2A2A2A] p-4 rounded-[10px]">
+          <h3 className="text-lg font-semibold mb-4 text-white">
             Recent Applications
           </h3>
-          <div className="relative overflow-x-auto">
-              <table className="w-full text-left">
+          <div className="overflow-x-auto">
+              <table className="w-full text-left min-w-[600px] sm:min-w-0">
                   <thead>
-                      <tr className="border-b border-[#9381FF]/20 text-white/70 uppercase text-xs tracking-wide bg-[#1F1F1F]/50">
-                          <th className="p-4 font-semibold">Streamer</th>
-                          <th className="p-4 font-semibold">Tournament</th>
-                          <th className="p-4 font-semibold hidden sm:table-cell">Date</th>
-                          <th className="p-4 font-semibold">Status</th>
+                      <tr className="border-b border-white/10 text-white/50 text-xs">
+                          <th className="p-3 font-medium">Streamer</th>
+                          <th className="p-3 font-medium">Tournament</th>
+                          <th className="p-3 font-medium hidden sm:table-cell">Date</th>
+                          <th className="p-3 font-medium">Status</th>
                       </tr>
                   </thead>
                   <tbody>
                       {applications.slice(0, 5).map((app) => (
                           <tr
                               key={app.id}
-                              className="border-b border-white/5 hover:bg-gradient-to-r hover:from-[#9381FF]/5 hover:to-transparent transition-all duration-300"
+                              className="border-b border-white/5 hover:bg-white/5 transition-colors"
                           >
-                              <td className="p-4 font-medium text-white text-sm">{app.streamer.name}</td>
-                              <td className="p-4 text-white/70 text-sm">{app.tournament?.title || 'Unknown'}</td>
-                              <td className="p-4 text-white/70 text-sm hidden sm:table-cell">{app.submission_date}</td>
-                              <td className="p-4">
-                                  <span className={`inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full shadow-lg ${
-                                      app.status === 'Approved' ? 'bg-gradient-to-r from-[#DAFF7C]/20 to-[#DAFF7C]/10 text-[#DAFF7C] border border-[#DAFF7C]/30 shadow-[#DAFF7C]/20' :
-                                      app.status === 'Rejected' ? 'bg-gradient-to-r from-red-500/20 to-red-500/10 text-red-400 border border-red-500/30 shadow-red-500/20' :
-                                      'bg-gradient-to-r from-[#9381FF]/20 to-[#9381FF]/10 text-[#9381FF] border border-[#9381FF]/30 shadow-[#9381FF]/20'
+                              <td className="p-3 font-medium text-white text-sm">{app.streamer.name}</td>
+                              <td className="p-3 text-white/70 text-sm truncate max-w-[150px] sm:max-w-none">{app.tournament?.title || 'Unknown'}</td>
+                              <td className="p-3 text-white/50 text-sm hidden sm:table-cell">{app.submission_date}</td>
+                              <td className="p-3">
+                                  <span className={`inline-flex items-center px-2.5 py-1 text-xs font-semibold rounded-full ${
+                                      app.status === 'Approved' ? 'bg-[#DAFF7C]/10 text-[#DAFF7C]' :
+                                      app.status === 'Rejected' ? 'bg-red-500/10 text-red-400' :
+                                      'bg-[#9381FF]/10 text-[#9381FF]'
                                   }`}>
                                       {app.status}
                                   </span>

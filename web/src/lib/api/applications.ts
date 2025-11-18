@@ -1,5 +1,6 @@
 import { supabase } from '../supabase';
 import { Application, ApplicationStatus } from '../../types';
+import { isValidDiscordUserId } from '../validators/discord';
 
 export const applicationApi = {
   // Get all applications for a tournament
@@ -103,6 +104,26 @@ export const applicationApi = {
 
         if (!discordUserId) {
           console.log('[Applications] No Discord User ID found in application');
+          return data;
+        }
+
+        // SECURITY FIX: Validate Discord User ID format to prevent injection attacks
+        if (!isValidDiscordUserId(discordUserId)) {
+          console.error('[Applications] Invalid Discord User ID format:', {
+            applicationId: id,
+            providedId: discordUserId,
+            type: typeof discordUserId
+          });
+
+          // Update application with error note
+          await supabase
+            .from('applications')
+            .update({
+              notes: (notes || '') + '\n\nERROR: Invalid Discord User ID format. Please ask the applicant to provide a valid Discord User ID (17-19 digits).'
+            })
+            .eq('id', id);
+
+          console.log('[Applications] Application marked with invalid Discord ID error');
           return data;
         }
 

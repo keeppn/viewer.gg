@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
+import { OverviewIcon, TournamentIcon, AnalyticsIcon, ApplicationIcon, ReportIcon, SettingsIcon, LiveIcon } from '../icons/Icons';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -12,106 +13,78 @@ interface SidebarProps {
 
 const NavItem: React.FC<{
   name: string;
-  iconPath: string;
+  icon: React.ReactNode;
   path: string;
   onClose: () => void;
-}> = ({ name, iconPath, path, onClose }) => {
+}> = ({ name, icon, path, onClose }) => {
   const pathname = usePathname();
   const isActive = pathname === path;
 
   return (
     <Link href={path} onClick={onClose}>
       <div
-        className={`relative flex items-center px-3 py-2.5 my-0.5 rounded-[10px] cursor-pointer transition-all duration-300 group ${
+        className={`flex items-center px-4 py-3 my-1 rounded-[10px] cursor-pointer transition-all duration-200 ${
           isActive
-            ? 'bg-gradient-to-r from-[#9381FF]/20 to-[#DAFF7C]/10 shadow-lg shadow-[#9381FF]/10'
-            : 'hover:bg-gradient-to-r hover:from-[#9381FF]/5 hover:to-transparent'
+            ? 'bg-[#DAFF7C]/10 text-white'
+            : 'text-white/70 hover:bg-white/5 hover:text-white'
         }`}
       >
-        {/* Active indicator - gradient bar on left */}
+        {/* Active indicator */}
         {isActive && (
-          <div className="absolute left-0 top-0 h-full w-1 bg-gradient-to-b from-[#9381FF] via-[#DAFF7C] to-[#9381FF] rounded-r shadow-lg shadow-[#9381FF]/50" />
+          <div className="absolute left-0 h-8 w-1 bg-[#DAFF7C] rounded-r-full" />
         )}
 
-        {/* Icon with premium styling */}
-        <div
-          className={`relative w-10 h-10 flex items-center justify-center rounded-[8px] flex-shrink-0 transition-all duration-300 ${
-            isActive
-              ? 'bg-gradient-to-br from-[#9381FF]/20 to-[#DAFF7C]/20 shadow-lg shadow-[#9381FF]/20'
-              : 'bg-white/5 group-hover:bg-gradient-to-br group-hover:from-[#9381FF]/10 group-hover:to-[#DAFF7C]/10'
-          }`}
-        >
-          <img
-            src={iconPath}
-            alt={name}
-            className={`w-6 h-6 object-contain transition-all duration-300 ${
-              isActive
-                ? 'brightness-125 drop-shadow-[0_0_8px_rgba(147,129,255,0.6)]'
-                : 'brightness-90 group-hover:brightness-110 group-hover:drop-shadow-[0_0_6px_rgba(147,129,255,0.4)]'
-            }`}
-          />
+        {/* Icon */}
+        <div className={`w-5 h-5 flex-shrink-0 ${isActive ? 'text-[#DAFF7C]' : 'text-white/70'}`}>
+          {icon}
         </div>
 
-        <span
-          className={`ml-3 font-semibold text-sm transition-all duration-300 ${
-            isActive
-              ? 'text-transparent bg-clip-text bg-gradient-to-r from-[#DAFF7C] to-[#9381FF]'
-              : 'text-white/70 group-hover:text-white'
-          }`}
-        >
+        {/* Label */}
+        <span className={`ml-4 font-medium text-sm ${isActive ? 'text-white' : ''}`}>
           {name}
-        </span>
-
-        {/* Glow effect on active */}
-        {isActive && (
-          <div className="absolute inset-0 rounded-[10px] bg-gradient-to-r from-[#9381FF]/0 via-[#DAFF7C]/5 to-[#9381FF]/0 animate-pulse" />
-        )}
+        </span}
       </div>
     </Link>
   );
 };
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
-  const pages: { name: string; iconPath: string; path: string }[] = [
-    { name: 'Overview', iconPath: '/dashboard-icons/dashboard-overview-icon.png', path: '/dashboard' },
-    { name: 'Tournaments', iconPath: '/dashboard-icons/dashboard-tournaments-icon.png', path: '/dashboard/tournaments' },
-    { name: 'Analytics', iconPath: '/dashboard-icons/dashboard-analytics-icon.png', path: '/dashboard/analytics' },
-    { name: 'Applications', iconPath: '/dashboard-icons/dashboard-applications-icon.png', path: '/dashboard/applications' },
-    { name: 'Live', iconPath: '/dashboard-icons/dashboard-live-icon.png', path: '/dashboard/live' },
-    { name: 'Reports', iconPath: '/dashboard-icons/dashboard-reports-icon.png', path: '/dashboard/reports' },
-    { name: 'Settings', iconPath: '/dashboard-icons/dashboard-settings-icon.png', path: '/dashboard/settings' },
+  const pages: { name: string; icon: React.ReactNode; path: string }[] = [
+    { name: 'Overview', icon: <OverviewIcon />, path: '/dashboard' },
+    { name: 'Tournaments', icon: <TournamentIcon />, path: '/dashboard/tournaments' },
+    { name: 'Analytics', icon: <AnalyticsIcon />, path: '/dashboard/analytics' },
+    { name: 'Applications', icon: <ApplicationIcon />, path: '/dashboard/applications' },
+    { name: 'Live', icon: <LiveIcon />, path: '/dashboard/live' },
+    { name: 'Reports', icon: <ReportIcon />, path: '/dashboard/reports' },
+    { name: 'Settings', icon: <SettingsIcon />, path: '/dashboard/settings' },
   ];
 
   return (
     <>
       {/* Desktop Sidebar */}
-      <aside
-        className="hidden lg:flex relative w-64 flex-shrink-0 flex-col bg-gradient-to-b from-[#1F1F1F] to-[#1A1A1A] border-r border-[#9381FF]/20"
-        style={{ fontFamily: 'Poppins, sans-serif' }}
-      >
-        {/* Subtle purple glow at top */}
-        <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-[#9381FF]/5 to-transparent pointer-events-none" />
-
+      <aside className="hidden lg:flex relative w-64 flex-shrink-0 flex-col bg-[#2A2A2A] border-r border-white/10">
         {/* Logo Section */}
-        <div className="flex items-center justify-center px-6 py-6 mb-3 relative">
-          <div className="relative w-28 h-28 flex items-center justify-center">
-            <div className="absolute inset-0 bg-gradient-to-br from-[#DAFF7C]/20 to-[#9381FF]/20 rounded-full blur-xl animate-pulse" />
+        <div className="flex items-center p-6 mb-2">
+          <div className="relative w-10 h-10 flex items-center justify-center">
             <img
               src="/viewer-logo/viewer-logo-transparent.svg"
               alt="Viewer.gg Logo"
-              className="relative w-full h-full object-contain drop-shadow-[0_0_20px_rgba(218,255,124,0.4)]"
+              className="w-full h-full object-contain"
             />
           </div>
+          <h1 className="text-2xl font-bold ml-3 text-white font-['Poppins']">
+            viewer.gg
+          </h1>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-3 overflow-y-auto scrollbar-thin scrollbar-thumb-[#9381FF]/30 scrollbar-track-transparent">
+        <nav className="flex-1 px-4 overflow-y-auto">
           <ul>
-            {pages.map(({ name, iconPath, path }) => (
+            {pages.map(({ name, icon, path }) => (
               <NavItem
                 key={name}
                 name={name}
-                iconPath={iconPath}
+                icon={icon}
                 path={path}
                 onClose={() => {}}
               />
@@ -120,12 +93,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         </nav>
 
         {/* Footer */}
-        <div className="m-4 p-3 rounded-[10px] text-center bg-gradient-to-br from-[#2A2A2A] to-[#252525] border border-[#9381FF]/20 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-[#9381FF]/5 to-transparent" />
-          <p className="relative text-xs font-semibold text-white">
+        <div className="m-4 p-4 rounded-[10px] text-center bg-white/5 border border-white/10">
+          <p className="text-sm font-semibold text-white/90">
             © 2024 viewer.gg
           </p>
-          <p className="relative text-[10px] text-white/70 mt-0.5">Premium Esports Platform</p>
+          <p className="text-xs text-white/50 mt-1">Tournament Organizer Platform</p>
         </div>
       </aside>
 
@@ -147,16 +119,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="lg:hidden fixed left-0 top-0 bottom-0 w-72 flex-shrink-0 flex flex-col bg-gradient-to-b from-[#1F1F1F] to-[#1A1A1A] border-r border-[#9381FF]/20 z-50"
-              style={{ fontFamily: 'Poppins, sans-serif' }}
+              className="lg:hidden fixed left-0 top-0 bottom-0 w-72 flex-shrink-0 flex flex-col bg-[#2A2A2A] border-r border-white/10 z-50"
             >
-              {/* Subtle purple glow at top */}
-              <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-[#9381FF]/5 to-transparent pointer-events-none" />
-
               {/* Close button */}
               <button
                 onClick={onClose}
-                className="absolute top-4 right-4 z-50 p-2 rounded-[10px] text-white/70 hover:text-white hover:bg-[#9381FF]/20 transition-colors"
+                className="absolute top-4 right-4 z-50 p-2 rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-colors"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -164,25 +132,27 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               </button>
 
               {/* Logo Section */}
-              <div className="flex items-center justify-center px-6 py-6 mb-3 relative">
-                <div className="relative w-28 h-28 flex items-center justify-center">
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#DAFF7C]/20 to-[#9381FF]/20 rounded-full blur-xl animate-pulse" />
+              <div className="flex items-center p-6 mb-2">
+                <div className="relative w-10 h-10 flex items-center justify-center">
                   <img
                     src="/viewer-logo/viewer-logo-transparent.svg"
                     alt="Viewer.gg Logo"
-                    className="relative w-full h-full object-contain drop-shadow-[0_0_20px_rgba(218,255,124,0.4)]"
+                    className="w-full h-full object-contain"
                   />
                 </div>
+                <h1 className="text-2xl font-bold ml-3 text-white font-['Poppins']">
+                  viewer.gg
+                </h1>
               </div>
 
               {/* Navigation */}
-              <nav className="flex-1 px-3 overflow-y-auto">
+              <nav className="flex-1 px-4 overflow-y-auto">
                 <ul>
-                  {pages.map(({ name, iconPath, path }) => (
+                  {pages.map(({ name, icon, path }) => (
                     <NavItem
                       key={name}
                       name={name}
-                      iconPath={iconPath}
+                      icon={icon}
                       path={path}
                       onClose={onClose}
                     />
@@ -191,12 +161,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               </nav>
 
               {/* Footer */}
-              <div className="m-4 p-3 rounded-[10px] text-center bg-gradient-to-br from-[#2A2A2A] to-[#252525] border border-[#9381FF]/20 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#9381FF]/5 to-transparent" />
-                <p className="relative text-xs font-semibold text-white">
+              <div className="m-4 p-4 rounded-[10px] text-center bg-white/5 border border-white/10">
+                <p className="text-sm font-semibold text-white/90">
                   © 2024 viewer.gg
                 </p>
-                <p className="relative text-[10px] text-white/70 mt-0.5">Premium Esports Platform</p>
+                <p className="text-xs text-white/50 mt-1">Tournament Organizer Platform</p>
               </div>
             </motion.aside>
           </>
