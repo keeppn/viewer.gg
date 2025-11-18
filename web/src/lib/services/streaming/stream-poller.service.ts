@@ -107,7 +107,7 @@ export class StreamPollerService {
           totalChecked++;
 
           try {
-            const streamData = liveStreamMap.get(streamer.username!.toLowerCase());
+            const streamData = liveStreamMap.get(streamer.username!.toLowerCase()) || null;
             const isLive = !!streamData;
 
             if (isLive) {
@@ -188,14 +188,18 @@ export class StreamPollerService {
         const streamerCount = liveStreams.length;
 
         // Insert snapshot
-        await supabase.from('viewership_snapshots').insert({
+        const { error: snapshotError } = await supabase.from('viewership_snapshots').insert({
           tournament_id: tournament.id,
           viewer_count: totalViewers,
           streamer_count: streamerCount,
           timestamp: new Date().toISOString(),
         });
 
-        console.log(`[StreamPoller] Snapshot: Tournament ${tournament.id} - ${totalViewers} viewers across ${streamerCount} streamers`);
+        if (snapshotError) {
+          console.error(`[StreamPoller] Error inserting snapshot:`, snapshotError);
+        } else {
+          console.log(`[StreamPoller] Snapshot: Tournament ${tournament.id} - ${totalViewers} viewers across ${streamerCount} streamers`);
+        }
       }
     } catch (error) {
       console.error('[StreamPoller] Error collecting snapshots:', error);

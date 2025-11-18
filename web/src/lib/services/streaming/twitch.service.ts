@@ -32,8 +32,20 @@ export class TwitchService {
   constructor() {
     this.clientId = process.env.TWITCH_CLIENT_ID || '';
     this.clientSecret = process.env.TWITCH_CLIENT_SECRET || '';
+  }
 
-    if (!this.clientId || !this.clientSecret) {
+  /**
+   * Check if Twitch API is configured
+   */
+  isConfigured(): boolean {
+    return !!(this.clientId && this.clientSecret);
+  }
+
+  /**
+   * Ensure credentials are configured before making API calls
+   */
+  private ensureConfigured(): void {
+    if (!this.isConfigured()) {
       throw new Error('Twitch API credentials not configured. Please set TWITCH_CLIENT_ID and TWITCH_CLIENT_SECRET environment variables.');
     }
   }
@@ -43,6 +55,8 @@ export class TwitchService {
    * This token is used for server-to-server API calls (not user-specific)
    */
   private async getAppAccessToken(): Promise<string> {
+    this.ensureConfigured();
+
     // Return cached token if still valid (expires in 5+ minutes)
     if (this.accessToken && this.tokenExpiresAt && this.tokenExpiresAt - Date.now() > 5 * 60 * 1000) {
       return this.accessToken;
@@ -217,19 +231,24 @@ export class TwitchService {
   async updateLiveStream(
     applicationId: string,
     tournamentId: string,
-    streamData: TwitchStream,
+    streamData: TwitchStream | null,
     isLive: boolean
   ): Promise<void> {
     const supabase = await createClient();
 
     if (isLive && streamData) {
       // Check if record exists
-      const { data: existing } = await supabase
+      const { data: existing, error: fetchError } = await supabase
         .from('live_streams')
         .select('*')
         .eq('application_id', applicationId)
         .eq('tournament_id', tournamentId)
-        .single();
+        .maybeSingle(); // Use maybeSingle() instead of single() to avoid errors when no row exists
+
+      if (fetchError) {
+        console.error(`[DB] Error fetching live stream:`, fetchError);
+        return;
+      }
 
       const currentViewers = streamData.viewer_count;
       const peakViewers = existing
@@ -247,55 +266,73 @@ export class TwitchService {
         application_id: applicationId,
         tournament_id: tournamentId,
         platform: 'Twitch' as const,
+        streamer_name: streamData.user_name,
+        game: streamData.game_name,
+        title: streamData.title,
         stream_url: `https://twitch.tv/${streamData.user_login}`,
+        language: streamData.language,
         is_live: true,
         current_viewers: currentViewers,
         peak_viewers: peakViewers,
         average_viewers: avgViewers,
-        stream_title: streamData.title,
-        game_name: streamData.game_name,
-        thumbnail_url: streamData.thumbnail_url,
-        started_at: streamData.started_at,
+        stream_start: streamData.started_at,
         updated_at: new Date().toISOString(),
       };
 
       if (existing) {
         // Update existing record
-        await supabase
+        const { error: updateError } = await supabase
           .from('live_streams')
           .update(streamRecord)
           .eq('id', existing.id);
 
-        console.log(`[DB] Updated live stream for application ${applicationId}`);
+        if (updateError) {
+          console.error(`[DB] Error updating live stream:`, updateError);
+        } else {
+          console.log(`[DB] Updated live stream for application ${applicationId}`);
+        }
       } else {
         // Insert new record
-        await supabase
+        const { error: insertError } = await supabase
           .from('live_streams')
           .insert(streamRecord);
 
-        console.log(`[DB] Created new live stream record for application ${applicationId}`);
+        if (insertError) {
+          console.error(`[DB] Error inserting live stream:`, insertError);
+        } else {
+          console.log(`[DB] Created new live stream record for application ${applicationId}`);
+        }
       }
     } else {
       // Stream is offline - update is_live to false
-      const { data: existing } = await supabase
+      const { data: existing, error: fetchError } = await supabase
         .from('live_streams')
         .select('*')
         .eq('application_id', applicationId)
         .eq('tournament_id', tournamentId)
         .eq('is_live', true)
-        .single();
+        .maybeSingle();
+
+      if (fetchError) {
+        console.error(`[DB] Error fetching live stream for offline update:`, fetchError);
+        return;
+      }
 
       if (existing) {
-        await supabase
+        const { error: updateError } = await supabase
           .from('live_streams')
           .update({
             is_live: false,
-            ended_at: new Date().toISOString(),
+            stream_end: new Date().toISOString(),
             updated_at: new Date().toISOString(),
           })
           .eq('id', existing.id);
 
-        console.log(`[DB] Marked stream as offline for application ${applicationId}`);
+        if (updateError) {
+          console.error(`[DB] Error marking stream as offline:`, updateError);
+        } else {
+          console.log(`[DB] Marked stream as offline for application ${applicationId}`);
+        }
       }
     }
   }

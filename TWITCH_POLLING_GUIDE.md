@@ -2,6 +2,10 @@
 
 This guide explains how the automated Twitch stream tracking works and how to set it up.
 
+**📌 IMPORTANT FOR FREE TIER USERS:**
+If you're on Vercel's **Hobby (free) plan**, you'll need to use an **external cron service**.
+**👉 Quick setup guide:** [FREE_TIER_CRON_SETUP.md](../FREE_TIER_CRON_SETUP.md)
+
 ---
 
 ## 📋 **What It Does**
@@ -81,23 +85,29 @@ CRON_SECRET=generateARandomSecretHere
 
 ### **Step 3: Deploy to Vercel**
 
-The `vercel.json` file is already configured with:
+**⚠️ IMPORTANT: Vercel Plan Requirements**
 
-```json
-{
-  "crons": [
-    {
-      "path": "/api/cron/poll-streams",
-      "schedule": "*/3 * * * *"
-    }
-  ]
-}
-```
+- **Vercel Hobby (Free) Plan:** Only supports 2 cron jobs, each triggered once per day
+- **Vercel Pro Plan ($20/mo):** Unlimited cron jobs with any frequency
 
-This means:
-- **Every 3 minutes** (`*/3 * * * *`), Vercel will call `/api/cron/poll-streams`
-- The endpoint checks all approved Twitch streamers
-- Updates are automatically saved to your database
+**If you're on the FREE Hobby plan** (most users):
+- You **CANNOT** use Vercel's built-in cron for frequent polling
+- Instead, use a **free external cron service** (cron-job.org, EasyCron, etc.)
+- **👉 Follow this guide:** [FREE_TIER_CRON_SETUP.md](../FREE_TIER_CRON_SETUP.md)
+
+**If you have Vercel Pro:**
+- Uncomment the cron config in `vercel.json`:
+  ```json
+  {
+    "crons": [
+      {
+        "path": "/api/cron/poll-streams",
+        "schedule": "*/3 * * * *"
+      }
+    ]
+  }
+  ```
+- Deploy and Vercel will automatically run the cron job every 3 minutes
 
 **Deploy your changes:**
 ```bash
@@ -105,8 +115,6 @@ git add .
 git commit -m "feat: Add Twitch polling system"
 git push origin master
 ```
-
-Vercel will automatically deploy and start running the cron job.
 
 ### **Step 4: Verify It's Working**
 
