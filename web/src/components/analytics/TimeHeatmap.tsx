@@ -10,7 +10,8 @@ interface TimeHeatmapProps {
 
 const TimeHeatmap: React.FC<TimeHeatmapProps> = ({ data }) => {
   const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  const hours = Array.from({ length: 24 }, (_, i) => i);
+  // Show only prime viewing hours (12:00 - 23:00) to keep it compact
+  const hours = Array.from({ length: 12 }, (_, i) => i + 12);
 
   // Find min and max for color scaling
   const allViewers = data.map(d => d.viewers);
@@ -36,13 +37,13 @@ const TimeHeatmap: React.FC<TimeHeatmapProps> = ({ data }) => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-[#1F1F1F]/90 to-[#2A2A2A]/90 backdrop-blur-xl rounded-xl border border-white/10 p-6">
-      <div className="mb-6">
-        <h3 className="text-xl font-bold text-white flex items-center gap-2">
+    <div className="bg-gradient-to-br from-[#1F1F1F]/90 to-[#2A2A2A]/90 backdrop-blur-xl rounded-xl border border-white/10 p-5">
+      <div className="mb-4">
+        <h3 className="text-lg font-bold text-white flex items-center gap-2">
           <span className="w-1.5 h-1.5 rounded-full bg-[#9381FF]" />
           Peak Streaming Times
         </h3>
-        <p className="text-sm text-white/60 mt-1">Viewership intensity by time of day and day of week</p>
+        <p className="text-xs text-white/60 mt-1">Prime viewing hours (12PM - 11PM)</p>
       </div>
 
       {data.length === 0 ? (
@@ -87,10 +88,10 @@ const TimeHeatmap: React.FC<TimeHeatmapProps> = ({ data }) => {
                       return (
                         <div
                           key={`${hour}-${day}`}
-                          className="group relative flex-1 min-w-[60px]"
+                          className="group relative flex-1 min-w-[50px]"
                         >
                           <div
-                            className={`h-8 rounded-md border border-white/10 ${getColorIntensity(viewers)} transition-all duration-200 hover:scale-110 hover:border-[#DAFF7C]/50 cursor-pointer`}
+                            className={`h-6 rounded-md border border-white/10 ${getColorIntensity(viewers)} transition-all duration-200 hover:scale-110 hover:border-[#DAFF7C]/50 cursor-pointer`}
                           />
 
                           {/* Tooltip */}
@@ -111,39 +112,36 @@ const TimeHeatmap: React.FC<TimeHeatmapProps> = ({ data }) => {
             </div>
           </div>
 
-          {/* Legend */}
-          <div className="mt-6 pt-6 border-t border-white/10">
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-white/60">Viewership Intensity:</span>
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-white/60">Low</span>
-                <div className="flex gap-1">
-                  <div className="w-8 h-4 rounded bg-gradient-to-br from-[#9381FF]/20 to-[#9381FF]/10" />
-                  <div className="w-8 h-4 rounded bg-gradient-to-br from-[#9381FF]/40 to-[#9381FF]/20" />
-                  <div className="w-8 h-4 rounded bg-gradient-to-br from-[#9381FF]/60 to-[#DAFF7C]/20" />
-                  <div className="w-8 h-4 rounded bg-gradient-to-br from-[#9381FF]/80 to-[#DAFF7C]/40" />
-                  <div className="w-8 h-4 rounded bg-gradient-to-br from-[#DAFF7C]/90 to-[#9381FF]/60" />
-                </div>
-                <span className="text-xs text-white/60">High</span>
+          {/* Legend - Compact */}
+          <div className="mt-4 pt-4 border-t border-white/10 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-white/60">Intensity:</span>
+              <span className="text-xs text-white/60">Low</span>
+              <div className="flex gap-1">
+                <div className="w-6 h-3 rounded bg-gradient-to-br from-[#9381FF]/20 to-[#9381FF]/10" />
+                <div className="w-6 h-3 rounded bg-gradient-to-br from-[#9381FF]/40 to-[#9381FF]/20" />
+                <div className="w-6 h-3 rounded bg-gradient-to-br from-[#9381FF]/60 to-[#DAFF7C]/20" />
+                <div className="w-6 h-3 rounded bg-gradient-to-br from-[#9381FF]/80 to-[#DAFF7C]/40" />
+                <div className="w-6 h-3 rounded bg-gradient-to-br from-[#DAFF7C]/90 to-[#9381FF]/60" />
               </div>
+              <span className="text-xs text-white/60">High</span>
             </div>
 
-            {/* Peak time summary */}
+            {/* Peak time summary - Inline */}
             {maxViewers > 0 && (
-              <div className="mt-4 grid grid-cols-2 gap-4">
-                <div className="p-3 rounded-lg bg-gradient-to-br from-[#DAFF7C]/10 to-transparent border border-[#DAFF7C]/20">
-                  <div className="text-xs text-white/60 mb-1">Peak Time</div>
-                  <div className="text-sm font-bold text-[#DAFF7C]">
-                    {/* Calculate peak time from data */}
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-white/60">Peak:</span>
+                  <span className="text-sm font-semibold text-[#DAFF7C]">
                     {(() => {
                       const peak = data.reduce((max, curr) => curr.viewers > max.viewers ? curr : max, data[0]);
-                      return `${peak.day}, ${peak.hour.toString().padStart(2, '0')}:00`;
+                      return `${peak.day} ${peak.hour.toString().padStart(2, '0')}:00`;
                     })()}
-                  </div>
+                  </span>
                 </div>
-                <div className="p-3 rounded-lg bg-gradient-to-br from-[#9381FF]/10 to-transparent border border-[#9381FF]/20">
-                  <div className="text-xs text-white/60 mb-1">Peak Viewers</div>
-                  <div className="text-sm font-bold text-[#9381FF]">{maxViewers.toLocaleString()}</div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-white/60">Max:</span>
+                  <span className="text-sm font-semibold text-[#9381FF]">{maxViewers.toLocaleString()}</span>
                 </div>
               </div>
             )}
