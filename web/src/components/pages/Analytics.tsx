@@ -14,6 +14,9 @@ import LanguageBreakdown from '@/components/analytics/LanguageBreakdown';
 import StreamHealthMonitor from '@/components/analytics/StreamHealthMonitor';
 import EngagementMetrics from '@/components/analytics/EngagementMetrics';
 import ExportMenu from '@/components/analytics/ExportMenu';
+import TournamentComparison from '@/components/analytics/TournamentComparison';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const Analytics: React.FC = () => {
   const { analyticsData, applications, liveStreams, tournaments, fetchAnalytics, fetchLiveStreams } = useAppStore();
@@ -125,6 +128,12 @@ const Analytics: React.FC = () => {
   // Get selected tournament
   const selectedTournament = tournaments.find(t => t.id === selectedTournamentId);
 
+  // Handle tournament comparison
+  const handleCompare = (tournamentIds: string[]) => {
+    console.log('Comparing tournaments:', tournamentIds);
+    // In production, this would fetch comparison data for selected tournaments
+  };
+
   // Handle export
   const handleExport = async (format: 'pdf' | 'csv' | 'json') => {
     console.log(`Exporting as ${format}...`);
@@ -181,28 +190,208 @@ const Analytics: React.FC = () => {
       a.download = `analytics-${selectedTournament?.title || 'report'}-${new Date().toISOString().split('T')[0]}.json`;
       a.click();
       window.URL.revokeObjectURL(url);
-    } else {
-      // PDF export would require a library like jsPDF or server-side generation
-      alert('PDF export coming soon! For now, please use CSV or JSON export.');
+    } else if (format === 'pdf') {
+      // Generate PDF report
+      const doc = new jsPDF();
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+
+      // Add header with logo area and title
+      doc.setFillColor(147, 129, 255); // Purple color
+      doc.rect(0, 0, pageWidth, 40, 'F');
+
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(24);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Analytics Report', pageWidth / 2, 20, { align: 'center' });
+
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'normal');
+      doc.text(selectedTournament?.title || 'Tournament', pageWidth / 2, 30, { align: 'center' });
+
+      // Reset text color for content
+      doc.setTextColor(0, 0, 0);
+
+      // Add date
+      doc.setFontSize(10);
+      doc.text(`Generated: ${new Date().toLocaleDateString()}`, 14, 50);
+
+      let yPosition = 60;
+
+      // Key Performance Indicators Section
+      doc.setFontSize(16);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(147, 129, 255);
+      doc.text('Key Performance Indicators', 14, yPosition);
+      yPosition += 10;
+
+      doc.setTextColor(0, 0, 0);
+      autoTable(doc, {
+        startY: yPosition,
+        head: [['Metric', 'Value']],
+        body: [
+          ['Total Applications', totalApplications.toString()],
+          ['Approved Applications', approvedApplications.toString()],
+          ['Approval Rate', `${totalApplications > 0 ? Math.round((approvedApplications / totalApplications) * 100) : 0}%`],
+          ['Live Streamers', liveStreamersCount.toString()],
+          ['Peak Concurrent Viewers', peakViewers.toLocaleString()],
+          ['Average Viewers', avgViewers.toLocaleString()],
+          ['Total Hours Streamed', totalHoursStreamed.toLocaleString()],
+          ['Total Hours Watched', totalHoursWatched.toLocaleString()],
+        ],
+        theme: 'grid',
+        headStyles: { fillColor: [147, 129, 255], textColor: [255, 255, 255] },
+        alternateRowStyles: { fillColor: [248, 249, 250] },
+        margin: { left: 14, right: 14 },
+      });
+
+      yPosition = (doc as any).lastAutoTable.finalY + 15;
+
+      // Platform Distribution Section
+      if (platformData.length > 0) {
+        doc.setFontSize(16);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(147, 129, 255);
+        doc.text('Platform Distribution', 14, yPosition);
+        yPosition += 10;
+
+        doc.setTextColor(0, 0, 0);
+        autoTable(doc, {
+          startY: yPosition,
+          head: [['Platform', 'Viewers', 'Stream Count', 'Avg per Stream']],
+          body: platformData.map(p => [
+            p.platform,
+            p.viewers.toLocaleString(),
+            p.streamCount.toString(),
+            Math.round(p.viewers / p.streamCount).toLocaleString()
+          ]),
+          theme: 'grid',
+          headStyles: { fillColor: [147, 129, 255], textColor: [255, 255, 255] },
+          alternateRowStyles: { fillColor: [248, 249, 250] },
+          margin: { left: 14, right: 14 },
+        });
+
+        yPosition = (doc as any).lastAutoTable.finalY + 15;
+      }
+
+      // Check if we need a new page
+      if (yPosition > pageHeight - 60) {
+        doc.addPage();
+        yPosition = 20;
+      }
+
+      // Top Streamers Section
+      if (liveStreams.length > 0) {
+        const topStreamers = [...liveStreams]
+          .sort((a, b) => b.peak_viewers - a.peak_viewers)
+          .slice(0, 10);
+
+        doc.setFontSize(16);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(147, 129, 255);
+        doc.text('Top Streamers (by Peak Viewers)', 14, yPosition);
+        yPosition += 10;
+
+        doc.setTextColor(0, 0, 0);
+        autoTable(doc, {
+          startY: yPosition,
+          head: [['Rank', 'Streamer', 'Platform', 'Current', 'Peak', 'Average']],
+          body: topStreamers.map((s, idx) => [
+            `${idx + 1}`,
+            s.streamer_name,
+            s.platform,
+            s.current_viewers.toLocaleString(),
+            s.peak_viewers.toLocaleString(),
+            s.average_viewers.toLocaleString()
+          ]),
+          theme: 'grid',
+          headStyles: { fillColor: [147, 129, 255], textColor: [255, 255, 255] },
+          alternateRowStyles: { fillColor: [248, 249, 250] },
+          margin: { left: 14, right: 14 },
+        });
+
+        yPosition = (doc as any).lastAutoTable.finalY + 15;
+      }
+
+      // Check if we need a new page
+      if (yPosition > pageHeight - 60) {
+        doc.addPage();
+        yPosition = 20;
+      }
+
+      // Language Distribution Section
+      if (languageData.length > 0) {
+        doc.setFontSize(16);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(147, 129, 255);
+        doc.text('Language Distribution', 14, yPosition);
+        yPosition += 10;
+
+        const sortedLanguages = [...languageData]
+          .sort((a, b) => b.viewers - a.viewers)
+          .slice(0, 10);
+
+        const totalViewersLang = sortedLanguages.reduce((sum, l) => sum + l.viewers, 0);
+
+        doc.setTextColor(0, 0, 0);
+        autoTable(doc, {
+          startY: yPosition,
+          head: [['Language', 'Viewers', 'Streamers', 'Percentage']],
+          body: sortedLanguages.map(l => [
+            l.language,
+            l.viewers.toLocaleString(),
+            l.streamers.toString(),
+            `${totalViewersLang > 0 ? ((l.viewers / totalViewersLang) * 100).toFixed(1) : 0}%`
+          ]),
+          theme: 'grid',
+          headStyles: { fillColor: [147, 129, 255], textColor: [255, 255, 255] },
+          alternateRowStyles: { fillColor: [248, 249, 250] },
+          margin: { left: 14, right: 14 },
+        });
+
+        yPosition = (doc as any).lastAutoTable.finalY + 15;
+      }
+
+      // Add footer with page numbers
+      const pageCount = doc.getNumberOfPages();
+      for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(10);
+        doc.setTextColor(128, 128, 128);
+        doc.text(
+          `Page ${i} of ${pageCount}`,
+          pageWidth / 2,
+          pageHeight - 10,
+          { align: 'center' }
+        );
+        doc.text(
+          'viewer.gg Analytics',
+          14,
+          pageHeight - 10
+        );
+      }
+
+      // Download PDF
+      doc.save(`analytics-${selectedTournament?.title || 'report'}-${new Date().toISOString().split('T')[0]}.pdf`);
     }
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 p-4 sm:p-0">
       {/* Header with Tournament Selector and Export */}
-      <div className="flex items-start justify-between">
-        <div>
-          <h2 className="text-3xl font-bold text-white mb-2">Analytics Dashboard</h2>
-          <p className="text-white/60">Comprehensive tournament performance metrics and insights</p>
+      <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
+        <div className="flex-1">
+          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">Analytics Dashboard</h2>
+          <p className="text-sm sm:text-base text-white/60">Comprehensive tournament performance metrics and insights</p>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
           {selectedTournamentId && (
             <ExportMenu
               tournamentName={selectedTournament?.title || 'Tournament'}
               onExport={handleExport}
             />
           )}
-          <div className="w-80">
+          <div className="w-full sm:w-80">
             <TournamentSelector
               tournaments={tournaments}
               selectedTournamentId={selectedTournamentId}
@@ -304,6 +493,14 @@ const Analytics: React.FC = () => {
             streamCount={liveStreamersCount}
           />
 
+          {/* Tournament Comparison */}
+          {tournaments.length >= 2 && (
+            <TournamentComparison
+              tournaments={tournaments}
+              onCompare={handleCompare}
+            />
+          )}
+
           {/* Stream Health Monitor */}
           {liveStreams.length > 0 && (
             <StreamHealthMonitor streams={liveStreams} />
@@ -332,36 +529,36 @@ const Analytics: React.FC = () => {
           {/* Live Streamers Table */}
           {liveStreams.length > 0 && (
             <div className="bg-gradient-to-br from-[#1F1F1F]/90 to-[#2A2A2A]/90 backdrop-blur-xl rounded-xl border border-white/10 overflow-hidden">
-              <div className="p-6 border-b border-white/10">
+              <div className="p-4 sm:p-6 border-b border-white/10">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                    <h3 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#10b981] animate-pulse" />
                       Live Streamers ({liveStreams.length})
                     </h3>
-                    <p className="text-sm text-white/60 mt-1">Currently streaming for this tournament</p>
+                    <p className="text-xs sm:text-sm text-white/60 mt-1">Currently streaming for this tournament</p>
                   </div>
                 </div>
               </div>
 
               <div className="overflow-x-auto">
-                <table className="w-full text-left">
+                <table className="w-full text-left min-w-[640px]">
                   <thead>
-                    <tr className="border-b border-white/10 bg-[#1F1F1F] text-white/70 text-sm uppercase">
-                      <th className="p-4 font-semibold">Streamer</th>
-                      <th className="p-4 font-semibold">Platform</th>
-                      <th className="p-4 font-semibold">Game</th>
-                      <th className="p-4 font-semibold">Title</th>
-                      <th className="p-4 font-semibold">Language</th>
-                      <th className="p-4 font-semibold text-right">Viewers</th>
+                    <tr className="border-b border-white/10 bg-[#1F1F1F] text-white/70 text-xs sm:text-sm uppercase">
+                      <th className="p-3 sm:p-4 font-semibold whitespace-nowrap">Streamer</th>
+                      <th className="p-3 sm:p-4 font-semibold whitespace-nowrap">Platform</th>
+                      <th className="p-3 sm:p-4 font-semibold whitespace-nowrap hidden md:table-cell">Game</th>
+                      <th className="p-3 sm:p-4 font-semibold whitespace-nowrap hidden lg:table-cell">Title</th>
+                      <th className="p-3 sm:p-4 font-semibold whitespace-nowrap hidden sm:table-cell">Language</th>
+                      <th className="p-3 sm:p-4 font-semibold text-right whitespace-nowrap">Viewers</th>
                     </tr>
                   </thead>
                   <tbody>
                     {liveStreams.map((stream) => (
                       <tr key={stream.id} className="border-b border-white/5 hover:bg-white/5 transition-colors duration-200">
-                        <td className="p-4 font-medium text-white">{stream.streamer_name}</td>
-                        <td className="p-4">
-                          <span className={`px-2 py-1 rounded-md text-xs font-medium border ${
+                        <td className="p-3 sm:p-4 font-medium text-white text-sm">{stream.streamer_name}</td>
+                        <td className="p-3 sm:p-4">
+                          <span className={`px-2 py-1 rounded-md text-xs font-medium border whitespace-nowrap ${
                             stream.platform === 'Twitch'
                               ? 'bg-[#9146FF]/20 text-[#9146FF] border-[#9146FF]/30'
                               : stream.platform === 'YouTube'
@@ -371,11 +568,11 @@ const Analytics: React.FC = () => {
                             {stream.platform}
                           </span>
                         </td>
-                        <td className="p-4 text-white/70">{stream.game}</td>
-                        <td className="p-4 text-white/70 max-w-sm truncate">{stream.title}</td>
-                        <td className="p-4 text-white/70">{stream.language}</td>
-                        <td className="p-4 text-right">
-                          <span className="font-bold text-[#DAFF7C]">{stream.current_viewers.toLocaleString()}</span>
+                        <td className="p-3 sm:p-4 text-white/70 text-sm hidden md:table-cell">{stream.game}</td>
+                        <td className="p-3 sm:p-4 text-white/70 text-sm max-w-sm truncate hidden lg:table-cell">{stream.title}</td>
+                        <td className="p-3 sm:p-4 text-white/70 text-sm hidden sm:table-cell">{stream.language}</td>
+                        <td className="p-3 sm:p-4 text-right">
+                          <span className="font-bold text-[#DAFF7C] text-sm">{stream.current_viewers.toLocaleString()}</span>
                         </td>
                       </tr>
                     ))}
