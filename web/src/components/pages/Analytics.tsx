@@ -379,16 +379,15 @@ const Analytics: React.FC = () => {
   return (
     <div className="space-y-4 sm:space-y-5">
       {/* Compact Header with Tournament Selector and Export */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-        <p className="text-sm text-white/60">Track performance metrics and insights for your tournaments</p>
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
+      <div className="flex items-center justify-end gap-3">
+        <div className="flex items-center gap-3">
           {selectedTournamentId && (
             <ExportMenu
               tournamentName={selectedTournament?.title || 'Tournament'}
               onExport={handleExport}
             />
           )}
-          <div className="w-full sm:w-72">
+          <div className="w-64">
             <TournamentSelector
               tournaments={tournaments}
               selectedTournamentId={selectedTournamentId}
