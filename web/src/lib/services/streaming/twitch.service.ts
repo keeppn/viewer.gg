@@ -82,12 +82,15 @@ export class TwitchService {
     }
 
     const data = await response.json();
-    this.accessToken = data.access_token;
+    const token = data.access_token;
+
+    // Cache the token
+    this.accessToken = token;
     this.tokenExpiresAt = Date.now() + (data.expires_in * 1000);
 
     console.log('[Twitch] Access token obtained, expires in', data.expires_in, 'seconds');
 
-    return this.accessToken;
+    return token;
   }
 
   /**
