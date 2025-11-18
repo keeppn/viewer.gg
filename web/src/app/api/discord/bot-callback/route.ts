@@ -71,7 +71,7 @@ export async function GET(request: NextRequest) {
 
   // SECURITY FIX: Verify user authorization before allowing bot connection
   // This prevents users from connecting bots to organizations they don't own
-  const sessionClient = createClient();
+  const sessionClient = await createClient();
   const { data: { session }, error: sessionError } = await sessionClient.auth.getSession();
 
   if (!session || sessionError) {
