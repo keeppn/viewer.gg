@@ -55,7 +55,7 @@ const StatusBadge: React.FC<{ status: Tournament['status'] }> = ({ status }) => 
 // Grid view card component
 const TournamentCard: React.FC<{ tournament: Tournament; onManage: (id: string) => void }> = ({ tournament, onManage }) => {
   // Calculate form field count
-  const formFieldCount = tournament.formFields?.length || 0;
+  const formFieldCount = tournament.form_fields?.length || 0;
 
   return (
     <div className="group relative bg-gradient-to-br from-[#1F1F1F]/90 to-[#2A2A2A]/90 backdrop-blur-xl rounded-[12px] border border-white/10 hover:border-[#9381FF]/40 transition-all duration-300 overflow-hidden">
