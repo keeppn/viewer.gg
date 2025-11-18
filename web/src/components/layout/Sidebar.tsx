@@ -42,7 +42,7 @@ const NavItem: React.FC<{
         {/* Label */}
         <span className={`ml-4 font-medium text-sm ${isActive ? 'text-white' : ''}`}>
           {name}
-        </span}
+        </span>
       </div>
     </Link>
   );
