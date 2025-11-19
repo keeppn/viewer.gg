@@ -106,7 +106,13 @@ export const applicationApi = {
           return data;
         }
 
-        console.log('[Applications] Assigning Discord role to approved streamer...');
+        console.log('[Applications] Assigning Discord role to approved streamer...', {
+          discord_user_id: discordUserId,
+          tournament_id: application.tournament_id,
+          application_id: id,
+          has_tournament: !!application.tournament,
+          tournament_org_id: application.tournament?.organization_id
+        });
 
         // Call the assign-role endpoint with tournament_id
         // The API will look up the Discord config server-side
@@ -124,10 +130,14 @@ export const applicationApi = {
 
         if (!response.ok) {
           const errorData = await response.json();
-          console.error('[Applications] Failed to assign Discord role:', errorData);
+          console.error('[Applications] Failed to assign Discord role:', {
+            status: response.status,
+            error: errorData
+          });
           // Don't throw error - application is still approved even if role assignment fails
         } else {
-          console.log('[Applications] Discord role assigned successfully');
+          const successData = await response.json();
+          console.log('[Applications] Discord role assigned successfully:', successData);
         }
       } catch (discordError) {
         console.error('[Applications] Error assigning Discord role:', discordError);
