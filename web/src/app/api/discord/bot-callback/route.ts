@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServiceRoleClient } from '@/lib/supabase/server';
+import { positionRoleBelowBot } from '@/lib/discord/rest';
 
 /**
  * Discord Bot OAuth Callback Handler
@@ -161,6 +162,17 @@ export async function GET(request: NextRequest) {
       }
     } else {
       console.log('[Discord Bot Callback] Role already exists:', approvedRole.id);
+    }
+
+    // Position the role below the bot's role to ensure bot can assign it
+    if (approvedRole?.id) {
+      try {
+        await positionRoleBelowBot(guildId, approvedRole.id);
+        console.log('[Discord Bot Callback] Role positioned below bot successfully');
+      } catch (positionError) {
+        console.error('[Discord Bot Callback] Failed to position role:', positionError);
+        // Continue anyway - TO can manually adjust if needed
+      }
     }
 
     // Save Discord configuration to database
