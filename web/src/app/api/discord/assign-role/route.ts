@@ -5,7 +5,6 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createServiceRoleClient } from '@/lib/supabase/server';
 import { findOrCreateRole, addMemberRole } from '@/lib/discord/rest';
 
 export async function POST(request: NextRequest) {
@@ -14,74 +13,26 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { guild_id, discord_user_id, role_name, application_id, tournament_id } = body;
 
-    if (!discord_user_id) {
+    if (!guild_id || !discord_user_id) {
       return NextResponse.json(
-        { error: 'Missing required field: discord_user_id' },
+        { error: 'Missing required fields: guild_id, discord_user_id' },
         { status: 400 }
       );
     }
 
-    // Use service role client to bypass RLS for Discord config lookup
-    const supabase = createServiceRoleClient();
-    let guildId = guild_id;
-    let roleName = role_name || 'Approved Co-Streamer';
-
-    // If guild_id is not provided, try to look it up from tournament
-    if (!guildId && tournament_id) {
-      console.log('[Discord API] Looking up Discord config for tournament:', tournament_id);
-
-      // Get tournament to find organization_id
-      const { data: tournament, error: tournamentError } = await supabase
-        .from('tournaments')
-        .select('organization_id')
-        .eq('id', tournament_id)
-        .single();
-
-      if (tournamentError) {
-        console.error('[Discord API] Error fetching tournament:', tournamentError);
-        return NextResponse.json(
-          { error: 'Tournament not found' },
-          { status: 404 }
-        );
-      }
-
-      // Get Discord config for organization
-      const { data: discordConfig, error: configError } = await supabase
-        .from('discord_configs')
-        .select('*')
-        .eq('organization_id', tournament.organization_id)
-        .single();
-
-      if (configError || !discordConfig) {
-        console.error('[Discord API] No Discord config found for organization:', configError);
-        return NextResponse.json(
-          { error: 'Discord not configured for this organization' },
-          { status: 400 }
-        );
-      }
-
-      guildId = discordConfig.guild_id;
-      roleName = discordConfig.role_name || roleName;
-    }
-
-    if (!guildId) {
-      return NextResponse.json(
-        { error: 'Missing required field: guild_id or tournament_id' },
-        { status: 400 }
-      );
-    }
+    const roleName = role_name || 'Approved Co-Streamer';
 
     console.log('[Discord API] Assigning role:', {
-      guild_id: guildId,
+      guild_id,
       discord_user_id,
       role_name: roleName,
     });
 
     // Find or create the role
-    const role = await findOrCreateRole(guildId, roleName, 0x00FF00);
+    const role = await findOrCreateRole(guild_id, roleName, 0x00FF00);
 
     // Assign role to member
-    await addMemberRole(guildId, discord_user_id, role.id);
+    await addMemberRole(guild_id, discord_user_id, role.id);
 
     return NextResponse.json({
       success: true,
