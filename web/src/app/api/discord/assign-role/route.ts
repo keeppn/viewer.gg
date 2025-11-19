@@ -5,7 +5,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { createServiceRoleClient } from '@/lib/supabase/server';
 import { findOrCreateRole, addMemberRole } from '@/lib/discord/rest';
 
 export async function POST(request: NextRequest) {
@@ -21,7 +21,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const supabase = await createClient();
+    // Use service role client to bypass RLS for Discord config lookup
+    const supabase = createServiceRoleClient();
     let guildId = guild_id;
     let roleName = role_name || 'Approved Co-Streamer';
 
