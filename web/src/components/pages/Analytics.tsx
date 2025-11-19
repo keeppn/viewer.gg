@@ -455,6 +455,24 @@ const Analytics: React.FC = () => {
             />
           </div>
 
+          {/* Tournament Comparison Button */}
+          <div className="flex justify-end">
+            <button
+              onClick={() => {
+                const selectedIds = [selectedTournamentId];
+                const otherTournaments = tournaments.filter(t => t.id !== selectedTournamentId);
+                if (otherTournaments.length > 0) {
+                  selectedIds.push(otherTournaments[0].id);
+                }
+                handleCompare(selectedIds);
+              }}
+              className="px-4 py-2 bg-gradient-to-r from-[#9381FF]/20 to-[#DAFF7C]/20 hover:from-[#9381FF]/30 hover:to-[#DAFF7C]/30 text-white rounded-lg border border-white/20 transition-all flex items-center gap-2 text-sm font-medium"
+            >
+              <span>📊</span>
+              <span>Compare Tournaments</span>
+            </button>
+          </div>
+
           {/* Main Analytics Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5">
             {/* Viewership Timeline - Full Width */}
@@ -464,30 +482,36 @@ const Analytics: React.FC = () => {
               />
             </div>
 
-            {/* Streamer Leaderboard - 2 cols */}
-            <div className="lg:col-span-2">
-              <StreamerLeaderboard streams={liveStreams} />
+            {/* Row 1: Streamer Leaderboard + Platform Comparison */}
+            <div className="lg:col-span-2 flex">
+              <div className="flex-1">
+                <StreamerLeaderboard streams={liveStreams} />
+              </div>
             </div>
 
-            {/* Platform Comparison - 1 col */}
-            <div className="lg:col-span-1">
-              <PlatformComparison data={platformData} />
+            <div className="lg:col-span-1 flex">
+              <div className="flex-1">
+                <PlatformComparison data={platformData} />
+              </div>
             </div>
 
-            {/* Engagement Metrics - 2 cols */}
-            <div className="lg:col-span-2">
-              <EngagementMetrics
-                totalHoursStreamed={totalHoursStreamed}
-                totalViewers={currentViewers}
-                peakViewers={peakViewers}
-                averageViewers={avgViewers}
-                streamCount={liveStreamersCount}
-              />
+            {/* Row 2: Engagement Metrics + Language Breakdown */}
+            <div className="lg:col-span-2 flex">
+              <div className="flex-1">
+                <EngagementMetrics
+                  totalHoursStreamed={totalHoursStreamed}
+                  totalViewers={currentViewers}
+                  peakViewers={peakViewers}
+                  averageViewers={avgViewers}
+                  streamCount={liveStreamersCount}
+                />
+              </div>
             </div>
 
-            {/* Language Breakdown - 1 col */}
-            <div className="lg:col-span-1">
-              <LanguageBreakdown data={languageData} />
+            <div className="lg:col-span-1 flex">
+              <div className="flex-1">
+                <LanguageBreakdown data={languageData} />
+              </div>
             </div>
 
             {/* Time Heatmap - Full Width */}

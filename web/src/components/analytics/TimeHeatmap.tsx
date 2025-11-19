@@ -57,58 +57,56 @@ const TimeHeatmap: React.FC<TimeHeatmapProps> = ({ data }) => {
         </div>
       ) : (
         <>
-          <div className="overflow-x-auto">
-            <div className="inline-block min-w-full">
-              {/* Day labels */}
-              <div className="flex mb-2">
-                <div className="w-12" /> {/* Empty space for hour labels */}
-                {days.map(day => (
-                  <div key={day} className="flex-1 min-w-[60px] text-center">
-                    <span className="text-xs font-semibold text-white/70">{day}</span>
+          <div className="w-full">
+            {/* Day labels */}
+            <div className="flex mb-2">
+              <div className="w-12 flex-shrink-0" /> {/* Empty space for hour labels */}
+              {days.map(day => (
+                <div key={day} className="flex-1 text-center">
+                  <span className="text-xs font-semibold text-white/70">{day}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Heatmap grid */}
+            <div className="space-y-1">
+              {hours.map(hour => (
+                <div key={hour} className="flex items-center gap-1">
+                  {/* Hour label */}
+                  <div className="w-12 flex-shrink-0 text-right">
+                    <span className="text-xs text-white/60">
+                      {hour.toString().padStart(2, '0')}:00
+                    </span>
                   </div>
-                ))}
-              </div>
 
-              {/* Heatmap grid */}
-              <div className="space-y-1">
-                {hours.map(hour => (
-                  <div key={hour} className="flex items-center gap-1">
-                    {/* Hour label */}
-                    <div className="w-12 text-right">
-                      <span className="text-xs text-white/60">
-                        {hour.toString().padStart(2, '0')}:00
-                      </span>
-                    </div>
+                  {/* Cells for each day */}
+                  {days.map(day => {
+                    const cellData = getCellData(hour, day);
+                    const viewers = cellData?.viewers || 0;
 
-                    {/* Cells for each day */}
-                    {days.map(day => {
-                      const cellData = getCellData(hour, day);
-                      const viewers = cellData?.viewers || 0;
-
-                      return (
+                    return (
+                      <div
+                        key={`${hour}-${day}`}
+                        className="group relative flex-1"
+                      >
                         <div
-                          key={`${hour}-${day}`}
-                          className="group relative flex-1 min-w-[50px]"
-                        >
-                          <div
-                            className={`h-6 rounded-md border border-white/10 ${getColorIntensity(viewers)} transition-all duration-200 hover:scale-110 hover:border-[#DAFF7C]/50 cursor-pointer`}
-                          />
+                          className={`h-6 rounded-md border border-white/10 ${getColorIntensity(viewers)} transition-all duration-200 hover:scale-110 hover:border-[#DAFF7C]/50 cursor-pointer`}
+                        />
 
-                          {/* Tooltip */}
-                          {viewers > 0 && (
-                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-10">
-                              <div className="bg-gradient-to-br from-[#1F1F1F]/95 to-[#2A2A2A]/95 backdrop-blur-xl px-3 py-2 rounded-lg border border-white/20 shadow-xl whitespace-nowrap">
-                                <p className="text-xs text-white/70">{day}, {hour.toString().padStart(2, '0')}:00</p>
-                                <p className="text-sm font-bold text-[#DAFF7C]">{viewers.toLocaleString()} viewers</p>
-                              </div>
+                        {/* Tooltip */}
+                        {viewers > 0 && (
+                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-10">
+                            <div className="bg-gradient-to-br from-[#1F1F1F]/95 to-[#2A2A2A]/95 backdrop-blur-xl px-3 py-2 rounded-lg border border-white/20 shadow-xl whitespace-nowrap">
+                              <p className="text-xs text-white/70">{day}, {hour.toString().padStart(2, '0')}:00</p>
+                              <p className="text-sm font-bold text-[#DAFF7C]">{viewers.toLocaleString()} viewers</p>
                             </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                ))}
-              </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
             </div>
           </div>
 

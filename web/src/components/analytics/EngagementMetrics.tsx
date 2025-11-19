@@ -86,8 +86,8 @@ const EngagementMetrics: React.FC<EngagementMetricsProps> = ({
   ];
 
   return (
-    <div className="bg-gradient-to-br from-[#1F1F1F]/90 to-[#2A2A2A]/90 backdrop-blur-xl rounded-xl border border-white/10 p-6">
-      <div className="mb-6">
+    <div className="bg-gradient-to-br from-[#1F1F1F]/90 to-[#2A2A2A]/90 backdrop-blur-xl rounded-xl border border-white/10 p-6 h-full flex flex-col">
+      <div className="mb-6 flex-shrink-0">
         <h3 className="text-xl font-bold text-white flex items-center gap-2">
           <span className="w-1.5 h-1.5 rounded-full bg-[#10b981]" />
           Engagement Metrics
@@ -95,7 +95,7 @@ const EngagementMetrics: React.FC<EngagementMetricsProps> = ({
         <p className="text-sm text-white/60 mt-1">Advanced reach and engagement analytics</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 flex-1">
         {metrics.map((metric, index) => (
           <div
             key={index}

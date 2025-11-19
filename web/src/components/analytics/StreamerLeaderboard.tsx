@@ -56,7 +56,7 @@ const StreamerLeaderboard: React.FC<StreamerLeaderboardProps> = ({ streams }) =>
   };
 
   return (
-    <div className="bg-gradient-to-br from-[#1F1F1F]/90 to-[#2A2A2A]/90 backdrop-blur-xl rounded-xl border border-white/10 overflow-hidden">
+    <div className="bg-gradient-to-br from-[#1F1F1F]/90 to-[#2A2A2A]/90 backdrop-blur-xl rounded-xl border border-white/10 overflow-hidden h-full flex flex-col">
       {/* Header */}
       <div className="p-6 border-b border-white/10">
         <div className="flex items-center justify-between">
@@ -106,7 +106,7 @@ const StreamerLeaderboard: React.FC<StreamerLeaderboardProps> = ({ streams }) =>
       </div>
 
       {/* Leaderboard */}
-      <div className="divide-y divide-white/5">
+      <div className="divide-y divide-white/5 flex-1 overflow-y-auto">
         {sortedStreams.length === 0 ? (
           <div className="p-12 text-center">
             <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-[#9381FF]/20 to-[#DAFF7C]/20 flex items-center justify-center">

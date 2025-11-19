@@ -74,8 +74,8 @@ const LanguageBreakdown: React.FC<LanguageBreakdownProps> = ({ data }) => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-[#1F1F1F]/90 to-[#2A2A2A]/90 backdrop-blur-xl rounded-xl border border-white/10 p-6">
-      <div className="mb-6">
+    <div className="bg-gradient-to-br from-[#1F1F1F]/90 to-[#2A2A2A]/90 backdrop-blur-xl rounded-xl border border-white/10 p-6 h-full flex flex-col">
+      <div className="mb-6 flex-shrink-0">
         <h3 className="text-xl font-bold text-white flex items-center gap-2">
           <span className="w-1.5 h-1.5 rounded-full bg-[#DAFF7C]" />
           Language Distribution
@@ -84,7 +84,7 @@ const LanguageBreakdown: React.FC<LanguageBreakdownProps> = ({ data }) => {
       </div>
 
       {data.length === 0 ? (
-        <div className="h-[300px] flex items-center justify-center">
+        <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-[#9381FF]/20 to-[#DAFF7C]/20 flex items-center justify-center">
               <span className="text-3xl">🌍</span>
