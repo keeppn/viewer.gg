@@ -106,38 +106,38 @@ export const applicationApi = {
           return data;
         }
 
-        console.log('[Applications] Assigning Discord role to approved streamer...', {
-          discord_user_id: discordUserId,
-          tournament_id: application.tournament_id,
-          application_id: id,
-          has_tournament: !!application.tournament,
-          tournament_org_id: application.tournament?.organization_id
-        });
+        // Get Discord config for the organization
+        const { data: discordConfig } = await supabase
+          .from('discord_configs')
+          .select('*')
+          .eq('organization_id', application.tournament?.organization_id)
+          .single();
 
-        // Call the assign-role endpoint with tournament_id
-        // The API will look up the Discord config server-side
-        const response = await fetch('/api/discord/assign-role', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            discord_user_id: discordUserId,
-            tournament_id: application.tournament_id,
-            application_id: id,
-          }),
-        });
+        if (discordConfig) {
+          console.log('[Applications] Assigning Discord role to approved streamer...');
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.error('[Applications] Failed to assign Discord role:', {
-            status: response.status,
-            error: errorData
+          // Call the assign-role endpoint
+          const response = await fetch('/api/discord/assign-role', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              guild_id: discordConfig.guild_id,
+              discord_user_id: discordUserId,
+              role_name: discordConfig.role_name || 'Approved Co-Streamer',
+              application_id: id,
+              tournament_id: application.tournament_id,
+            }),
           });
-          // Don't throw error - application is still approved even if role assignment fails
-        } else {
-          const successData = await response.json();
-          console.log('[Applications] Discord role assigned successfully:', successData);
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            console.error('[Applications] Failed to assign Discord role:', errorData);
+            // Don't throw error - application is still approved even if role assignment fails
+          } else {
+            console.log('[Applications] Discord role assigned successfully');
+          }
         }
       } catch (discordError) {
         console.error('[Applications] Error assigning Discord role:', discordError);
