@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import RootErrorBoundary from "@/components/common/RootErrorBoundary";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -41,7 +42,9 @@ export default function RootLayout({
         <meta httpEquiv="Expires" content="0" />
       </head>
       <body className="antialiased font-[family-name:var(--font-body)]" suppressHydrationWarning>
-        {children}
+        <RootErrorBoundary>
+          {children}
+        </RootErrorBoundary>
       </body>
     </html>
   );

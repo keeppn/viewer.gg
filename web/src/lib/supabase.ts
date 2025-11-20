@@ -73,8 +73,22 @@ export async function signOut() {
   const { error } = await supabase.auth.signOut();
   if (error) throw error;
 
-  // Force clear any remaining session data
-  localStorage.clear();
+  // Selectively clear only Supabase-related keys from storage
+  // instead of clearing everything which removes user preferences
+  const keysToRemove: string[] = [];
+
+  // Find all Supabase-related keys (they start with 'sb-')
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.startsWith('sb-')) {
+      keysToRemove.push(key);
+    }
+  }
+
+  // Remove Supabase keys
+  keysToRemove.forEach(key => localStorage.removeItem(key));
+
+  // Clear session storage (typically only contains temporary session data)
   sessionStorage.clear();
 }
 

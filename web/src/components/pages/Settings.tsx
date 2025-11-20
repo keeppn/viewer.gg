@@ -1,21 +1,23 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import Button from '@/components/common/Button';
+import { Organization, DiscordConfig } from '@/types';
 
 const Settings: React.FC = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const pathname = usePathname();
 
     const [loading, setLoading] = useState(true);
-    const [organization, setOrganization] = useState<any>(null);
-    const [discordConfig, setDiscordConfig] = useState<any>(null);
+    const [organization, setOrganization] = useState<Organization | null>(null);
+    const [discordConfig, setDiscordConfig] = useState<DiscordConfig | null>(null);
     const [error, setError] = useState<string | null>(null);
 
     // Force log to verify component is rendering
-    console.log('[Settings] Component rendering, loading:', loading, 'organization:', organization?.name || 'NULL', 'discordConfig:', discordConfig ? 'EXISTS' : 'NULL');
+    console.log('[Settings] Component rendering, pathname:', pathname, 'loading:', loading, 'organization:', organization?.name || 'NULL', 'discordConfig:', discordConfig ? 'EXISTS' : 'NULL');
 
     useEffect(() => {
         console.log('[Settings] useEffect triggered');
@@ -81,7 +83,7 @@ const Settings: React.FC = () => {
             console.log('[Settings] Cleanup - component unmounting');
             isMounted = false;
         };
-    }, []); // Empty array - only run ONCE on mount
+    }, [pathname]); // Reload when navigating to this page
 
     const loadOrganizationData = async () => {
         try {
