@@ -282,16 +282,6 @@ if (typeof window !== 'undefined') {
             });
         }
     });
-
-    // Clean up on module unload (for hot module replacement in development)
-    if (typeof window !== 'undefined' && import.meta.hot) {
-        import.meta.hot.dispose(() => {
-            console.log('AuthStore: Cleaning up auth listener (HMR)');
-            if (authSubscription) {
-                authSubscription.data.subscription.unsubscribe();
-            }
-        });
-    }
 }
 
 // Export cleanup function for manual cleanup if needed
