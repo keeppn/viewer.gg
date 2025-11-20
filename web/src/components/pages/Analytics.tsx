@@ -35,7 +35,8 @@ const Analytics: React.FC = () => {
       fetchAnalytics(selectedTournamentId);
       fetchLiveStreams(selectedTournamentId);
     }
-  }, [selectedTournamentId, fetchAnalytics, fetchLiveStreams]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedTournamentId]); // Only re-fetch when tournament selection changes, not when store functions change
 
   // Calculate platform distribution
   const platformData = useMemo(() => {

@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase';
 import { useAuthStore } from '@/store/authStore';
 import { useAppStore } from '@/store/appStore';
 import Layout from '@/components/layout/Layout';
+import ErrorBoundary from '@/components/common/ErrorBoundary';
 
 export default function DashboardLayout({
   children,
@@ -51,7 +52,8 @@ export default function DashboardLayout({
     return () => {
       isMounted = false;
     };
-  }, [initialize, router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run once on mount - initialize and router are stable
 
   // Fetch data when user and organization are ready
   useEffect(() => {
@@ -64,7 +66,8 @@ export default function DashboardLayout({
         console.error('Failed to fetch applications:', err);
       });
     }
-  }, [user, organization, fetchTournaments, fetchApplications]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, organization]); // Only re-fetch when user or organization changes, not when store functions change
 
   // Show loading while initializing auth
   if (checking) {
@@ -96,5 +99,9 @@ export default function DashboardLayout({
   }
 
   console.log('[DashboardLayout] Rendering: Layout with children');
-  return <Layout>{children}</Layout>;
+  return (
+    <ErrorBoundary>
+      <Layout>{children}</Layout>
+    </ErrorBoundary>
+  );
 }

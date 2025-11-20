@@ -257,10 +257,17 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 }));
 
 // Listen to auth state changes
-let authListener: any = null;
+let authSubscription: { data: { subscription: { unsubscribe: () => void } } } | null = null;
 
 if (typeof window !== 'undefined') {
-    authListener = supabase.auth.onAuthStateChange(async (event, session) => {
+    // Clean up any existing subscription before creating a new one
+    if (authSubscription) {
+        console.log('AuthStore: Cleaning up existing auth listener');
+        authSubscription.data.subscription.unsubscribe();
+    }
+
+    // Set up auth state change listener
+    authSubscription = supabase.auth.onAuthStateChange(async (event, session) => {
         console.log('AuthStore: Auth state changed:', event);
         const store = useAuthStore.getState();
 
@@ -280,4 +287,23 @@ if (typeof window !== 'undefined') {
             });
         }
     });
+
+    // Clean up on module unload (for hot module replacement in development)
+    if (typeof window !== 'undefined' && import.meta.hot) {
+        import.meta.hot.dispose(() => {
+            console.log('AuthStore: Cleaning up auth listener (HMR)');
+            if (authSubscription) {
+                authSubscription.data.subscription.unsubscribe();
+            }
+        });
+    }
+}
+
+// Export cleanup function for manual cleanup if needed
+export function cleanupAuthListener() {
+    if (authSubscription) {
+        console.log('AuthStore: Manually cleaning up auth listener');
+        authSubscription.data.subscription.unsubscribe();
+        authSubscription = null;
+    }
 }
