@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useAppStore } from '@/store/appStore';
 import { useAuthStore } from '@/store/authStore';
 import { Application } from '@/types';
@@ -15,9 +15,17 @@ interface OutletContextType {
 type StatusFilter = 'All' | 'Pending' | 'Approved' | 'Rejected';
 
 const Applications: React.FC = () => {
-  const { applications, updateApplicationStatus, error, clearError } = useAppStore();
-  const { user } = useAuthStore();
+  const { applications, updateApplicationStatus, fetchApplications, error, clearError } = useAppStore();
+  const { user, organization } = useAuthStore();
   const [filter, setFilter] = useState<StatusFilter>('All');
+
+  // Fetch applications when component mounts or when organization changes
+  useEffect(() => {
+    if (organization?.id) {
+      console.log('[Applications] Fetching applications for organization:', organization.id);
+      fetchApplications(organization.id);
+    }
+  }, [organization?.id]); // Refetch when organization changes
 
   const filteredApplications = useMemo(() => {
     if (filter === 'All') return applications;
