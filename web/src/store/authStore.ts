@@ -42,13 +42,25 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       // First, try to get the session from Supabase (this checks cookies/localStorage)
       let { data: { session: currentSession }, error: sessionError } = await supabase.auth.getSession();
 
-      // If no session found, retry after a short delay (handles cross-origin redirect timing)
+      // If no session found, retry with exponential backoff (handles cross-origin redirect timing)
       if (!currentSession && !sessionError) {
-        console.log('AuthStore: No session on first try, retrying after delay...');
-        await new Promise(resolve => setTimeout(resolve, 500)); // Wait 500ms
-        const retry = await supabase.auth.getSession();
-        currentSession = retry.data.session;
-        sessionError = retry.error;
+        console.log('AuthStore: No session on first try, retrying with exponential backoff...');
+
+        const maxRetries = 3;
+        const delays = [300, 600, 1200]; // Exponential backoff: 300ms, 600ms, 1200ms
+
+        for (let i = 0; i < maxRetries; i++) {
+          await new Promise(resolve => setTimeout(resolve, delays[i]));
+          console.log(`AuthStore: Retry attempt ${i + 1}/${maxRetries} after ${delays[i]}ms...`);
+
+          const retry = await supabase.auth.getSession();
+          currentSession = retry.data.session;
+          sessionError = retry.error;
+
+          if (currentSession || sessionError) {
+            break; // Session found or error occurred, stop retrying
+          }
+        }
       }
 
       if (sessionError) {

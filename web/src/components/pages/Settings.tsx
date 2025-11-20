@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import Button from '@/components/common/Button';
+import { Organization, DiscordConfig } from '@/types';
 
 const Settings: React.FC = () => {
     const router = useRouter();
@@ -11,8 +12,8 @@ const Settings: React.FC = () => {
     const pathname = usePathname();
 
     const [loading, setLoading] = useState(true);
-    const [organization, setOrganization] = useState<any>(null);
-    const [discordConfig, setDiscordConfig] = useState<any>(null);
+    const [organization, setOrganization] = useState<Organization | null>(null);
+    const [discordConfig, setDiscordConfig] = useState<DiscordConfig | null>(null);
     const [error, setError] = useState<string | null>(null);
 
     // Force log to verify component is rendering
