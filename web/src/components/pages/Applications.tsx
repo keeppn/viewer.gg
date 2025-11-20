@@ -5,6 +5,7 @@ import { useAppStore } from '@/store/appStore';
 import { useAuthStore } from '@/store/authStore';
 import { Application } from '@/types';
 import Button from '@/components/common/Button';
+import ErrorAlert from '@/components/common/ErrorAlert';
 
 interface OutletContextType {
   applications: Application[];
@@ -14,7 +15,7 @@ interface OutletContextType {
 type StatusFilter = 'All' | 'Pending' | 'Approved' | 'Rejected';
 
 const Applications: React.FC = () => {
-  const { applications, updateApplicationStatus } = useAppStore();
+  const { applications, updateApplicationStatus, error, clearError } = useAppStore();
   const { user } = useAuthStore();
   const [filter, setFilter] = useState<StatusFilter>('All');
 
@@ -32,8 +33,12 @@ const Applications: React.FC = () => {
   };
 
   return (
-    <div className="bg-[#2A2A2A] rounded-[10px] border border-white/10">
-      <div className="p-4 border-b border-white/10 flex items-center gap-2">
+    <div className="space-y-4">
+      {/* Error Alert */}
+      <ErrorAlert error={error} onDismiss={clearError} />
+
+      <div className="bg-[#2A2A2A] rounded-[10px] border border-white/10">
+        <div className="p-4 border-b border-white/10 flex items-center gap-2">
         {(['All', 'Pending', 'Approved', 'Rejected'] as StatusFilter[]).map(f => (
           <button
             key={f}
@@ -85,6 +90,7 @@ const Applications: React.FC = () => {
           </tbody>
         </table>
       </div>
+    </div>
     </div>
   );
 };
