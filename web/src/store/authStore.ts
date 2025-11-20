@@ -257,15 +257,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 }));
 
 // Listen to auth state changes
-let authSubscription: { data: { subscription: { unsubscribe: () => void } } } | null = null;
+// Store the subscription for cleanup
+let authSubscription: ReturnType<typeof supabase.auth.onAuthStateChange> | null = null;
 
 if (typeof window !== 'undefined') {
-    // Clean up any existing subscription before creating a new one
-    if (authSubscription) {
-        console.log('AuthStore: Cleaning up existing auth listener');
-        authSubscription.data.subscription.unsubscribe();
-    }
-
     // Set up auth state change listener
     authSubscription = supabase.auth.onAuthStateChange(async (event, session) => {
         console.log('AuthStore: Auth state changed:', event);
