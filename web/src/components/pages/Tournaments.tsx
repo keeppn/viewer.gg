@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useAppStore } from '@/store/appStore';
+import { useAuthStore } from '@/store/authStore';
 import Link from 'next/link';
 import { Tournament } from '@/types';
 import Button from '@/components/common/Button';
@@ -302,8 +303,17 @@ const TournamentList: React.FC<{ tournaments: Tournament[], onManage: (id: strin
 
 // Main component
 const Tournaments: React.FC = () => {
-  const { tournaments, addTournament, updateTournament } = useAppStore();
+  const { tournaments, addTournament, updateTournament, fetchTournaments } = useAppStore();
+  const { organization } = useAuthStore();
   const [editingTournamentId, setEditingTournamentId] = useState<string | null>(null);
+
+  // Fetch tournaments when component mounts or when organization changes
+  React.useEffect(() => {
+    if (organization?.id) {
+      console.log('[Tournaments] Fetching tournaments for organization:', organization.id);
+      fetchTournaments(organization.id);
+    }
+  }, [organization?.id]); // Refetch when organization changes
 
   const handleSaveTournament = async (tournament: Tournament) => {
     await updateTournament(tournament);
