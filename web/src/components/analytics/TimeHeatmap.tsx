@@ -24,11 +24,11 @@ const TimeHeatmap: React.FC<TimeHeatmapProps> = ({ data }) => {
 
     const normalized = (viewers - minViewers) / (maxViewers - minViewers);
 
-    if (normalized < 0.2) return 'bg-gradient-to-br from-[#9381FF]/20 to-[#9381FF]/10';
-    if (normalized < 0.4) return 'bg-gradient-to-br from-[#9381FF]/40 to-[#9381FF]/20';
-    if (normalized < 0.6) return 'bg-gradient-to-br from-[#9381FF]/60 to-[#DAFF7C]/20';
-    if (normalized < 0.8) return 'bg-gradient-to-br from-[#9381FF]/80 to-[#DAFF7C]/40';
-    return 'bg-gradient-to-br from-[#DAFF7C]/90 to-[#9381FF]/60';
+    if (normalized < 0.2) return 'bg-gradient-to-br from-[var(--base)]/20 to-[var(--base)]/10';
+    if (normalized < 0.4) return 'bg-gradient-to-br from-[var(--base)]/40 to-[var(--base)]/20';
+    if (normalized < 0.6) return 'bg-gradient-to-br from-[var(--base)]/60 to-[var(--contrast)]/20';
+    if (normalized < 0.8) return 'bg-gradient-to-br from-[var(--base)]/80 to-[var(--contrast)]/40';
+    return 'bg-gradient-to-br from-[var(--contrast)]/90 to-[var(--base)]/60';
   };
 
   // Get data for specific hour and day
@@ -37,10 +37,10 @@ const TimeHeatmap: React.FC<TimeHeatmapProps> = ({ data }) => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-[#1F1F1F]/90 to-[#2A2A2A]/90 backdrop-blur-xl rounded-xl border border-white/10 p-5">
+    <div className="bg-gradient-to-br from-[var(--neutral-1-bg)]/90 to-[var(--neutral-2-surface)]/90 backdrop-blur-xl rounded-xl border border-white/10 p-5">
       <div className="mb-4">
         <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#9381FF]" />
+          <span className="w-1.5 h-1.5 rounded-full bg-[var(--base)]" />
           Peak Streaming Times
         </h3>
         <p className="text-xs text-white/60 mt-1">Prime viewing hours (12PM - 11PM)</p>
@@ -49,7 +49,7 @@ const TimeHeatmap: React.FC<TimeHeatmapProps> = ({ data }) => {
       {data.length === 0 ? (
         <div className="h-[300px] flex items-center justify-center">
           <div className="text-center">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-[#9381FF]/20 to-[#DAFF7C]/20 flex items-center justify-center">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-[var(--base)]/20 to-[var(--contrast)]/20 flex items-center justify-center">
               <span className="text-3xl">⏰</span>
             </div>
             <p className="text-white/60">No timing data available yet</p>
@@ -91,15 +91,15 @@ const TimeHeatmap: React.FC<TimeHeatmapProps> = ({ data }) => {
                           className="group relative flex-1 min-w-[50px]"
                         >
                           <div
-                            className={`h-6 rounded-md border border-white/10 ${getColorIntensity(viewers)} transition-all duration-200 hover:scale-110 hover:border-[#DAFF7C]/50 cursor-pointer`}
+                            className={`h-6 rounded-md border border-white/10 ${getColorIntensity(viewers)} transition-all duration-200 hover:scale-110 hover:border-[var(--contrast)]/50 cursor-pointer`}
                           />
 
                           {/* Tooltip */}
                           {viewers > 0 && (
                             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-10">
-                              <div className="bg-gradient-to-br from-[#1F1F1F]/95 to-[#2A2A2A]/95 backdrop-blur-xl px-3 py-2 rounded-lg border border-white/20 shadow-xl whitespace-nowrap">
+                              <div className="bg-gradient-to-br from-[var(--neutral-1-bg)]/95 to-[var(--neutral-2-surface)]/95 backdrop-blur-xl px-3 py-2 rounded-lg border border-white/20 shadow-xl whitespace-nowrap">
                                 <p className="text-xs text-white/70">{day}, {hour.toString().padStart(2, '0')}:00</p>
-                                <p className="text-sm font-bold text-[#DAFF7C]">{viewers.toLocaleString()} viewers</p>
+                                <p className="text-sm font-bold text-[var(--contrast)]">{viewers.toLocaleString()} viewers</p>
                               </div>
                             </div>
                           )}
@@ -118,11 +118,11 @@ const TimeHeatmap: React.FC<TimeHeatmapProps> = ({ data }) => {
               <span className="text-xs text-white/60">Intensity:</span>
               <span className="text-xs text-white/60">Low</span>
               <div className="flex gap-1">
-                <div className="w-6 h-3 rounded bg-gradient-to-br from-[#9381FF]/20 to-[#9381FF]/10" />
-                <div className="w-6 h-3 rounded bg-gradient-to-br from-[#9381FF]/40 to-[#9381FF]/20" />
-                <div className="w-6 h-3 rounded bg-gradient-to-br from-[#9381FF]/60 to-[#DAFF7C]/20" />
-                <div className="w-6 h-3 rounded bg-gradient-to-br from-[#9381FF]/80 to-[#DAFF7C]/40" />
-                <div className="w-6 h-3 rounded bg-gradient-to-br from-[#DAFF7C]/90 to-[#9381FF]/60" />
+                <div className="w-6 h-3 rounded bg-gradient-to-br from-[var(--base)]/20 to-[var(--base)]/10" />
+                <div className="w-6 h-3 rounded bg-gradient-to-br from-[var(--base)]/40 to-[var(--base)]/20" />
+                <div className="w-6 h-3 rounded bg-gradient-to-br from-[var(--base)]/60 to-[var(--contrast)]/20" />
+                <div className="w-6 h-3 rounded bg-gradient-to-br from-[var(--base)]/80 to-[var(--contrast)]/40" />
+                <div className="w-6 h-3 rounded bg-gradient-to-br from-[var(--contrast)]/90 to-[var(--base)]/60" />
               </div>
               <span className="text-xs text-white/60">High</span>
             </div>
@@ -132,7 +132,7 @@ const TimeHeatmap: React.FC<TimeHeatmapProps> = ({ data }) => {
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-white/60">Peak:</span>
-                  <span className="text-sm font-semibold text-[#DAFF7C]">
+                  <span className="text-sm font-semibold text-[var(--contrast)]">
                     {(() => {
                       const peak = data.reduce((max, curr) => curr.viewers > max.viewers ? curr : max, data[0]);
                       return `${peak.day} ${peak.hour.toString().padStart(2, '0')}:00`;
@@ -141,7 +141,7 @@ const TimeHeatmap: React.FC<TimeHeatmapProps> = ({ data }) => {
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-white/60">Max:</span>
-                  <span className="text-sm font-semibold text-[#9381FF]">{maxViewers.toLocaleString()}</span>
+                  <span className="text-sm font-semibold text-[var(--base)]">{maxViewers.toLocaleString()}</span>
                 </div>
               </div>
             )}

@@ -18,11 +18,11 @@ const TournamentSelector: React.FC<TournamentSelectorProps> = ({
         <select
           value={selectedTournamentId || ''}
           onChange={(e) => onSelect(e.target.value)}
-          className="w-full appearance-none bg-gradient-to-br from-[#1F1F1F]/90 to-[#2A2A2A]/90 backdrop-blur-xl text-white rounded-lg px-4 py-2.5 pr-10 border border-white/20 focus:border-[#9381FF] focus:ring-2 focus:ring-[#9381FF]/20 outline-none transition-all cursor-pointer text-sm"
+          className="w-full appearance-none bg-gradient-to-br from-[var(--neutral-1-bg)]/90 to-[var(--neutral-2-surface)]/90 backdrop-blur-xl text-white rounded-lg px-4 py-2.5 pr-10 border border-white/20 focus:border-[var(--base)] focus:ring-2 focus:ring-[var(--base)]/20 outline-none transition-all cursor-pointer text-sm"
         >
           <option value="" disabled>Select Tournament</option>
           {tournaments.map((tournament) => (
-            <option key={tournament.id} value={tournament.id} className="bg-[#1F1F1F] text-white">
+            <option key={tournament.id} value={tournament.id} className="bg-[var(--neutral-1-bg)] text-white">
               {tournament.title} - {tournament.game}
             </option>
           ))}

@@ -13,7 +13,7 @@ const ViewershipTimeline: React.FC<ViewershipTimelineProps> = ({ data }) => {
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-gradient-to-br from-[#1F1F1F]/95 to-[#2A2A2A]/95 backdrop-blur-xl p-4 rounded-xl border border-white/20 shadow-xl">
+        <div className="bg-gradient-to-br from-[var(--neutral-1-bg)]/95 to-[var(--neutral-2-surface)]/95 backdrop-blur-xl p-4 rounded-xl border border-white/20 shadow-xl">
           <p className="text-white font-semibold mb-2">{label}</p>
           {payload.map((entry: any, index: number) => (
             <div key={index} className="flex items-center gap-2 text-sm">
@@ -32,11 +32,11 @@ const ViewershipTimeline: React.FC<ViewershipTimelineProps> = ({ data }) => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-[#1F1F1F]/90 to-[#2A2A2A]/90 backdrop-blur-xl rounded-xl border border-white/10 p-6">
+    <div className="bg-gradient-to-br from-[var(--neutral-1-bg)]/90 to-[var(--neutral-2-surface)]/90 backdrop-blur-xl rounded-xl border border-white/10 p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="text-xl font-bold text-white flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#DAFF7C]" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--contrast)]" />
             Viewership Timeline
           </h3>
           <p className="text-sm text-white/60 mt-1">Concurrent viewers and active streamers over time</p>
@@ -47,12 +47,12 @@ const ViewershipTimeline: React.FC<ViewershipTimelineProps> = ({ data }) => {
         <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
           <defs>
             <linearGradient id="colorViewers" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#DAFF7C" stopOpacity={0.4}/>
-              <stop offset="95%" stopColor="#DAFF7C" stopOpacity={0.05}/>
+              <stop offset="5%" stopColor="var(--contrast)" stopOpacity={0.4}/>
+              <stop offset="95%" stopColor="var(--contrast)" stopOpacity={0.05}/>
             </linearGradient>
             <linearGradient id="colorStreamers" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#9381FF" stopOpacity={0.4}/>
-              <stop offset="95%" stopColor="#9381FF" stopOpacity={0.05}/>
+              <stop offset="5%" stopColor="var(--base)" stopOpacity={0.4}/>
+              <stop offset="95%" stopColor="var(--base)" stopOpacity={0.05}/>
             </linearGradient>
           </defs>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
@@ -77,7 +77,7 @@ const ViewershipTimeline: React.FC<ViewershipTimelineProps> = ({ data }) => {
           <Area
             type="monotone"
             dataKey="viewers"
-            stroke="#DAFF7C"
+            stroke="var(--contrast)"
             strokeWidth={3}
             fill="url(#colorViewers)"
             name="Concurrent Viewers"
@@ -86,7 +86,7 @@ const ViewershipTimeline: React.FC<ViewershipTimelineProps> = ({ data }) => {
           <Area
             type="monotone"
             dataKey="streamers"
-            stroke="#9381FF"
+            stroke="var(--base)"
             strokeWidth={2}
             fill="url(#colorStreamers)"
             name="Active Streamers"
