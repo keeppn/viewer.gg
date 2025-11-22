@@ -25,15 +25,15 @@ const StatusBadge: React.FC<{ status: Tournament['status'] }> = ({ status }) => 
       label: 'Draft',
     },
     active: {
-      bg: 'bg-gradient-to-r from-[#DAFF7C]/10 to-[#DAFF7C]/5',
-      border: 'border-[#DAFF7C]/30',
-      text: 'text-[#DAFF7C]',
+      bg: 'bg-[#22C55E]/10',
+      border: 'border-[#22C55E]/30',
+      text: 'text-[#22C55E]',
       label: 'Active',
     },
     completed: {
-      bg: 'bg-gradient-to-r from-[#9381FF]/10 to-[#9381FF]/5',
-      border: 'border-[#9381FF]/30',
-      text: 'text-[#9381FF]',
+      bg: 'bg-white/5',
+      border: 'border-white/20',
+      text: 'text-white/70',
       label: 'Completed',
     },
     archived: {
@@ -59,18 +59,11 @@ const TournamentCard: React.FC<{ tournament: Tournament; onManage: (id: string) 
   const formFieldCount = tournament.form_fields?.length || 0;
 
   return (
-    <div className="group relative bg-gradient-to-br from-[#1F1F1F]/90 to-[#2A2A2A]/90 backdrop-blur-xl rounded-[12px] border border-white/10 hover:border-[#9381FF]/40 transition-all duration-300 overflow-hidden">
-      {/* Glowing gradient background effect */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#9381FF]/5 via-transparent to-[#DAFF7C]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-      {/* Glowing border effect on hover */}
-      <div className="absolute inset-0 rounded-[12px] opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-           style={{ boxShadow: '0 0 30px rgba(147,129,255,0.15), inset 0 0 20px rgba(147,129,255,0.05)' }} />
-
+    <div className="group relative bg-[#2A2A2A] rounded-xl border border-white/10 hover:border-white/20 transition-all duration-200 overflow-hidden">
       <div className="relative p-4 flex flex-col h-full">
-        {/* Tournament icon with gradient background */}
-        <div className="w-12 h-12 mb-3 rounded-[10px] bg-gradient-to-br from-[#9381FF]/20 to-[#DAFF7C]/20 flex items-center justify-center border border-[#9381FF]/20 group-hover:border-[#9381FF]/40 transition-colors duration-300">
-          <div className="w-6 h-6 text-[#9381FF]">
+        {/* Tournament icon */}
+        <div className="w-12 h-12 mb-3 rounded-lg bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-white/20 transition-colors duration-200">
+          <div className="w-6 h-6 text-white/90">
             <TournamentIcon />
           </div>
         </div>
@@ -83,7 +76,7 @@ const TournamentCard: React.FC<{ tournament: Tournament; onManage: (id: string) 
         </div>
 
         {/* Title */}
-        <h3 className="text-lg font-bold text-white mb-3 line-clamp-2 group-hover:text-[#DAFF7C] transition-colors duration-300">
+        <h3 className="text-lg font-bold text-white mb-3 line-clamp-2">
           {tournament.title}
         </h3>
 
@@ -105,7 +98,7 @@ const TournamentCard: React.FC<{ tournament: Tournament; onManage: (id: string) 
             <div className="w-4 h-4">
               <DocumentIcon />
             </div>
-            <span className="font-semibold text-[#DAFF7C]">{tournament.application_count || 0}</span>
+            <span className="font-semibold text-white">{tournament.application_count || 0}</span>
             <span className="text-xs">Applications</span>
           </div>
 
@@ -122,16 +115,16 @@ const TournamentCard: React.FC<{ tournament: Tournament; onManage: (id: string) 
         <div className="mb-3">
           <div className={`inline-flex items-center gap-2 px-2 py-1 rounded-md text-xs font-medium ${
             tournament.status === 'active'
-              ? 'bg-[#DAFF7C]/10 text-[#DAFF7C]'
+              ? 'bg-[#22C55E]/10 text-[#22C55E]'
               : tournament.status === 'completed'
-              ? 'bg-[#9381FF]/10 text-[#9381FF]'
+              ? 'bg-white/5 text-white/70'
               : 'bg-white/5 text-white/40'
           }`}>
             <div className={`w-1.5 h-1.5 rounded-full ${
               tournament.status === 'active'
-                ? 'bg-[#DAFF7C] animate-pulse'
+                ? 'bg-[#22C55E] animate-pulse'
                 : tournament.status === 'completed'
-                ? 'bg-[#9381FF]'
+                ? 'bg-white/70'
                 : 'bg-white/40'
             }`} />
             {tournament.status.charAt(0).toUpperCase() + tournament.status.slice(1)}
@@ -142,7 +135,7 @@ const TournamentCard: React.FC<{ tournament: Tournament; onManage: (id: string) 
         <Button
           onClick={() => onManage(tournament.id)}
           variant='secondary'
-          className="w-full bg-gradient-to-r from-[#9381FF]/10 to-[#9381FF]/5 hover:from-[#9381FF]/20 hover:to-[#9381FF]/10 border border-[#9381FF]/20 hover:border-[#9381FF]/40 text-white hover:text-[#DAFF7C] text-sm py-2"
+          className="w-full text-sm py-2"
         >
           Manage
         </Button>
@@ -153,14 +146,11 @@ const TournamentCard: React.FC<{ tournament: Tournament; onManage: (id: string) 
 
 // List view row component
 const TournamentListRow: React.FC<{ tournament: Tournament; onManage: (id: string) => void }> = ({ tournament, onManage }) => (
-  <div className="group relative bg-gradient-to-r from-[#1F1F1F]/90 to-[#2A2A2A]/90 backdrop-blur-xl rounded-[12px] border border-white/10 hover:border-[#9381FF]/40 transition-all duration-300 overflow-hidden">
-    {/* Glowing effect on hover */}
-    <div className="absolute inset-0 bg-gradient-to-r from-[#9381FF]/5 via-transparent to-[#DAFF7C]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
+  <div className="group relative bg-[#2A2A2A] rounded-xl border border-white/10 hover:border-white/20 transition-all duration-200 overflow-hidden">
     <div className="relative p-5 flex items-center gap-6">
       {/* Tournament icon */}
-      <div className="flex-shrink-0 w-14 h-14 rounded-[10px] bg-gradient-to-br from-[#9381FF]/20 to-[#DAFF7C]/20 flex items-center justify-center border border-[#9381FF]/20 group-hover:border-[#9381FF]/40 transition-colors duration-300">
-        <div className="w-7 h-7 text-[#9381FF]">
+      <div className="flex-shrink-0 w-14 h-14 rounded-lg bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-white/20 transition-colors duration-200">
+        <div className="w-7 h-7 text-white/90">
           <TournamentIcon />
         </div>
       </div>
@@ -168,7 +158,7 @@ const TournamentListRow: React.FC<{ tournament: Tournament; onManage: (id: strin
       {/* Tournament info */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-3 mb-1">
-          <h3 className="text-lg font-bold text-white truncate group-hover:text-[#DAFF7C] transition-colors duration-300">
+          <h3 className="text-lg font-bold text-white truncate">
             {tournament.title}
           </h3>
           <span className="flex-shrink-0 text-xs font-bold text-[#9381FF] uppercase tracking-wider">
@@ -186,7 +176,7 @@ const TournamentListRow: React.FC<{ tournament: Tournament; onManage: (id: strin
             <div className="w-4 h-4">
               <DocumentIcon />
             </div>
-            <span className="font-semibold text-[#DAFF7C]">{tournament.application_count || 0}</span>
+            <span className="font-semibold text-white">{tournament.application_count || 0}</span>
             <span>Applications</span>
           </div>
         </div>
@@ -202,7 +192,6 @@ const TournamentListRow: React.FC<{ tournament: Tournament; onManage: (id: strin
         <Button
           onClick={() => onManage(tournament.id)}
           variant='secondary'
-          className="bg-gradient-to-r from-[#9381FF]/10 to-[#9381FF]/5 hover:from-[#9381FF]/20 hover:to-[#9381FF]/10 border border-[#9381FF]/20 hover:border-[#9381FF]/40 text-white hover:text-[#DAFF7C]"
         >
           Manage
         </Button>
@@ -228,10 +217,10 @@ const TournamentList: React.FC<{ tournaments: Tournament[], onManage: (id: strin
           <div className="flex items-center bg-[#1F1F1F]/60 backdrop-blur-sm rounded-[10px] p-1 border border-white/10">
             <button
               onClick={() => setViewMode('grid')}
-              className={`p-2 rounded-[8px] transition-all duration-200 ${
+              className={`p-2 rounded-lg transition-all duration-200 ${
                 viewMode === 'grid'
-                  ? 'bg-gradient-to-r from-[#9381FF]/20 to-[#DAFF7C]/10 text-[#DAFF7C] shadow-lg shadow-[#9381FF]/10'
-                  : 'text-white/40 hover:text-white/70'
+                  ? 'bg-[#9381FF]/10 text-[#9381FF]'
+                  : 'text-white/40 hover:text-white/70 hover:bg-white/5'
               }`}
               title="Grid View"
             >
@@ -241,10 +230,10 @@ const TournamentList: React.FC<{ tournaments: Tournament[], onManage: (id: strin
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={`p-2 rounded-[8px] transition-all duration-200 ${
+              className={`p-2 rounded-lg transition-all duration-200 ${
                 viewMode === 'list'
-                  ? 'bg-gradient-to-r from-[#9381FF]/20 to-[#DAFF7C]/10 text-[#DAFF7C] shadow-lg shadow-[#9381FF]/10'
-                  : 'text-white/40 hover:text-white/70'
+                  ? 'bg-[#9381FF]/10 text-[#9381FF]'
+                  : 'text-white/40 hover:text-white/70 hover:bg-white/5'
               }`}
               title="List View"
             >

@@ -34,9 +34,9 @@ const Applications: React.FC = () => {
 
   const getStatusStyle = (status: Application['status']) => {
     switch (status) {
-      case 'Approved': return 'bg-[#DAFF7C]/10 text-[#DAFF7C] border border-[#DAFF7C]/20';
-      case 'Rejected': return 'bg-red-500/10 text-red-400 border border-red-500/20';
-      case 'Pending': return 'bg-[#9381FF]/10 text-[#9381FF] border border-[#9381FF]/20';
+      case 'Approved': return 'bg-[#22C55E]/10 text-[#22C55E] border border-[#22C55E]/20';
+      case 'Rejected': return 'bg-[#EF4444]/10 text-[#EF4444] border border-[#EF4444]/20';
+      case 'Pending': return 'bg-white/5 text-white/70 border border-white/10';
     }
   };
 
@@ -45,15 +45,15 @@ const Applications: React.FC = () => {
       {/* Error Alert */}
       <ErrorAlert error={error} onDismiss={clearError} />
 
-      <div className="bg-[#2A2A2A] rounded-[10px] border border-white/10">
+      <div className="bg-[#2A2A2A] rounded-xl border border-white/10">
         <div className="p-4 border-b border-white/10 flex items-center gap-2">
         {(['All', 'Pending', 'Approved', 'Rejected'] as StatusFilter[]).map(f => (
           <button
             key={f}
             onClick={() => setFilter(f)}
-            className={`px-4 py-2 text-sm font-semibold rounded-[10px] transition-all duration-200 ${
+            className={`px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-200 ${
               filter === f
-                ? 'bg-[#DAFF7C] text-[#1F1F1F]'
+                ? 'bg-[#9381FF] text-white'
                 : 'bg-transparent text-white/70 hover:bg-white/5 hover:text-white'
             }`}
           >
