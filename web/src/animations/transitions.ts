@@ -13,7 +13,7 @@ import { Transition } from 'framer-motion';
  * Physics: High stiffness (400), low damping (17)
  */
 export const snappy: Transition = {
-  type: 'spring',
+  type: 'spring' as const,
   stiffness: 400,
   damping: 17,
   mass: 1,
@@ -26,7 +26,7 @@ export const snappy: Transition = {
  * Physics: Medium stiffness (300), medium damping (24)
  */
 export const smooth: Transition = {
-  type: 'spring',
+  type: 'spring' as const,
   stiffness: 300,
   damping: 24,
   mass: 1,
@@ -39,7 +39,7 @@ export const smooth: Transition = {
  * Physics: Lower stiffness (260), higher damping (20)
  */
 export const gentle: Transition = {
-  type: 'spring',
+  type: 'spring' as const,
   stiffness: 260,
   damping: 20,
   mass: 0.8,
@@ -52,7 +52,7 @@ export const gentle: Transition = {
  * Physics: High stiffness (500), low damping (15)
  */
 export const bouncy: Transition = {
-  type: 'spring',
+  type: 'spring' as const,
   stiffness: 500,
   damping: 15,
   mass: 1,
@@ -65,7 +65,7 @@ export const bouncy: Transition = {
  * Physics: Low stiffness (200), high damping (25)
  */
 export const slow: Transition = {
-  type: 'spring',
+  type: 'spring' as const,
   stiffness: 200,
   damping: 25,
   mass: 1.2,
@@ -78,7 +78,7 @@ export const slow: Transition = {
  */
 export const instant: Transition = {
   duration: 0.15,
-  ease: [0.25, 0.1, 0.25, 1],
+  ease: [0.25, 0.1, 0.25, 1] as const,
 };
 
 /**
@@ -109,17 +109,17 @@ export const durations = {
  */
 export const easings = {
   // Apple's signature easing
-  apple: [0.4, 0.0, 0.2, 1],
+  apple: [0.4, 0.0, 0.2, 1] as const,
 
   // Smooth acceleration
-  easeOut: [0.0, 0.0, 0.2, 1],
+  easeOut: [0.0, 0.0, 0.2, 1] as const,
 
   // Smooth deceleration
-  easeIn: [0.4, 0.0, 1, 1],
+  easeIn: [0.4, 0.0, 1, 1] as const,
 
   // Symmetric ease
-  easeInOut: [0.4, 0.0, 0.6, 1],
+  easeInOut: [0.4, 0.0, 0.6, 1] as const,
 
   // Snappy exit
-  snapOut: [0.4, 0.0, 0.0, 1],
-};
+  snapOut: [0.4, 0.0, 0.0, 1] as const,
+} as const;

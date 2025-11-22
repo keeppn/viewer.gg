@@ -36,7 +36,7 @@ export const fadeInUp: Variants = {
     opacity: 1,
     y: 0,
     transition: {
-      type: 'spring',
+      type: 'spring' as const,
       stiffness: 300,
       damping: 24,
     },
@@ -57,7 +57,7 @@ export const scaleFade: Variants = {
     opacity: 1,
     scale: 1,
     transition: {
-      type: 'spring',
+      type: 'spring' as const,
       stiffness: 400,
       damping: 17, // iOS snappy physics
     },
@@ -77,7 +77,7 @@ export const slideInRight: Variants = {
     x: 0,
     opacity: 1,
     transition: {
-      type: 'spring',
+      type: 'spring' as const,
       stiffness: 300,
       damping: 30,
     },
@@ -96,7 +96,7 @@ export const slideInRight: Variants = {
  * Card hover interaction
  * -4px lift (half of 8pt grid)
  */
-export const hoverLift = {
+export const hoverLift: Variants = {
   rest: {
     y: 0,
     scale: 1,
@@ -105,7 +105,7 @@ export const hoverLift = {
     y: -4,
     scale: 1.01,
     transition: {
-      type: 'spring',
+      type: 'spring' as const,
       stiffness: 400,
       damping: 17,
     },
@@ -113,7 +113,7 @@ export const hoverLift = {
   tap: {
     scale: 0.98,
     transition: {
-      type: 'spring',
+      type: 'spring' as const,
       stiffness: 600,
       damping: 20,
     },
@@ -132,7 +132,7 @@ export const continuousPulse: Variants = {
     transition: {
       duration: 2,
       repeat: Infinity,
-      ease: 'easeInOut',
+      ease: 'easeInOut' as const,
     },
   },
 };
@@ -147,7 +147,7 @@ export const shimmer: Variants = {
     transition: {
       duration: 1.5,
       repeat: Infinity,
-      ease: 'linear',
+      ease: 'linear' as const,
     },
   },
 };
@@ -174,7 +174,7 @@ export const accordionExpand: Variants = {
     opacity: 1,
     transition: {
       height: {
-        type: 'spring',
+        type: 'spring' as const,
         stiffness: 300,
         damping: 30,
       },
@@ -199,7 +199,7 @@ export const badgeNotification: Variants = {
     scale: 1,
     opacity: 1,
     transition: {
-      type: 'spring',
+      type: 'spring' as const,
       stiffness: 500,
       damping: 15,
     },
@@ -220,7 +220,7 @@ export const pageTransition: Variants = {
     y: 0,
     transition: {
       duration: 0.3,
-      ease: [0.25, 0.1, 0.25, 1], // Custom easing
+      ease: [0.25, 0.1, 0.25, 1] as const, // Custom easing
     },
   },
   exit: {
