@@ -1,6 +1,8 @@
 "use client";
 
 import React from 'react';
+import { motion } from 'framer-motion';
+import { hoverLift } from '@/animations';
 
 interface CardProps {
   title: string;
@@ -37,8 +39,15 @@ const Card: React.FC<CardProps> = ({ title, value, icon, accentColor = 'neutral'
   const colors = colorConfig[accentColor];
 
   // 8pt spacing: p-6 (24px), rounded-2xl (16px), gap-2 (8px), w-12 (48px), h-12 (48px)
+  // Framer Motion hover lift: -4px (half of 8pt grid)
   return (
-    <div className={`bg-[var(--neutral-2-surface)] rounded-2xl p-6 border ${colors.border} hover:border-white/20 transition-all duration-200 relative overflow-hidden group hover:-translate-y-1`}>
+    <motion.div
+      className={`bg-[var(--neutral-2-surface)] rounded-2xl p-6 border ${colors.border} hover:border-white/20 transition-border duration-200 relative overflow-hidden group`}
+      variants={hoverLift}
+      initial="rest"
+      whileHover="hover"
+      whileTap="tap"
+    >
       <div className="relative flex items-center justify-between">
         <div className="flex-1">
           <p className={`${colors.label} text-xs font-semibold uppercase tracking-wide mb-2`}>
@@ -54,7 +63,7 @@ const Card: React.FC<CardProps> = ({ title, value, icon, accentColor = 'neutral'
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

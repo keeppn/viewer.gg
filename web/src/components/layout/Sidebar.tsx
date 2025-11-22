@@ -28,9 +28,13 @@ const NavItem: React.FC<{
             : 'hover:bg-white/5'
         }`}
       >
-        {/* Active indicator - simple bar on left (BASE color) */}
+        {/* Active indicator - simple bar on left (BASE color) with shared layout transition */}
         {isActive && (
-          <div className="absolute left-0 top-0 h-full w-0.5 bg-[var(--base)] rounded-r" />
+          <motion.div
+            layoutId="activeIndicator"
+            className="absolute left-0 top-0 h-full w-0.5 bg-[var(--base)] rounded-r"
+            transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+          />
         )}
 
         {/* Icon with clean styling - 8pt system: w-9 (36px close to 32px), h-9 (36px), rounded-lg (8px) */}

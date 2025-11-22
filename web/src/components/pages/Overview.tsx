@@ -6,6 +6,7 @@ import Card from '@/components/common/Card';
 import { Application, Stats, Tournament } from '@/types';
 import { ApplicationIcon, CheckCircleIcon, XCircleIcon, ClockIcon } from '@/components/icons/Icons';
 import { useAppStore } from '@/store/appStore';
+import { motion, staggerContainer, fadeInUp } from '@/animations';
 
 const TournamentApplicationSummary: React.FC<{ tournaments: Tournament[], applications: Application[] }> = ({ tournaments, applications }) => {
     const summaryData = useMemo(() => {
@@ -87,13 +88,26 @@ const Overview: React.FC = () => {
       {/* Compact description */}
       <p className="text-sm text-white/60">Quick overview of your tournament applications and status</p>
 
-      {/* Compact Stats Cards - 8pt spacing */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        <Card title="Applications" value={stats?.totalApplications || 0} icon={<ApplicationIcon />} accentColor="neutral" />
-        <Card title="Approved" value={stats?.approved || 0} icon={<CheckCircleIcon />} accentColor="success" />
-        <Card title="Pending" value={stats?.pending || 0} icon={<ClockIcon />} accentColor="purple" />
-        <Card title="Rejected" value={stats?.rejected || 0} icon={<XCircleIcon />} accentColor="error" />
-      </div>
+      {/* Compact Stats Cards - 8pt spacing + Stagger animation */}
+      <motion.div
+        className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+      >
+        <motion.div variants={fadeInUp}>
+          <Card title="Applications" value={stats?.totalApplications || 0} icon={<ApplicationIcon />} accentColor="neutral" />
+        </motion.div>
+        <motion.div variants={fadeInUp}>
+          <Card title="Approved" value={stats?.approved || 0} icon={<CheckCircleIcon />} accentColor="success" />
+        </motion.div>
+        <motion.div variants={fadeInUp}>
+          <Card title="Pending" value={stats?.pending || 0} icon={<ClockIcon />} accentColor="purple" />
+        </motion.div>
+        <motion.div variants={fadeInUp}>
+          <Card title="Rejected" value={stats?.rejected || 0} icon={<XCircleIcon />} accentColor="error" />
+        </motion.div>
+      </motion.div>
 
       {/* Charts Section - 8pt spacing */}
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">

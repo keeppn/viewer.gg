@@ -2,9 +2,9 @@
 
 import React from 'react';
 import { useAppStore } from '@/store/appStore';
-
 import { LiveStream } from '@/types';
 import { TwitchIcon, YouTubeIcon } from '@/components/icons/Icons';
+import { motion, staggerContainer, fadeInUp, continuousPulse } from '@/animations';
 
 interface OutletContextType {
     liveStreams: LiveStream[];
@@ -35,7 +35,11 @@ const LiveStreamCard: React.FC<{ stream: LiveStream }> = ({ stream }) => {
             </div>
              <div className="p-4 bg-[var(--neutral-1-bg)] border-t border-[var(--neutral-border)] flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-[var(--semantic-success)] rounded-full animate-pulse"></div>
+                    <motion.div
+                        className="w-2 h-2 bg-[var(--semantic-success)] rounded-full"
+                        variants={continuousPulse}
+                        animate="pulse"
+                    />
                     <span className="font-bold text-[var(--semantic-success)] text-sm tracking-wider">LIVE</span>
                 </div>
                 <div className="text-right">
@@ -52,11 +56,18 @@ const Live: React.FC = () => {
     return (
         <div className="space-y-6">
              <p className="text-sm text-white/60">View all currently live co-streamers for your tournaments</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <motion.div
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                variants={staggerContainer}
+                initial="hidden"
+                animate="visible"
+            >
                 {liveStreams.map(stream => (
-                    <LiveStreamCard key={stream.id} stream={stream} />
+                    <motion.div key={stream.id} variants={fadeInUp}>
+                        <LiveStreamCard stream={stream} />
+                    </motion.div>
                 ))}
-            </div>
+            </motion.div>
         </div>
     )
 }
