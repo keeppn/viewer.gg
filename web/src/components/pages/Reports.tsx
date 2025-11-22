@@ -23,7 +23,7 @@ const Reports: React.FC = () => {
     name: 'Tournament Report',
     format: 'pdf',
     branding: {
-      accent_color: '#387B66',
+      accent_color: '#9381FF',
       header_text: '',
       footer_text: 'Powered by viewer.gg',
       sponsor_logos: []
@@ -109,7 +109,7 @@ const Reports: React.FC = () => {
             <select
               value={selectedTournament}
               onChange={(e) => setSelectedTournament(e.target.value)}
-              className="w-full px-4 py-3 bg-black/20 border border-white/20 rounded-lg text-white focus:outline-none focus:border-[#387B66]"
+              className="w-full px-4 py-3 bg-black/20 border border-white/20 rounded-lg text-white focus:outline-none focus:border-[#9381FF]"
             >
               <option value="">Choose a tournament...</option>
               {tournaments.map(t => (
@@ -136,7 +136,7 @@ const Reports: React.FC = () => {
                           [key]: e.target.checked
                         }
                       }))}
-                      className="w-5 h-5 rounded border-white/20 bg-black/20 text-[#387B66] focus:ring-[#387B66]"
+                      className="w-5 h-5 rounded border-white/20 bg-black/20 text-[#9381FF] focus:ring-[#9381FF]"
                     />
                     <span className="text-gray-300 capitalize">
                       {key.replace(/_/g, ' ')}
@@ -178,8 +178,8 @@ const Reports: React.FC = () => {
                         accent_color: e.target.value
                       }
                     }))}
-                    className="flex-1 px-4 py-2 bg-black/20 border border-white/20 rounded-lg text-white focus:outline-none focus:border-[#387B66]"
-                    placeholder="#387B66"
+                    className="flex-1 px-4 py-2 bg-black/20 border border-white/20 rounded-lg text-white focus:outline-none focus:border-[#9381FF]"
+                    placeholder="#9381FF"
                   />
                 </div>
               </div>
@@ -198,7 +198,7 @@ const Reports: React.FC = () => {
                       header_text: e.target.value
                     }
                   }))}
-                  className="w-full px-4 py-2 bg-black/20 border border-white/20 rounded-lg text-white focus:outline-none focus:border-[#387B66]"
+                  className="w-full px-4 py-2 bg-black/20 border border-white/20 rounded-lg text-white focus:outline-none focus:border-[#9381FF]"
                   placeholder="Optional header text"
                 />
               </div>
@@ -217,7 +217,7 @@ const Reports: React.FC = () => {
                       footer_text: e.target.value
                     }
                   }))}
-                  className="w-full px-4 py-2 bg-black/20 border border-white/20 rounded-lg text-white focus:outline-none focus:border-[#387B66]"
+                  className="w-full px-4 py-2 bg-black/20 border border-white/20 rounded-lg text-white focus:outline-none focus:border-[#9381FF]"
                   placeholder="Powered by viewer.gg"
                 />
               </div>
@@ -237,7 +237,7 @@ const Reports: React.FC = () => {
                 }
               }))}
               rows={6}
-              className="w-full px-4 py-3 bg-black/20 border border-white/20 rounded-lg text-white focus:outline-none focus:border-[#387B66]"
+              className="w-full px-4 py-3 bg-black/20 border border-white/20 rounded-lg text-white focus:outline-none focus:border-[#9381FF]"
               placeholder="Add custom notes or commentary for this report..."
             />
           </div>
@@ -255,7 +255,7 @@ const Reports: React.FC = () => {
                   name="format"
                   checked={reportConfig.format === 'pdf'}
                   onChange={() => setReportConfig(prev => ({ ...prev, format: 'pdf' }))}
-                  className="w-5 h-5 text-[#387B66] focus:ring-[#387B66]"
+                  className="w-5 h-5 text-[#9381FF] focus:ring-[#9381FF]"
                 />
                 <span className="text-gray-300">PDF Document</span>
               </label>
@@ -265,7 +265,7 @@ const Reports: React.FC = () => {
                   name="format"
                   checked={reportConfig.format === 'csv'}
                   onChange={() => setReportConfig(prev => ({ ...prev, format: 'csv' }))}
-                  className="w-5 h-5 text-[#387B66] focus:ring-[#387B66]"
+                  className="w-5 h-5 text-[#9381FF] focus:ring-[#9381FF]"
                 />
                 <span className="text-gray-300">CSV Spreadsheet</span>
               </label>

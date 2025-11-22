@@ -22,50 +22,41 @@ const NavItem: React.FC<{
   return (
     <Link href={path} onClick={onClose}>
       <div
-        className={`relative flex items-center px-3 py-2.5 my-0.5 rounded-[10px] cursor-pointer transition-all duration-300 group ${
+        className={`relative flex items-center px-3 py-2.5 my-0.5 rounded-lg cursor-pointer transition-all duration-200 group ${
           isActive
-            ? 'bg-gradient-to-r from-[#9381FF]/20 to-[#DAFF7C]/10 shadow-lg shadow-[#9381FF]/10'
-            : 'hover:bg-gradient-to-r hover:from-[#9381FF]/5 hover:to-transparent'
+            ? 'bg-[#9381FF]/10'
+            : 'hover:bg-white/5'
         }`}
       >
-        {/* Active indicator - gradient bar on left */}
+        {/* Active indicator - simple bar on left */}
         {isActive && (
-          <div className="absolute left-0 top-0 h-full w-1 bg-gradient-to-b from-[#9381FF] via-[#DAFF7C] to-[#9381FF] rounded-r shadow-lg shadow-[#9381FF]/50" />
+          <div className="absolute left-0 top-0 h-full w-0.5 bg-[#9381FF] rounded-r" />
         )}
 
-        {/* Icon with premium styling */}
+        {/* Icon with clean styling */}
         <div
-          className={`relative w-10 h-10 flex items-center justify-center rounded-[8px] flex-shrink-0 transition-all duration-300 ${
+          className={`relative w-9 h-9 flex items-center justify-center rounded-lg flex-shrink-0 transition-all duration-200 ${
             isActive
-              ? 'bg-gradient-to-br from-[#9381FF]/20 to-[#DAFF7C]/20 shadow-lg shadow-[#9381FF]/20'
-              : 'bg-white/5 group-hover:bg-gradient-to-br group-hover:from-[#9381FF]/10 group-hover:to-[#DAFF7C]/10'
+              ? 'bg-white/10'
+              : 'bg-white/5 group-hover:bg-white/10'
           }`}
         >
           <img
             src={iconPath}
             alt={name}
-            className={`w-6 h-6 object-contain transition-all duration-300 ${
-              isActive
-                ? 'brightness-125 drop-shadow-[0_0_8px_rgba(147,129,255,0.6)]'
-                : 'brightness-90 group-hover:brightness-110 group-hover:drop-shadow-[0_0_6px_rgba(147,129,255,0.4)]'
-            }`}
+            className="w-5 h-5 object-contain opacity-90"
           />
         </div>
 
         <span
-          className={`ml-3 font-semibold text-sm transition-all duration-300 ${
+          className={`ml-3 font-medium text-sm transition-all duration-200 ${
             isActive
-              ? 'text-transparent bg-clip-text bg-gradient-to-r from-[#DAFF7C] to-[#9381FF]'
+              ? 'text-white'
               : 'text-white/70 group-hover:text-white'
           }`}
         >
           {name}
         </span>
-
-        {/* Glow effect on active */}
-        {isActive && (
-          <div className="absolute inset-0 rounded-[10px] bg-gradient-to-r from-[#9381FF]/0 via-[#DAFF7C]/5 to-[#9381FF]/0 animate-pulse" />
-        )}
       </div>
     </Link>
   );
@@ -86,22 +77,20 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     <>
       {/* Desktop Sidebar */}
       <aside
-        className="hidden lg:flex relative w-64 flex-shrink-0 flex-col bg-gradient-to-b from-[#1F1F1F] to-[#1A1A1A] border-r border-[#9381FF]/20"
-        style={{ fontFamily: 'Poppins, sans-serif' }}
+        className="hidden lg:flex relative w-64 flex-shrink-0 flex-col bg-[#1F1F1F] border-r border-white/10"
+        style={{ fontFamily: 'Inter, sans-serif' }}
       >
-        {/* Subtle purple glow at top */}
-        <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-[#9381FF]/5 to-transparent pointer-events-none" />
+        {/* Subtle accent at top */}
+        <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-[#9381FF]/5 to-transparent pointer-events-none" />
 
         {/* Logo Section */}
-        <div className="flex items-center justify-center px-4 py-4 mb-1 relative">
-          <div className="relative w-16 h-16 flex items-center justify-center">
-            <div className="absolute inset-0 bg-gradient-to-br from-[#DAFF7C]/20 to-[#9381FF]/20 rounded-full blur-xl animate-pulse" />
-            <img
-              src="/viewer-logo/viewer-logo-transparent.svg"
-              alt="Viewer.gg Logo"
-              className="relative w-full h-full object-contain drop-shadow-[0_0_15px_rgba(218,255,124,0.4)]"
-            />
-          </div>
+        <div className="flex items-center justify-center px-4 py-6 mb-1 relative">
+          <h1
+            className="text-2xl font-bold text-white tracking-tight"
+            style={{ fontFamily: 'Geist Sans, sans-serif' }}
+          >
+            viewer.gg
+          </h1>
         </div>
 
         {/* Navigation */}
@@ -120,12 +109,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         </nav>
 
         {/* Footer */}
-        <div className="m-4 p-3 rounded-[10px] text-center bg-gradient-to-br from-[#2A2A2A] to-[#252525] border border-[#9381FF]/20 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-[#9381FF]/5 to-transparent" />
-          <p className="relative text-xs font-semibold text-white">
+        <div className="m-4 p-3 rounded-lg text-center bg-white/5 border border-white/10">
+          <p className="text-xs font-medium text-white/70">
             © 2024 viewer.gg
           </p>
-          <p className="relative text-[10px] text-white/70 mt-0.5">Premium Esports Platform</p>
+          <p className="text-[10px] text-white/50 mt-0.5">Premium Esports Platform</p>
         </div>
       </aside>
 
@@ -147,11 +135,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="lg:hidden fixed left-0 top-0 bottom-0 w-72 flex-shrink-0 flex flex-col bg-gradient-to-b from-[#1F1F1F] to-[#1A1A1A] border-r border-[#9381FF]/20 z-50"
-              style={{ fontFamily: 'Poppins, sans-serif' }}
+              className="lg:hidden fixed left-0 top-0 bottom-0 w-72 flex-shrink-0 flex flex-col bg-[#1F1F1F] border-r border-white/10 z-50"
+              style={{ fontFamily: 'Inter, sans-serif' }}
             >
-              {/* Subtle purple glow at top */}
-              <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-[#9381FF]/5 to-transparent pointer-events-none" />
+              {/* Subtle accent at top */}
+              <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-[#9381FF]/5 to-transparent pointer-events-none" />
 
               {/* Close button */}
               <button
@@ -164,15 +152,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               </button>
 
               {/* Logo Section */}
-              <div className="flex items-center justify-center px-4 py-4 mb-1 relative">
-                <div className="relative w-16 h-16 flex items-center justify-center">
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#DAFF7C]/20 to-[#9381FF]/20 rounded-full blur-xl animate-pulse" />
-                  <img
-                    src="/viewer-logo/viewer-logo-transparent.svg"
-                    alt="Viewer.gg Logo"
-                    className="relative w-full h-full object-contain drop-shadow-[0_0_15px_rgba(218,255,124,0.4)]"
-                  />
-                </div>
+              <div className="flex items-center justify-center px-4 py-6 mb-1 relative">
+                <h1
+                  className="text-2xl font-bold text-white tracking-tight"
+                  style={{ fontFamily: 'Geist Sans, sans-serif' }}
+                >
+                  viewer.gg
+                </h1>
               </div>
 
               {/* Navigation */}
@@ -191,12 +177,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               </nav>
 
               {/* Footer */}
-              <div className="m-4 p-3 rounded-[10px] text-center bg-gradient-to-br from-[#2A2A2A] to-[#252525] border border-[#9381FF]/20 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#9381FF]/5 to-transparent" />
-                <p className="relative text-xs font-semibold text-white">
+              <div className="m-4 p-3 rounded-lg text-center bg-white/5 border border-white/10">
+                <p className="text-xs font-medium text-white/70">
                   © 2024 viewer.gg
                 </p>
-                <p className="relative text-[10px] text-white/70 mt-0.5">Premium Esports Platform</p>
+                <p className="text-[10px] text-white/50 mt-0.5">Premium Esports Platform</p>
               </div>
             </motion.aside>
           </>

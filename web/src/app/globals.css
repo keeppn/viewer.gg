@@ -1,64 +1,69 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist+Sans:wght@700&display=swap');
 @import "tailwindcss";
 
 /* ============================================
-   🎮 VIEWER.GG MODERN DESIGN SYSTEM
+   🎮 VIEWER.GG DESIGN SYSTEM v2.0
+   Refined, Consistent, Professional
    ============================================ */
 
 :root {
-  /* Primary Colors (Modern Theme) */
-  --primary-lime: #DAFF7C;
-  --primary-purple: #9381FF;
-  --primary-cyan: #00F0FF;
-  --primary-gold: #FFB800;
+  /* Brand Colors (Use Sparingly - 10-15% of interface) */
+  --brand-purple: #9381FF;
+  --brand-lime: #DAFF7C;
+  --brand-cyan: #00F0FF;
 
-  /* Background & Base Colors */
-  --bg-dark-primary: #1F1F1F;
-  --bg-dark-secondary: #2A2A2A;
-  --bg-dark-tertiary: #333333;
-  --bg-gradient-start: #1F1F1F;
-  --bg-gradient-end: #2A2A2A;
+  /* Semantic Colors (Context-Specific Only) */
+  --semantic-success: #22C55E;
+  --semantic-error: #EF4444;
+  --semantic-warning: #F59E0B;
+  --semantic-info: #3B82F6;
 
-  /* Card & Surface Colors */
-  --card-background: #2A2A2A;
-  --card-border: rgba(255, 255, 255, 0.1);
-
-  /* Alert & Status Colors */
-  --status-live: #FF073A;
-  --status-success: #DAFF7C;
-  --status-warning: #FFB800;
-  --status-error: #FF3E3E;
-  --status-info: #00D4FF;
+  /* Neutral Palette (Foundation - 90% of interface) */
+  --bg-primary: #1F1F1F;
+  --bg-secondary: #2A2A2A;
+  --bg-tertiary: #333333;
+  --border-default: rgba(255, 255, 255, 0.1);
+  --border-hover: rgba(255, 255, 255, 0.2);
+  --text-primary: #FFFFFF;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-tertiary: rgba(255, 255, 255, 0.5);
 
   /* Typography */
-  --font-display: 'Poppins', sans-serif;
-  --font-body: 'Poppins', 'Inter', sans-serif;
+  --font-logo: 'Geist Sans', sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
   /* Legacy compatibility */
-  --background: var(--bg-dark-primary);
-  --foreground: #ededed;
+  --background: var(--bg-primary);
+  --foreground: var(--text-primary);
+  --primary-lime: var(--brand-lime);
+  --primary-purple: var(--brand-purple);
+  --primary-cyan: var(--brand-cyan);
 }
 
 @theme inline {
-  --color-primary-lime: var(--primary-lime);
-  --color-primary-purple: var(--primary-purple);
-  --color-primary-cyan: var(--primary-cyan);
-  --color-primary-gold: var(--primary-gold);
-  --color-bg-dark: var(--bg-dark-primary);
-  --color-bg-secondary: var(--bg-dark-secondary);
-  --color-bg-tertiary: var(--bg-dark-tertiary);
+  --color-brand-purple: var(--brand-purple);
+  --color-brand-lime: var(--brand-lime);
+  --color-brand-cyan: var(--brand-cyan);
+  --color-semantic-success: var(--semantic-success);
+  --color-semantic-error: var(--semantic-error);
+  --color-bg-primary: var(--bg-primary);
+  --color-bg-secondary: var(--bg-secondary);
+  --color-bg-tertiary: var(--bg-tertiary);
   --font-sans: var(--font-body);
   --font-mono: var(--font-mono);
-  --font-display: var(--font-display);
+  --font-logo: var(--font-logo);
 }
 
 body {
-  background: var(--bg-dark-primary);
-  color: var(--foreground);
+  background: var(--bg-primary);
+  color: var(--text-primary);
   font-family: var(--font-body);
   overflow-x: hidden;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* ============================================
@@ -205,140 +210,104 @@ body {
   perspective: 1000px;
 }
 
-/* Glassmorphism Card */
+/* Card Styles - Clean and Minimal */
 .glass-card {
-  background: linear-gradient(135deg, 
-    var(--glass-white-5),
-    var(--glass-white-10));
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid var(--glass-border);
-  border-radius: 20px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-default);
+  border-radius: 12px;
   position: relative;
   overflow: hidden;
-  box-shadow: var(--glass-shadow);
+  transition: all 0.2s ease;
 }
 
-.glass-card::before {
-  content: "";
-  position: absolute;
-  inset: -2px;
-  background: linear-gradient(45deg, 
-    var(--primary-neon-cyan), 
-    var(--primary-neon-purple), 
-    var(--status-live), 
-    var(--primary-neon-green));
-  border-radius: 20px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  animation: borderRotate 3s linear infinite;
-  z-index: -1;
+.glass-card:hover {
+  border-color: var(--border-hover);
+  transform: translateY(-1px);
 }
 
-.glass-card:hover::before {
-  opacity: 0.8;
-}
-
-/* Text Gradient */
+/* Text Styles - Subtle and Professional */
 .text-gradient {
-  background: linear-gradient(90deg, 
-    var(--primary-neon-cyan), 
-    var(--primary-neon-purple), 
-    var(--primary-gold));
+  background: linear-gradient(90deg,
+    var(--brand-lime),
+    var(--brand-purple));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-.text-gradient-glow {
-  background: linear-gradient(90deg, 
-    var(--primary-neon-cyan), 
-    var(--primary-neon-purple), 
-    var(--primary-gold));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: textGlow 3s ease-in-out infinite alternate;
-}
-
-/* Neon Glow Button */
-.btn-neon {
-  background: linear-gradient(90deg, var(--primary-neon-cyan), var(--primary-neon-purple));
-  position: relative;
-  overflow: hidden;
-  text-transform: uppercase;
-  font-weight: 700;
-  letter-spacing: 2px;
-  padding: 12px 32px;
+/* Button Styles - Clean and Purposeful */
+.btn-primary {
+  background: var(--brand-purple);
+  color: white;
+  font-weight: 600;
+  padding: 10px 24px;
   border-radius: 8px;
   border: none;
-  color: white;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
-.btn-neon::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, 
-    transparent, 
-    rgba(255, 255, 255, 0.3), 
-    transparent);
-  transition: left 0.5s;
+.btn-primary:hover {
+  background: color-mix(in srgb, var(--brand-purple) 85%, white);
+  transform: translateY(-1px);
 }
 
-.btn-neon:hover::before {
-  left: 100%;
+.btn-secondary {
+  background: transparent;
+  color: var(--brand-purple);
+  border: 1px solid var(--brand-purple);
+  font-weight: 600;
+  padding: 10px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.btn-neon:hover {
-  box-shadow: 0 0 20px var(--primary-neon-cyan),
-              0 0 40px var(--primary-neon-purple);
-  transform: translateY(-2px);
+.btn-secondary:hover {
+  background: rgba(147, 129, 255, 0.1);
 }
 
-.btn-neon:active {
-  animation: glitch 0.3s;
-}
-
-/* Live Badge */
+/* Status Badges - Semantic and Clear */
 .live-badge {
   position: relative;
-  padding: 6px 16px;
-  background: var(--status-live);
-  border-radius: 20px;
+  padding: 4px 12px;
+  background: var(--semantic-success);
+  border-radius: 12px;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  font-weight: 700;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.live-badge::before {
-  content: "";
-  position: absolute;
-  inset: -2px;
-  background: var(--status-live);
-  border-radius: 20px;
-  opacity: 0.5;
-  animation: pulse 2s infinite;
-  filter: blur(8px);
-  z-index: -1;
+  letter-spacing: 0.5px;
+  color: white;
 }
 
 .live-dot {
   display: inline-block;
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   background: white;
   border-radius: 50%;
-  animation: blink 1s infinite;
+  animation: pulse 2s infinite;
+}
+
+.badge-success {
+  background: var(--semantic-success);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.badge-error {
+  background: var(--semantic-error);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
 }
 
 /* Custom Scrollbar */
@@ -348,17 +317,18 @@ body {
 }
 
 .scrollbar-thin::-webkit-scrollbar-track {
-  background: var(--bg-dark-secondary);
+  background: var(--bg-secondary);
   border-radius: 4px;
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, var(--primary-neon-cyan), var(--primary-neon-purple));
+  background: var(--bg-tertiary);
   border-radius: 4px;
+  transition: background 0.2s ease;
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, var(--primary-neon-purple), var(--primary-gold));
+  background: rgba(147, 129, 255, 0.3);
 }
 
 /* Smooth Transitions */
@@ -435,7 +405,7 @@ body {
 
 /* Focus visible for keyboard navigation */
 :focus-visible {
-  outline: 2px solid var(--primary-neon-cyan);
+  outline: 2px solid var(--brand-purple);
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -445,9 +415,10 @@ body {
   .glass-card {
     border-width: 2px;
   }
-  
-  .btn-neon {
-    border: 2px solid white;
+
+  .btn-primary,
+  .btn-secondary {
+    border: 2px solid currentColor;
   }
 }
 
@@ -455,68 +426,17 @@ body {
    🎮 SPECIAL EFFECTS
    ============================================ */
 
-/* Holographic shimmer effect */
-.holographic-shimmer::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(105deg,
-    transparent 40%,
-    rgba(0, 240, 255, 0.3) 50%,
-    transparent 60%);
-  animation: shimmer 2s infinite;
-  pointer-events: none;
-}
-
-/* Cyberpunk grid background */
-.cyber-grid {
-  background-image: 
-    linear-gradient(var(--glass-border) 1px, transparent 1px),
-    linear-gradient(90deg, var(--glass-border) 1px, transparent 1px);
-  background-size: 50px 50px;
-  position: relative;
-}
-
-.cyber-grid::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 50% 50%, 
-    rgba(0, 240, 255, 0.1) 0%, 
-    transparent 70%);
-  pointer-events: none;
-}
-
-/* Tournament card special effects */
-.tournament-card-premium {
-  position: relative;
-}
-
-.tournament-card-premium::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(105deg,
-    transparent 40%,
-    rgba(0, 240, 255, 0.2) 50%,
-    transparent 60%);
-  animation: shimmer 3s infinite;
-  pointer-events: none;
-}
-
-/* Stats card hover effect */
+/* Subtle hover effects */
 .stats-card:hover {
-  transform: translateY(-4px) scale(1.02);
-  box-shadow: 
-    0 20px 60px rgba(0, 240, 255, 0.3),
-    0 0 40px rgba(153, 69, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 
-/* Input field focus glow */
+/* Input field focus */
 input:focus,
 textarea:focus,
 select:focus {
-  box-shadow: 
-    0 0 0 3px rgba(0, 240, 255, 0.1),
-    inset 0 0 20px rgba(0, 240, 255, 0.05);
+  outline: 2px solid var(--brand-purple);
+  outline-offset: 0;
+  border-color: var(--brand-purple);
 }
