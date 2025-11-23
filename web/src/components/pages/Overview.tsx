@@ -173,7 +173,7 @@ const Overview: React.FC = () => {
                           >
                               <td className="p-3 font-medium text-white text-sm">{app.streamer.name}</td>
                               <td className="p-3 text-white/70 text-sm">{app.tournament?.title || 'Unknown'}</td>
-                              <td className="p-3 text-white/70 text-xs hidden sm:table-cell">{app.submission_date}</td>
+                              <td className="p-3 text-white/70 text-xs hidden sm:table-cell">{new Date(app.submission_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
                               <td className="p-3">
                                   <span className={`inline-flex items-center px-2.5 py-1 text-xs font-semibold rounded-full ${
                                       app.status === 'Approved' ? 'bg-gradient-to-r from-[#DAFF7C]/20 to-[#DAFF7C]/10 text-[#DAFF7C] border border-[#DAFF7C]/30' :

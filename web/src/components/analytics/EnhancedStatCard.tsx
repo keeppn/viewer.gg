@@ -88,7 +88,7 @@ const EnhancedStatCard: React.FC<EnhancedStatCardProps> = ({
   };
 
   return (
-    <div className={`group relative bg-gradient-to-br from-[#1F1F1F]/90 to-[#2A2A2A]/90 backdrop-blur-xl rounded-xl border ${config.border} hover:${config.glow} hover:shadow-lg transition-all duration-300 overflow-hidden`}>
+    <div className={`h-full group relative bg-gradient-to-br from-[#1F1F1F]/90 to-[#2A2A2A]/90 backdrop-blur-xl rounded-xl border ${config.border} hover:${config.glow} hover:shadow-lg transition-all duration-300 overflow-hidden`}>
       {/* Glowing gradient background */}
       <div className={`absolute inset-0 bg-gradient-to-br ${config.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
 
