@@ -26,9 +26,9 @@ const ApplicationFunnel: React.FC<ApplicationFunnelProps> = ({
     {
       label: 'Approved',
       value: approved,
-      color: 'from-[var(--base)]/20 to-[var(--base)]/5',
-      borderColor: 'border-[var(--base)]/30',
-      textColor: 'text-[var(--base)]',
+      color: 'from-[#9381FF]/20 to-[#9381FF]/5',
+      borderColor: 'border-[#9381FF]/30',
+      textColor: 'text-[#9381FF]',
       width: totalApplications > 0 ? (approved / totalApplications) * 100 : 0,
       dropOff: totalApplications - approved,
       dropOffRate: totalApplications > 0 ? ((totalApplications - approved) / totalApplications) * 100 : 0
@@ -36,9 +36,9 @@ const ApplicationFunnel: React.FC<ApplicationFunnelProps> = ({
     {
       label: 'Live Streaming',
       value: liveStreamers,
-      color: 'from-[var(--contrast)]/20 to-[var(--contrast)]/5',
-      borderColor: 'border-[var(--contrast)]/30',
-      textColor: 'text-[var(--contrast)]',
+      color: 'from-[#DAFF7C]/20 to-[#DAFF7C]/5',
+      borderColor: 'border-[#DAFF7C]/30',
+      textColor: 'text-[#DAFF7C]',
       width: totalApplications > 0 ? (liveStreamers / totalApplications) * 100 : 0,
       dropOff: approved - liveStreamers,
       dropOffRate: approved > 0 ? ((approved - liveStreamers) / approved) * 100 : 0
@@ -46,7 +46,7 @@ const ApplicationFunnel: React.FC<ApplicationFunnelProps> = ({
   ];
 
   return (
-    <div className="bg-gradient-to-br from-[var(--neutral-1-bg)]/90 to-[var(--neutral-2-surface)]/90 backdrop-blur-xl rounded-xl border border-white/10 p-6">
+    <div className="bg-gradient-to-br from-[#1F1F1F]/90 to-[#2A2A2A]/90 backdrop-blur-xl rounded-xl border border-white/10 p-6">
       <div className="mb-6">
         <h3 className="text-xl font-bold text-white flex items-center gap-2">
           <span className="w-1.5 h-1.5 rounded-full bg-[#fd934e]" />
@@ -58,7 +58,7 @@ const ApplicationFunnel: React.FC<ApplicationFunnelProps> = ({
       {totalApplications === 0 ? (
         <div className="h-[300px] flex items-center justify-center">
           <div className="text-center">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-[var(--base)]/20 to-[var(--contrast)]/20 flex items-center justify-center">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-[#9381FF]/20 to-[#DAFF7C]/20 flex items-center justify-center">
               <span className="text-3xl">📊</span>
             </div>
             <p className="text-white/60 mb-2">No applications yet</p>
@@ -128,13 +128,13 @@ const ApplicationFunnel: React.FC<ApplicationFunnelProps> = ({
 
           {/* Summary stats */}
           <div className="grid grid-cols-2 gap-4 mt-8 pt-6 border-t border-white/10">
-            <div className="p-4 rounded-lg bg-gradient-to-br from-[var(--base)]/10 to-transparent border border-[var(--base)]/20">
+            <div className="p-4 rounded-lg bg-gradient-to-br from-[#9381FF]/10 to-transparent border border-[#9381FF]/20">
               <div className="text-sm text-white/60 mb-1">Approval Rate</div>
-              <div className="text-2xl font-bold text-[var(--base)]">{approvalRate.toFixed(1)}%</div>
+              <div className="text-2xl font-bold text-[#9381FF]">{approvalRate.toFixed(1)}%</div>
             </div>
-            <div className="p-4 rounded-lg bg-gradient-to-br from-[var(--contrast)]/10 to-transparent border border-[var(--contrast)]/20">
+            <div className="p-4 rounded-lg bg-gradient-to-br from-[#DAFF7C]/10 to-transparent border border-[#DAFF7C]/20">
               <div className="text-sm text-white/60 mb-1">Go-Live Rate</div>
-              <div className="text-2xl font-bold text-[var(--contrast)]">{liveRate.toFixed(1)}%</div>
+              <div className="text-2xl font-bold text-[#DAFF7C]">{liveRate.toFixed(1)}%</div>
             </div>
           </div>
         </div>

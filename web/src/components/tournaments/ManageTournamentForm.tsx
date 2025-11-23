@@ -30,10 +30,10 @@ const FieldPreview: React.FC<{ field: FormField; isSelected: boolean; onClick: (
     const renderInput = () => {
         switch (field.type) {
             case 'textarea':
-                return <textarea placeholder="Your answer here..." className="w-full bg-white/5 text-white rounded-lg p-3 border border-white/20 focus:border-[var(--base)] focus:ring-2 focus:ring-[var(--base)]/20 outline-none resize-none" rows={4} />;
+                return <textarea placeholder="Your answer here..." className="w-full bg-white/5 text-white rounded-lg p-3 border border-white/20 focus:border-[#9381FF] focus:ring-2 focus:ring-[#9381FF]/20 outline-none resize-none" rows={4} />;
             case 'select':
                 return (
-                    <select className="w-full bg-white/5 text-white rounded-lg p-3 border border-white/20 focus:border-[var(--base)] outline-none">
+                    <select className="w-full bg-white/5 text-white rounded-lg p-3 border border-white/20 focus:border-[#9381FF] outline-none">
                         <option value="">Choose an option...</option>
                         {field.options?.map((opt, i) => <option key={i} value={opt}>{opt}</option>)}
                     </select>
@@ -43,7 +43,7 @@ const FieldPreview: React.FC<{ field: FormField; isSelected: boolean; onClick: (
                     <div className="space-y-2">
                         {field.options?.map((opt, i) => (
                             <label key={i} className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 cursor-pointer transition-colors">
-                                <input type="radio" name={field.id} className="w-4 h-4 text-[var(--base)] border-white/20 focus:ring-[var(--base)]" />
+                                <input type="radio" name={field.id} className="w-4 h-4 text-[#9381FF] border-white/20 focus:ring-[#9381FF]" />
                                 <span className="text-white/80">{opt}</span>
                             </label>
                         ))}
@@ -54,21 +54,21 @@ const FieldPreview: React.FC<{ field: FormField; isSelected: boolean; onClick: (
                     <div className="space-y-2">
                         {field.options?.map((opt, i) => (
                             <label key={i} className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 cursor-pointer transition-colors">
-                                <input type="checkbox" className="w-4 h-4 text-[var(--base)] border-white/20 rounded focus:ring-[var(--base)]" />
+                                <input type="checkbox" className="w-4 h-4 text-[#9381FF] border-white/20 rounded focus:ring-[#9381FF]" />
                                 <span className="text-white/80">{opt}</span>
                             </label>
                         ))}
                     </div>
                 );
             case 'date':
-                return <input type="date" className="w-full bg-white/5 text-white rounded-lg p-3 border border-white/20 focus:border-[var(--base)] focus:ring-2 focus:ring-[var(--base)]/20 outline-none" />;
+                return <input type="date" className="w-full bg-white/5 text-white rounded-lg p-3 border border-white/20 focus:border-[#9381FF] focus:ring-2 focus:ring-[#9381FF]/20 outline-none" />;
             case 'email':
             case 'phone':
             case 'url':
             case 'number':
             case 'text':
             default:
-                return <input type={field.type === 'text' ? 'text' : field.type} placeholder="Your answer here..." className="w-full bg-white/5 text-white rounded-lg p-3 border border-white/20 focus:border-[var(--base)] focus:ring-2 focus:ring-[var(--base)]/20 outline-none" />;
+                return <input type={field.type === 'text' ? 'text' : field.type} placeholder="Your answer here..." className="w-full bg-white/5 text-white rounded-lg p-3 border border-white/20 focus:border-[#9381FF] focus:ring-2 focus:ring-[#9381FF]/20 outline-none" />;
         }
     };
 
@@ -77,8 +77,8 @@ const FieldPreview: React.FC<{ field: FormField; isSelected: boolean; onClick: (
             onClick={onClick}
             className={`group p-6 rounded-xl border-2 transition-all duration-300 cursor-pointer ${
                 isSelected
-                    ? 'border-[var(--base)] bg-gradient-to-br from-[var(--base)]/10 to-transparent shadow-lg shadow-[var(--base)]/20'
-                    : 'border-white/10 bg-gradient-to-br from-white/5 to-transparent hover:border-[var(--base)]/50'
+                    ? 'border-[#9381FF] bg-gradient-to-br from-[#9381FF]/10 to-transparent shadow-lg shadow-[#9381FF]/20'
+                    : 'border-white/10 bg-gradient-to-br from-white/5 to-transparent hover:border-[#9381FF]/50'
             }`}
         >
             <div className="flex items-start justify-between mb-4">
@@ -92,7 +92,7 @@ const FieldPreview: React.FC<{ field: FormField; isSelected: boolean; onClick: (
                     )}
                 </div>
                 {isSelected && (
-                    <span className="text-xs font-semibold text-[var(--base)] bg-[var(--base)]/10 px-2 py-1 rounded-full">
+                    <span className="text-xs font-semibold text-[#9381FF] bg-[#9381FF]/10 px-2 py-1 rounded-full">
                         Selected
                     </span>
                 )}
@@ -210,7 +210,7 @@ const ManageTournamentForm: React.FC<ManageTournamentFormProps> = ({ tournament,
             {/* Tournament Details */}
             <div className="bg-gradient-to-br from-[#1F1F1F]/90 to-[#2A2A2A]/90 backdrop-blur-xl p-6 rounded-xl border border-white/10">
                 <h3 className="text-lg font-bold mb-4 text-white flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[var(--base)]" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#9381FF]" />
                     Tournament Details
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -220,7 +220,7 @@ const ManageTournamentForm: React.FC<ManageTournamentFormProps> = ({ tournament,
                             type="text"
                             value={title}
                             onChange={e => setTitle(e.target.value)}
-                            className="w-full bg-white/5 text-white rounded-lg p-3 border border-white/20 focus:border-[var(--base)] focus:ring-2 focus:ring-[var(--base)]/20 outline-none transition-all"
+                            className="w-full bg-white/5 text-white rounded-lg p-3 border border-white/20 focus:border-[#9381FF] focus:ring-2 focus:ring-[#9381FF]/20 outline-none transition-all"
                             required
                         />
                     </div>
@@ -230,7 +230,7 @@ const ManageTournamentForm: React.FC<ManageTournamentFormProps> = ({ tournament,
                             type="text"
                             value={game}
                             onChange={e => setGame(e.target.value)}
-                            className="w-full bg-white/5 text-white rounded-lg p-3 border border-white/20 focus:border-[var(--base)] focus:ring-2 focus:ring-[var(--base)]/20 outline-none transition-all"
+                            className="w-full bg-white/5 text-white rounded-lg p-3 border border-white/20 focus:border-[#9381FF] focus:ring-2 focus:ring-[#9381FF]/20 outline-none transition-all"
                             required
                         />
                     </div>
@@ -240,7 +240,7 @@ const ManageTournamentForm: React.FC<ManageTournamentFormProps> = ({ tournament,
                             type="date"
                             value={startDate}
                             onChange={e => setStartDate(e.target.value)}
-                            className="w-full bg-white/5 text-white rounded-lg p-3 border border-white/20 focus:border-[var(--base)] focus:ring-2 focus:ring-[var(--base)]/20 outline-none transition-all"
+                            className="w-full bg-white/5 text-white rounded-lg p-3 border border-white/20 focus:border-[#9381FF] focus:ring-2 focus:ring-[#9381FF]/20 outline-none transition-all"
                             required
                         />
                     </div>
@@ -289,14 +289,14 @@ const ManageTournamentForm: React.FC<ManageTournamentFormProps> = ({ tournament,
 
                         {/* Add Field Type Selector */}
                         {showAddField && (
-                            <div className="p-6 bg-gradient-to-br from-[var(--base)]/5 to-transparent border-b border-white/10">
+                            <div className="p-6 bg-gradient-to-br from-[#9381FF]/5 to-transparent border-b border-white/10">
                                 <p className="text-sm text-white/70 mb-3">Select field type:</p>
                                 <div className="grid grid-cols-2 gap-2">
                                     {FIELD_TYPES.map(type => (
                                         <button
                                             key={type.value}
                                             onClick={() => handleAddField(type.value)}
-                                            className="group flex items-start gap-3 p-3 rounded-lg border border-white/10 hover:border-[var(--base)]/50 bg-white/5 hover:bg-[var(--base)]/10 transition-all text-left"
+                                            className="group flex items-start gap-3 p-3 rounded-lg border border-white/10 hover:border-[#9381FF]/50 bg-white/5 hover:bg-[#9381FF]/10 transition-all text-left"
                                         >
                                             <span className="text-2xl flex-shrink-0">{type.icon}</span>
                                             <div className="min-w-0">
@@ -313,7 +313,7 @@ const ManageTournamentForm: React.FC<ManageTournamentFormProps> = ({ tournament,
                         <div className="p-6 space-y-3 max-h-[600px] overflow-y-auto">
                             {formFields.length === 0 ? (
                                 <div className="text-center py-12">
-                                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-[var(--base)]/20 to-[#DAFF7C]/20 flex items-center justify-center">
+                                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-[#9381FF]/20 to-[#DAFF7C]/20 flex items-center justify-center">
                                         <span className="text-3xl">📝</span>
                                     </div>
                                     <p className="text-white/60 mb-2">No fields yet</p>
@@ -330,8 +330,8 @@ const ManageTournamentForm: React.FC<ManageTournamentFormProps> = ({ tournament,
                                         onClick={() => setSelectedFieldId(field.id)}
                                         className={`group relative p-4 rounded-lg border-2 transition-all duration-200 cursor-move ${
                                             selectedFieldId === field.id
-                                                ? 'border-[var(--base)] bg-gradient-to-br from-[var(--base)]/10 to-transparent shadow-lg shadow-[var(--base)]/10'
-                                                : 'border-white/10 bg-gradient-to-br from-white/5 to-transparent hover:border-[var(--base)]/50'
+                                                ? 'border-[#9381FF] bg-gradient-to-br from-[#9381FF]/10 to-transparent shadow-lg shadow-[#9381FF]/10'
+                                                : 'border-white/10 bg-gradient-to-br from-white/5 to-transparent hover:border-[#9381FF]/50'
                                         } ${draggedIndex === index ? 'opacity-50' : ''}`}
                                     >
                                         <div className="flex items-start justify-between gap-3">
@@ -350,7 +350,7 @@ const ManageTournamentForm: React.FC<ManageTournamentFormProps> = ({ tournament,
                                             <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <button
                                                     onClick={(e) => { e.stopPropagation(); handleDuplicateField(field); }}
-                                                    className="p-1.5 rounded-md hover:bg-[var(--base)]/20 text-white/60 hover:text-[var(--base)] transition-colors"
+                                                    className="p-1.5 rounded-md hover:bg-[#9381FF]/20 text-white/60 hover:text-[#9381FF] transition-colors"
                                                     title="Duplicate"
                                                 >
                                                     <CopyIcon />
@@ -374,7 +374,7 @@ const ManageTournamentForm: React.FC<ManageTournamentFormProps> = ({ tournament,
                     {selectedField && (
                         <div className="bg-gradient-to-br from-[#1F1F1F]/90 to-[#2A2A2A]/90 backdrop-blur-xl rounded-xl border border-white/10 p-6">
                             <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                                <span className="w-1.5 h-1.5 rounded-full bg-[var(--base)]" />
+                                <span className="w-1.5 h-1.5 rounded-full bg-[#9381FF]" />
                                 Field Settings
                             </h3>
                             <div className="space-y-4">
@@ -384,7 +384,7 @@ const ManageTournamentForm: React.FC<ManageTournamentFormProps> = ({ tournament,
                                         type="text"
                                         value={selectedField.label}
                                         onChange={(e) => handleUpdateField(selectedField.id, { label: e.target.value })}
-                                        className="w-full bg-white/5 text-white rounded-lg p-3 border border-white/20 focus:border-[var(--base)] focus:ring-2 focus:ring-[var(--base)]/20 outline-none transition-all"
+                                        className="w-full bg-white/5 text-white rounded-lg p-3 border border-white/20 focus:border-[#9381FF] focus:ring-2 focus:ring-[#9381FF]/20 outline-none transition-all"
                                     />
                                 </div>
                                 <div>
@@ -392,7 +392,7 @@ const ManageTournamentForm: React.FC<ManageTournamentFormProps> = ({ tournament,
                                     <textarea
                                         value={selectedField.description || ''}
                                         onChange={(e) => handleUpdateField(selectedField.id, { description: e.target.value })}
-                                        className="w-full bg-white/5 text-white rounded-lg p-3 border border-white/20 focus:border-[var(--base)] focus:ring-2 focus:ring-[var(--base)]/20 outline-none transition-all resize-none"
+                                        className="w-full bg-white/5 text-white rounded-lg p-3 border border-white/20 focus:border-[#9381FF] focus:ring-2 focus:ring-[#9381FF]/20 outline-none transition-all resize-none"
                                         rows={2}
                                         placeholder="Add helpful text..."
                                     />
@@ -403,7 +403,7 @@ const ManageTournamentForm: React.FC<ManageTournamentFormProps> = ({ tournament,
                                         <textarea
                                             value={selectedField.options?.join('\n') || ''}
                                             onChange={(e) => handleUpdateField(selectedField.id, { options: e.target.value.split('\n').filter(o => o.trim()) })}
-                                            className="w-full bg-white/5 text-white rounded-lg p-3 border border-white/20 focus:border-[var(--base)] focus:ring-2 focus:ring-[var(--base)]/20 outline-none transition-all resize-none font-mono text-sm"
+                                            className="w-full bg-white/5 text-white rounded-lg p-3 border border-white/20 focus:border-[#9381FF] focus:ring-2 focus:ring-[#9381FF]/20 outline-none transition-all resize-none font-mono text-sm"
                                             rows={4}
                                             placeholder="Option 1&#10;Option 2&#10;Option 3"
                                         />
@@ -417,7 +417,7 @@ const ManageTournamentForm: React.FC<ManageTournamentFormProps> = ({ tournament,
                                     <button
                                         onClick={() => handleUpdateField(selectedField.id, { required: !selectedField.required })}
                                         className={`relative w-12 h-6 rounded-full transition-colors ${
-                                            selectedField.required ? 'bg-[var(--base)]' : 'bg-white/20'
+                                            selectedField.required ? 'bg-[#9381FF]' : 'bg-white/20'
                                         }`}
                                     >
                                         <span className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${
@@ -454,7 +454,7 @@ const ManageTournamentForm: React.FC<ManageTournamentFormProps> = ({ tournament,
                                     <span className="text-[#fd934e] ml-1">*</span>
                                 </label>
                                 <p className="text-sm text-white/60 mb-3">Your full name or team name</p>
-                                <input type="text" placeholder="Your answer here..." className="w-full bg-white/5 text-white rounded-lg p-3 border border-white/20 focus:border-[var(--base)] focus:ring-2 focus:ring-[var(--base)]/20 outline-none" />
+                                <input type="text" placeholder="Your answer here..." className="w-full bg-white/5 text-white rounded-lg p-3 border border-white/20 focus:border-[#9381FF] focus:ring-2 focus:ring-[#9381FF]/20 outline-none" />
                             </div>
 
                             <div className="p-6 rounded-xl border-2 border-white/10 bg-gradient-to-br from-white/5 to-transparent">
@@ -463,7 +463,7 @@ const ManageTournamentForm: React.FC<ManageTournamentFormProps> = ({ tournament,
                                     <span className="text-[#fd934e] ml-1">*</span>
                                 </label>
                                 <p className="text-sm text-white/60 mb-3">We'll use this to contact you</p>
-                                <input type="email" placeholder="Your answer here..." className="w-full bg-white/5 text-white rounded-lg p-3 border border-white/20 focus:border-[var(--base)] focus:ring-2 focus:ring-[var(--base)]/20 outline-none" />
+                                <input type="email" placeholder="Your answer here..." className="w-full bg-white/5 text-white rounded-lg p-3 border border-white/20 focus:border-[#9381FF] focus:ring-2 focus:ring-[#9381FF]/20 outline-none" />
                             </div>
 
                             {/* Custom Fields */}

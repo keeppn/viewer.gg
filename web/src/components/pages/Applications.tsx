@@ -6,7 +6,6 @@ import { useAuthStore } from '@/store/authStore';
 import { Application } from '@/types';
 import Button from '@/components/common/Button';
 import ErrorAlert from '@/components/common/ErrorAlert';
-import { motion, staggerContainer, fadeInUp } from '@/animations';
 
 interface OutletContextType {
   applications: Application[];
@@ -35,51 +34,37 @@ const Applications: React.FC = () => {
 
   const getStatusStyle = (status: Application['status']) => {
     switch (status) {
-      case 'Approved': return 'bg-[var(--semantic-success)]/10 text-[var(--semantic-success)] border border-[var(--semantic-success)]/30';
-      case 'Rejected': return 'bg-[var(--semantic-error)]/10 text-[var(--semantic-error)] border border-[var(--semantic-error)]/30';
-      case 'Pending': return 'bg-[var(--base)]/10 text-[var(--base)] border border-[var(--base)]/30';
+      case 'Approved': return 'bg-[#DAFF7C]/10 text-[#DAFF7C] border border-[#DAFF7C]/20';
+      case 'Rejected': return 'bg-red-500/10 text-red-400 border border-red-500/20';
+      case 'Pending': return 'bg-[#9381FF]/10 text-[#9381FF] border border-[#9381FF]/20';
     }
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Error Alert */}
       <ErrorAlert error={error} onDismiss={clearError} />
 
-      {/* Description */}
-      <p className="text-sm text-white/60">Review and manage streamer applications for your tournaments</p>
-
-      <motion.div
-        className="bg-[var(--neutral-2-surface)] rounded-2xl border border-[var(--neutral-border)]"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 24 }}
-      >
-        {/* Filter Tabs - 8pt spacing */}
-        <div className="p-6 border-b border-[var(--neutral-border)] flex items-center gap-2">
-        {(['All', 'Pending', 'Approved', 'Rejected'] as StatusFilter[]).map((f, idx) => (
-          <motion.button
+      <div className="bg-[#2A2A2A] rounded-[10px] border border-white/10">
+        <div className="p-4 border-b border-white/10 flex items-center gap-2">
+        {(['All', 'Pending', 'Approved', 'Rejected'] as StatusFilter[]).map(f => (
+          <button
             key={f}
             onClick={() => setFilter(f)}
-            className={`px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-200 ${
+            className={`px-4 py-2 text-sm font-semibold rounded-[10px] transition-all duration-200 ${
               filter === f
-                ? 'bg-[var(--base)] text-white shadow-lg shadow-[var(--base)]/20'
+                ? 'bg-[#DAFF7C] text-[#1F1F1F]'
                 : 'bg-transparent text-white/70 hover:bg-white/5 hover:text-white'
             }`}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: idx * 0.05 }}
           >
             {f}
-          </motion.button>
+          </button>
         ))}
       </div>
-
-      {/* Table - Premium styling with animations */}
       <div className="overflow-x-auto">
         <table className="w-full text-left">
-          <thead className="text-white/70 text-xs uppercase bg-[var(--neutral-1-bg)]">
-            <tr className="border-b border-[var(--neutral-border)]">
+          <thead className="text-white/70 text-sm uppercase bg-[#1F1F1F]">
+            <tr className="border-b border-white/10">
               <th className="p-4 font-semibold">Streamer</th>
               <th className="p-4 font-semibold">Followers</th>
               <th className="p-4 font-semibold">Tournament</th>
@@ -88,21 +73,13 @@ const Applications: React.FC = () => {
               <th className="p-4 text-center font-semibold">Actions</th>
             </tr>
           </thead>
-          <motion.tbody
-            variants={staggerContainer}
-            initial="hidden"
-            animate="visible"
-          >
+          <tbody>
             {filteredApplications.map(app => (
-              <motion.tr
-                key={app.id}
-                className="border-b border-white/5 hover:bg-[var(--base-dim)] transition-colors duration-200"
-                variants={fadeInUp}
-              >
+              <tr key={app.id} className="border-b border-white/5 hover:bg-white/5 transition-colors duration-200">
                 <td className="p-4 font-medium text-white">{app.streamer.name}</td>
                 <td className="p-4 text-white/70">{app.streamer.follower_count.toLocaleString()}</td>
                 <td className="p-4 text-white/70">{app.tournament?.title || 'N/A'}</td>
-                <td className="p-4 text-white/60 text-sm">{new Date(app.submission_date).toLocaleDateString()}</td>
+                <td className="p-4 text-white/70">{new Date(app.submission_date).toLocaleDateString()}</td>
                 <td className="p-4">
                   <span className={`inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full ${getStatusStyle(app.status)}`}>
                     {app.status}
@@ -116,12 +93,12 @@ const Applications: React.FC = () => {
                     </div>
                   )}
                 </td>
-              </motion.tr>
+              </tr>
             ))}
-          </motion.tbody>
+          </tbody>
         </table>
       </div>
-    </motion.div>
+    </div>
     </div>
   );
 };
