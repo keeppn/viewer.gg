@@ -18,7 +18,7 @@ type StatusFilter = 'All' | 'Pending' | 'Approved' | 'Rejected';
 const ApplicationReviewModal: React.FC<{
   application: Application;
   onClose: () => void;
-  onUpdateStatus: (id: number, status: 'Approved' | 'Rejected', userId: string) => void;
+  onUpdateStatus: (id: string, status: 'Approved' | 'Rejected', userId: string) => void;
   userId: string;
 }> = ({ application, onClose, onUpdateStatus, userId }) => {
   return (
