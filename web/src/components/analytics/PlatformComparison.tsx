@@ -20,7 +20,7 @@ const PlatformComparison: React.FC<PlatformComparisonProps> = ({ data }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
-        <div className="bg-gradient-to-br from-[var(--neutral-1-bg)]/95 to-[var(--neutral-2-surface)]/95 backdrop-blur-xl p-4 rounded-xl border border-white/20 shadow-xl">
+        <div className="bg-gradient-to-br from-[#1F1F1F]/95 to-[#2A2A2A]/95 backdrop-blur-xl p-4 rounded-xl border border-white/20 shadow-xl">
           <p className="text-white font-semibold mb-2">{data.platform}</p>
           <div className="space-y-1 text-sm">
             <div className="flex items-center justify-between gap-4">
@@ -45,10 +45,10 @@ const PlatformComparison: React.FC<PlatformComparisonProps> = ({ data }) => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-[var(--neutral-1-bg)]/90 to-[var(--neutral-2-surface)]/90 backdrop-blur-xl rounded-xl border border-white/10 p-6">
+    <div className="bg-gradient-to-br from-[#1F1F1F]/90 to-[#2A2A2A]/90 backdrop-blur-xl rounded-xl border border-white/10 p-6">
       <div className="mb-6">
         <h3 className="text-xl font-bold text-white flex items-center gap-2">
-          <span className="w-1.5 h-1.5 rounded-full bg-[var(--base)]" />
+          <span className="w-1.5 h-1.5 rounded-full bg-[#9381FF]" />
           Platform Distribution
         </h3>
         <p className="text-sm text-white/60 mt-1">Viewership breakdown by streaming platform</p>
@@ -57,7 +57,7 @@ const PlatformComparison: React.FC<PlatformComparisonProps> = ({ data }) => {
       {data.length === 0 ? (
         <div className="h-[300px] flex items-center justify-center">
           <div className="text-center">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-[var(--base)]/20 to-[var(--contrast)]/20 flex items-center justify-center">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-[#9381FF]/20 to-[#DAFF7C]/20 flex items-center justify-center">
               <span className="text-3xl">📊</span>
             </div>
             <p className="text-white/60">No platform data available</p>
@@ -92,7 +92,7 @@ const PlatformComparison: React.FC<PlatformComparisonProps> = ({ data }) => {
                 {data.map((entry, index) => (
                   <Cell
                     key={`cell-${index}`}
-                    fill={platformColors[entry.platform] || 'var(--base)'}
+                    fill={platformColors[entry.platform] || '#9381FF'}
                   />
                 ))}
               </Bar>

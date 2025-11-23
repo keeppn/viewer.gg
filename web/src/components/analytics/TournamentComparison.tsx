@@ -33,7 +33,7 @@ const ComparisonMetricCard: React.FC<ComparisonMetricCardProps> = ({ label, valu
   const maxValue = Math.max(...numericValues);
 
   return (
-    <div className="bg-gradient-to-br from-[var(--neutral-1-bg)]/90 to-[var(--neutral-2-surface)]/90 backdrop-blur-xl rounded-lg border border-white/10 p-3 sm:p-4">
+    <div className="bg-gradient-to-br from-[#1F1F1F]/90 to-[#2A2A2A]/90 backdrop-blur-xl rounded-lg border border-white/10 p-3 sm:p-4">
       <div className="flex items-center gap-2 mb-3">
         <span className="text-lg sm:text-xl">{icon}</span>
         <h4 className="text-xs sm:text-sm font-semibold text-white/70">{label}</h4>
@@ -55,7 +55,7 @@ const ComparisonMetricCard: React.FC<ComparisonMetricCardProps> = ({ label, valu
                   </span>
                 )}
               </div>
-              <div className={`text-xl sm:text-2xl font-bold ${isBest ? 'text-[var(--contrast)]' : 'text-white'}`}>
+              <div className={`text-xl sm:text-2xl font-bold ${isBest ? 'text-[#DAFF7C]' : 'text-white'}`}>
                 {typeof item.value === 'number' ? item.value.toLocaleString() : item.value}
               </div>
             </div>
@@ -109,10 +109,10 @@ const TournamentComparison: React.FC<TournamentComparisonProps> = ({ tournaments
 
   if (!comparisonMode) {
     return (
-      <div className="bg-gradient-to-br from-[var(--neutral-1-bg)]/90 to-[var(--neutral-2-surface)]/90 backdrop-blur-xl rounded-xl border border-white/10 p-6">
+      <div className="bg-gradient-to-br from-[#1F1F1F]/90 to-[#2A2A2A]/90 backdrop-blur-xl rounded-xl border border-white/10 p-6">
         <div className="mb-6">
           <h3 className="text-xl font-bold text-white flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-[var(--base)]" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#9381FF]" />
             Tournament Comparison
           </h3>
           <p className="text-sm text-white/60 mt-1">Select 2-3 tournaments to compare side-by-side</p>
@@ -127,14 +127,14 @@ const TournamentComparison: React.FC<TournamentComparisonProps> = ({ tournaments
               disabled={!selectedTournaments.includes(tournament.id) && selectedTournaments.length >= 3}
               className={`w-full flex items-center justify-between p-4 rounded-lg border-2 transition-all ${
                 selectedTournaments.includes(tournament.id)
-                  ? 'border-[var(--base)] bg-gradient-to-br from-[var(--base)]/20 to-transparent'
-                  : 'border-white/10 bg-white/5 hover:border-[var(--base)]/50'
+                  ? 'border-[#9381FF] bg-gradient-to-br from-[#9381FF]/20 to-transparent'
+                  : 'border-white/10 bg-white/5 hover:border-[#9381FF]/50'
               } disabled:opacity-50 disabled:cursor-not-allowed`}
             >
               <div className="flex items-center gap-3 text-left">
                 <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-colors ${
                   selectedTournaments.includes(tournament.id)
-                    ? 'border-[var(--base)] bg-[var(--base)]'
+                    ? 'border-[#9381FF] bg-[#9381FF]'
                     : 'border-white/30'
                 }`}>
                   {selectedTournaments.includes(tournament.id) && (
@@ -151,9 +151,9 @@ const TournamentComparison: React.FC<TournamentComparisonProps> = ({ tournaments
               <div className="flex items-center gap-2">
                 <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                   tournament.status === 'active'
-                    ? 'bg-[var(--contrast)]/10 text-[var(--contrast)]'
+                    ? 'bg-[#DAFF7C]/10 text-[#DAFF7C]'
                     : tournament.status === 'completed'
-                    ? 'bg-[var(--base)]/10 text-[var(--base)]'
+                    ? 'bg-[#9381FF]/10 text-[#9381FF]'
                     : 'bg-white/10 text-white/60'
                 }`}>
                   {tournament.status}
@@ -168,7 +168,7 @@ const TournamentComparison: React.FC<TournamentComparisonProps> = ({ tournaments
         <button
           onClick={handleStartComparison}
           disabled={selectedTournaments.length < 2}
-          className="w-full py-3 px-4 bg-gradient-to-r from-[var(--base)]/20 to-[var(--contrast)]/10 hover:from-[var(--base)]/30 hover:to-[var(--contrast)]/20 border border-[var(--base)]/30 hover:border-[var(--contrast)]/50 text-white font-semibold rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-[var(--contrast)]/20"
+          className="w-full py-3 px-4 bg-gradient-to-r from-[#9381FF]/20 to-[#DAFF7C]/10 hover:from-[#9381FF]/30 hover:to-[#DAFF7C]/20 border border-[#9381FF]/30 hover:border-[#DAFF7C]/50 text-white font-semibold rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-[#DAFF7C]/20"
         >
           {selectedTournaments.length < 2
             ? `Select ${2 - selectedTournaments.length} more tournament${2 - selectedTournaments.length > 1 ? 's' : ''}`
@@ -182,11 +182,11 @@ const TournamentComparison: React.FC<TournamentComparisonProps> = ({ tournaments
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-gradient-to-br from-[var(--neutral-1-bg)]/90 to-[var(--neutral-2-surface)]/90 backdrop-blur-xl rounded-xl border border-white/10 p-4 sm:p-6">
+      <div className="bg-gradient-to-br from-[#1F1F1F]/90 to-[#2A2A2A]/90 backdrop-blur-xl rounded-xl border border-white/10 p-4 sm:p-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h3 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--base)]" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#9381FF]" />
               Tournament Comparison
             </h3>
             <p className="text-xs sm:text-sm text-white/60 mt-1">Comparing {selectedTournaments.length} tournaments</p>
@@ -205,13 +205,13 @@ const TournamentComparison: React.FC<TournamentComparisonProps> = ({ tournaments
         {/* Tournament headers */}
         <div className={`grid grid-cols-1 ${selectedTournaments.length === 2 ? 'sm:grid-cols-2' : 'sm:grid-cols-2 lg:grid-cols-3'} gap-4 mt-6`}>
           {comparisonData.map((data, index) => (
-            <div key={index} className="text-center p-4 rounded-lg bg-gradient-to-br from-[var(--base)]/10 to-transparent border border-[var(--base)]/20">
+            <div key={index} className="text-center p-4 rounded-lg bg-gradient-to-br from-[#9381FF]/10 to-transparent border border-[#9381FF]/20">
               <h4 className="font-bold text-white mb-1 text-sm sm:text-base">{data.tournament.title}</h4>
               <p className="text-xs text-white/60">{data.tournament.game}</p>
               <span className={`inline-block mt-2 px-3 py-1 rounded-full text-xs font-medium ${
                 data.tournament.status === 'active'
-                  ? 'bg-[var(--contrast)]/10 text-[var(--contrast)]'
-                  : 'bg-[var(--base)]/10 text-[var(--base)]'
+                  ? 'bg-[#DAFF7C]/10 text-[#DAFF7C]'
+                  : 'bg-[#9381FF]/10 text-[#9381FF]'
               }`}>
                 {data.tournament.status}
               </span>
@@ -297,7 +297,7 @@ const TournamentComparison: React.FC<TournamentComparisonProps> = ({ tournaments
       </div>
 
       {/* Summary insights */}
-      <div className="bg-gradient-to-br from-[var(--neutral-1-bg)]/90 to-[var(--neutral-2-surface)]/90 backdrop-blur-xl rounded-xl border border-white/10 p-6">
+      <div className="bg-gradient-to-br from-[#1F1F1F]/90 to-[#2A2A2A]/90 backdrop-blur-xl rounded-xl border border-white/10 p-6">
         <h4 className="text-lg font-bold text-white mb-4">Comparison Insights</h4>
         <div className="space-y-3">
           {(() => {
@@ -310,16 +310,16 @@ const TournamentComparison: React.FC<TournamentComparisonProps> = ({ tournaments
 
             return (
               <>
-                <div className="flex items-start gap-3 p-3 rounded-lg bg-gradient-to-br from-[var(--contrast)]/10 to-transparent">
-                  <span className="text-[var(--contrast)]">🏆</span>
+                <div className="flex items-start gap-3 p-3 rounded-lg bg-gradient-to-br from-[#DAFF7C]/10 to-transparent">
+                  <span className="text-[#DAFF7C]">🏆</span>
                   <div className="flex-1 text-sm text-white/80">
-                    <span className="font-semibold text-[var(--contrast)]">{bestApprovalTournament?.tournament.title}</span> has the highest approval rate at <span className="font-semibold">{bestApprovalRate}%</span>
+                    <span className="font-semibold text-[#DAFF7C]">{bestApprovalTournament?.tournament.title}</span> has the highest approval rate at <span className="font-semibold">{bestApprovalRate}%</span>
                   </div>
                 </div>
-                <div className="flex items-start gap-3 p-3 rounded-lg bg-gradient-to-br from-[var(--base)]/10 to-transparent">
-                  <span className="text-[var(--base)]">📊</span>
+                <div className="flex items-start gap-3 p-3 rounded-lg bg-gradient-to-br from-[#9381FF]/10 to-transparent">
+                  <span className="text-[#9381FF]">📊</span>
                   <div className="flex-1 text-sm text-white/80">
-                    <span className="font-semibold text-[var(--base)]">{mostAppTournament?.tournament.title}</span> received the most applications with <span className="font-semibold">{mostApplications}</span> submissions
+                    <span className="font-semibold text-[#9381FF]">{mostAppTournament?.tournament.title}</span> received the most applications with <span className="font-semibold">{mostApplications}</span> submissions
                   </div>
                 </div>
                 <div className="flex items-start gap-3 p-3 rounded-lg bg-gradient-to-br from-[#fd934e]/10 to-transparent">

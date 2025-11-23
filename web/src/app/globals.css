@@ -1,163 +1,64 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Geist+Sans:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 @import "tailwindcss";
 
 /* ============================================
-   🎮 VIEWER.GG DESIGN SYSTEM v3.0
-   Golden Ratio • 8pt Spacing • BASE/CONTRAST/ACCENT
-   Professional, Harmonious, Intentional
+   🎮 VIEWER.GG MODERN DESIGN SYSTEM
    ============================================ */
 
 :root {
-  /* ============================================
-     TYPOGRAPHY SCALE - Golden Ratio (1.618)
-     Base: 16px | H2: 26px (16 × 1.618 ✅)
-     ============================================ */
-  --text-display: 42px;       /* Logo - Geist Sans Bold */
-  --text-h1: 32px;            /* Page titles - Inter Bold */
-  --text-h2: 26px;            /* Sections - Inter Semibold (16 × 1.618 ✅) */
-  --text-h3: 20px;            /* Subsections - Inter Semibold */
-  --text-h4: 18px;            /* Cards - Inter Medium */
-  --text-body-large: 18px;    /* Large body - Inter Regular */
-  --text-body: 16px;          /* Base size - Inter Regular */
-  --text-body-small: 14px;    /* Small body - Inter Regular */
-  --text-caption: 12px;       /* Captions - Inter Regular */
-  --text-micro: 10px;         /* Micro text - Inter Medium */
+  /* Primary Colors (Modern Theme) */
+  --primary-lime: #DAFF7C;
+  --primary-purple: #9381FF;
+  --primary-cyan: #00F0FF;
+  --primary-gold: #FFB800;
 
-  /* Line Heights - 8pt multiples for vertical rhythm */
-  --leading-display: 48px;    /* 6 × 8 - Tight for impact */
-  --leading-h1: 40px;         /* 5 × 8 - Balanced */
-  --leading-h2: 32px;         /* 4 × 8 - Balanced */
-  --leading-h3: 24px;         /* 3 × 8 - Balanced */
-  --leading-body: 24px;       /* 3 × 8 - Optimal readability */
-  --leading-small: 20px;      /* 2.5 × 8 - Comfortable */
-  --leading-caption: 16px;    /* 2 × 8 - Dense but readable */
+  /* Background & Base Colors */
+  --bg-dark-primary: #1F1F1F;
+  --bg-dark-secondary: #2A2A2A;
+  --bg-dark-tertiary: #333333;
+  --bg-gradient-start: #1F1F1F;
+  --bg-gradient-end: #2A2A2A;
 
-  /* ============================================
-     SPACING SCALE - 8pt System
-     All spacing in multiples of 8
-     ============================================ */
-  --space-0: 0px;
-  --space-1: 8px;      /* xs - Icon padding, tight gaps */
-  --space-2: 16px;     /* sm - Card padding, small margins */
-  --space-3: 24px;     /* md - Section padding, comfortable gaps */
-  --space-4: 32px;     /* lg - Container padding, major sections */
-  --space-5: 40px;     /* xl - Page margins, hero sections */
-  --space-6: 48px;     /* 2xl - Large separations */
-  --space-8: 64px;     /* 3xl - Major layout divisions */
-  --space-10: 80px;    /* 4xl - Hero spacing */
-  --space-12: 96px;    /* 5xl - Maximum spacing */
+  /* Card & Surface Colors */
+  --card-background: #2A2A2A;
+  --card-border: rgba(255, 255, 255, 0.1);
 
-  /* ============================================
-     COLOR SYSTEM - BASE/CONTRAST/ACCENT (60-30-10)
-     Neutrals 60% | BASE 30% | CONTRAST 8% | ACCENT 2%
-     ============================================ */
+  /* Alert & Status Colors */
+  --status-live: #FF073A;
+  --status-success: #DAFF7C;
+  --status-warning: #FFB800;
+  --status-error: #FF3E3E;
+  --status-info: #00D4FF;
 
-  /* NEUTRALS (60% of interface) */
-  --neutral-1-bg: #1A1D23;           /* Cool dark slate - Page backgrounds, recessed areas */
-  --neutral-2-surface: #2A2A2A;      /* Warm dark charcoal - Cards, elevated surfaces */
-  --neutral-border: rgba(255, 255, 255, 0.08);   /* Subtle borders */
-  --neutral-divider: rgba(255, 255, 255, 0.06);  /* Dividers */
-
-  /* BASE Purple (30% of interface) - Primary brand identity */
-  --base: #9381FF;                   /* Primary brand color */
-  --base-hover: #A494FF;             /* Lighter on hover */
-  --base-active: #8270EE;            /* Darker on click */
-  --base-dim: rgba(147, 129, 255, 0.12);  /* Background tint */
-
-  /* CONTRAST Lime (8% of interface) - Success, active, live states */
-  --contrast: #DAFF7C;               /* Success, approved, live */
-  --contrast-dim: rgba(218, 255, 124, 0.12);  /* Background tint */
-
-  /* ACCENT Cyan (2% of interface) - Interactive elements, CTAs */
-  --accent: #00F0FF;                 /* Links, CTAs, clickable */
-  --accent-dim: rgba(0, 240, 255, 0.12);  /* Background tint */
-
-  /* SEMANTIC (Use sparingly for specific contexts) */
-  --semantic-success: #22C55E;       /* Approved, success (green) */
-  --semantic-error: #EF4444;         /* Rejected, errors (red) */
-  --semantic-warning: #F59E0B;       /* Warnings (amber) */
-
-  /* Text Colors */
-  --text-primary: #FFFFFF;
-  --text-secondary: rgba(255, 255, 255, 0.7);
-  --text-tertiary: rgba(255, 255, 255, 0.5);
-
-  /* Typography Families */
-  --font-logo: 'Geist Sans', sans-serif;
-  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  /* Typography */
+  --font-display: 'Poppins', sans-serif;
+  --font-body: 'Poppins', 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
-  /* ============================================
-     LEGACY COMPATIBILITY
-     Maintains backward compatibility with existing code
-     ============================================ */
-  --brand-purple: var(--base);
-  --brand-lime: var(--contrast);
-  --brand-cyan: var(--accent);
-  --bg-primary: var(--neutral-1-bg);
-  --bg-secondary: var(--neutral-2-surface);
-  --bg-tertiary: #333333;
-  --border-default: var(--neutral-border);
-  --border-hover: rgba(255, 255, 255, 0.2);
-  --background: var(--neutral-1-bg);
-  --foreground: var(--text-primary);
-  --primary-lime: var(--contrast);
-  --primary-purple: var(--base);
-  --primary-cyan: var(--accent);
+  /* Legacy compatibility */
+  --background: var(--bg-dark-primary);
+  --foreground: #ededed;
 }
 
 @theme inline {
-  /* Spacing - 8pt system */
-  --spacing-0: var(--space-0);
-  --spacing-1: var(--space-1);
-  --spacing-2: var(--space-2);
-  --spacing-3: var(--space-3);
-  --spacing-4: var(--space-4);
-  --spacing-5: var(--space-5);
-  --spacing-6: var(--space-6);
-  --spacing-8: var(--space-8);
-  --spacing-10: var(--space-10);
-  --spacing-12: var(--space-12);
-
-  /* Colors - BASE/CONTRAST/ACCENT */
-  --color-base: var(--base);
-  --color-base-hover: var(--base-hover);
-  --color-base-active: var(--base-active);
-  --color-contrast: var(--contrast);
-  --color-accent: var(--accent);
-  --color-neutral-1: var(--neutral-1-bg);
-  --color-neutral-2: var(--neutral-2-surface);
-
-  /* Semantic colors */
-  --color-semantic-success: var(--semantic-success);
-  --color-semantic-error: var(--semantic-error);
-  --color-semantic-warning: var(--semantic-warning);
-
-  /* Legacy compatibility */
-  --color-brand-purple: var(--brand-purple);
-  --color-brand-lime: var(--brand-lime);
-  --color-brand-cyan: var(--brand-cyan);
-  --color-bg-primary: var(--bg-primary);
-  --color-bg-secondary: var(--bg-secondary);
-  --color-bg-tertiary: var(--bg-tertiary);
-
-  /* Fonts */
+  --color-primary-lime: var(--primary-lime);
+  --color-primary-purple: var(--primary-purple);
+  --color-primary-cyan: var(--primary-cyan);
+  --color-primary-gold: var(--primary-gold);
+  --color-bg-dark: var(--bg-dark-primary);
+  --color-bg-secondary: var(--bg-dark-secondary);
+  --color-bg-tertiary: var(--bg-dark-tertiary);
   --font-sans: var(--font-body);
   --font-mono: var(--font-mono);
-  --font-logo: var(--font-logo);
+  --font-display: var(--font-display);
 }
 
 body {
-  background: var(--neutral-1-bg);
-  color: var(--text-primary);
+  background: var(--bg-dark-primary);
+  color: var(--foreground);
   font-family: var(--font-body);
-  font-size: var(--text-body);
-  line-height: var(--leading-body);
   overflow-x: hidden;
   min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 /* ============================================
@@ -304,133 +205,160 @@ body {
   perspective: 1000px;
 }
 
-/* Card Styles - 8pt spacing, elevated surfaces */
+/* Glassmorphism Card */
 .glass-card {
-  background: var(--neutral-2-surface);
-  border: 1px solid var(--neutral-border);
-  border-radius: var(--space-2);  /* 16px */
-  padding: var(--space-3);         /* 24px */
+  background: linear-gradient(135deg, 
+    var(--glass-white-5),
+    var(--glass-white-10));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
   position: relative;
   overflow: hidden;
-  transition: all 0.2s ease;
+  box-shadow: var(--glass-shadow);
 }
 
-.glass-card:hover {
-  border-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-4px);  /* -4px for subtle lift (half of 8pt) */
+.glass-card::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(45deg, 
+    var(--primary-neon-cyan), 
+    var(--primary-neon-purple), 
+    var(--status-live), 
+    var(--primary-neon-green));
+  border-radius: 20px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  animation: borderRotate 3s linear infinite;
+  z-index: -1;
 }
 
-/* Text Styles - Subtle and Professional */
+.glass-card:hover::before {
+  opacity: 0.8;
+}
+
+/* Text Gradient */
 .text-gradient {
-  background: linear-gradient(90deg,
-    var(--contrast),   /* Lime */
-    var(--base));      /* Purple */
+  background: linear-gradient(90deg, 
+    var(--primary-neon-cyan), 
+    var(--primary-neon-purple), 
+    var(--primary-gold));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-/* Button Styles - 8pt spacing, BASE color system */
-.btn-primary {
-  background: var(--base);
-  color: white;
-  font-weight: 600;
-  font-size: var(--text-body);
-  padding: var(--space-2) var(--space-4);  /* 16px × 32px */
-  border-radius: var(--space-1);            /* 8px */
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
+.text-gradient-glow {
+  background: linear-gradient(90deg, 
+    var(--primary-neon-cyan), 
+    var(--primary-neon-purple), 
+    var(--primary-gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: textGlow 3s ease-in-out infinite alternate;
 }
 
-.btn-primary:hover {
-  background: var(--base-hover);
+/* Neon Glow Button */
+.btn-neon {
+  background: linear-gradient(90deg, var(--primary-neon-cyan), var(--primary-neon-purple));
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 2px;
+  padding: 12px 32px;
+  border-radius: 8px;
+  border: none;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-neon::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.3), 
+    transparent);
+  transition: left 0.5s;
+}
+
+.btn-neon:hover::before {
+  left: 100%;
+}
+
+.btn-neon:hover {
+  box-shadow: 0 0 20px var(--primary-neon-cyan),
+              0 0 40px var(--primary-neon-purple);
   transform: translateY(-2px);
 }
 
-.btn-primary:active {
-  background: var(--base-active);
-  transform: translateY(0);
+.btn-neon:active {
+  animation: glitch 0.3s;
 }
 
-.btn-secondary {
-  background: transparent;
-  color: var(--base);
-  border: 1px solid var(--base);
-  font-weight: 600;
-  font-size: var(--text-body);
-  padding: var(--space-2) var(--space-4);  /* 16px × 32px */
-  border-radius: var(--space-1);            /* 8px */
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-secondary:hover {
-  background: var(--base-dim);
-}
-
-/* Status Badges - 8pt spacing, semantic colors */
+/* Live Badge */
 .live-badge {
   position: relative;
-  padding: var(--space-1) var(--space-2);  /* 8px × 16px */
-  background: var(--semantic-success);
-  border-radius: var(--space-2);           /* 16px */
+  padding: 6px 16px;
+  background: var(--status-live);
+  border-radius: 20px;
   display: inline-flex;
   align-items: center;
-  gap: var(--space-1);                     /* 8px */
-  font-size: var(--text-caption);          /* 12px */
-  font-weight: 600;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: white;
+  letter-spacing: 1px;
+}
+
+.live-badge::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background: var(--status-live);
+  border-radius: 20px;
+  opacity: 0.5;
+  animation: pulse 2s infinite;
+  filter: blur(8px);
+  z-index: -1;
 }
 
 .live-dot {
   display: inline-block;
-  width: 8px;   /* 8pt unit */
-  height: 8px;  /* 8pt unit */
+  width: 8px;
+  height: 8px;
   background: white;
   border-radius: 50%;
-  animation: pulse 2s infinite;
+  animation: blink 1s infinite;
 }
 
-.badge-success {
-  background: var(--semantic-success);
-  color: white;
-  padding: var(--space-1) var(--space-2);  /* 8px × 16px */
-  border-radius: var(--space-2);           /* 16px */
-  font-size: var(--text-caption);          /* 12px */
-  font-weight: 600;
-}
-
-.badge-error {
-  background: var(--semantic-error);
-  color: white;
-  padding: var(--space-1) var(--space-2);  /* 8px × 16px */
-  border-radius: var(--space-2);           /* 16px */
-  font-size: var(--text-caption);          /* 12px */
-  font-weight: 600;
-}
-
-/* Custom Scrollbar - 8pt system */
+/* Custom Scrollbar */
 .scrollbar-thin::-webkit-scrollbar {
-  width: var(--space-1);   /* 8px */
-  height: var(--space-1);  /* 8px */
+  width: 8px;
+  height: 8px;
 }
 
 .scrollbar-thin::-webkit-scrollbar-track {
-  background: var(--neutral-2-surface);
-  border-radius: 4px;  /* Half of 8pt for rounded feel */
+  background: var(--bg-dark-secondary);
+  border-radius: 4px;
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb {
-  background: var(--bg-tertiary);
+  background: linear-gradient(180deg, var(--primary-neon-cyan), var(--primary-neon-purple));
   border-radius: 4px;
-  transition: background 0.2s ease;
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-  background: var(--base-dim);
+  background: linear-gradient(180deg, var(--primary-neon-purple), var(--primary-gold));
 }
 
 /* Smooth Transitions */
@@ -507,9 +435,9 @@ body {
 
 /* Focus visible for keyboard navigation */
 :focus-visible {
-  outline: 2px solid var(--base);
+  outline: 2px solid var(--primary-neon-cyan);
   outline-offset: 2px;
-  border-radius: var(--space-1);  /* 8px */
+  border-radius: 4px;
 }
 
 /* High contrast mode support */
@@ -517,10 +445,9 @@ body {
   .glass-card {
     border-width: 2px;
   }
-
-  .btn-primary,
-  .btn-secondary {
-    border: 2px solid currentColor;
+  
+  .btn-neon {
+    border: 2px solid white;
   }
 }
 
@@ -528,17 +455,68 @@ body {
    🎮 SPECIAL EFFECTS
    ============================================ */
 
-/* Subtle hover effects */
-.stats-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+/* Holographic shimmer effect */
+.holographic-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg,
+    transparent 40%,
+    rgba(0, 240, 255, 0.3) 50%,
+    transparent 60%);
+  animation: shimmer 2s infinite;
+  pointer-events: none;
 }
 
-/* Input field focus */
+/* Cyberpunk grid background */
+.cyber-grid {
+  background-image: 
+    linear-gradient(var(--glass-border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--glass-border) 1px, transparent 1px);
+  background-size: 50px 50px;
+  position: relative;
+}
+
+.cyber-grid::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, 
+    rgba(0, 240, 255, 0.1) 0%, 
+    transparent 70%);
+  pointer-events: none;
+}
+
+/* Tournament card special effects */
+.tournament-card-premium {
+  position: relative;
+}
+
+.tournament-card-premium::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg,
+    transparent 40%,
+    rgba(0, 240, 255, 0.2) 50%,
+    transparent 60%);
+  animation: shimmer 3s infinite;
+  pointer-events: none;
+}
+
+/* Stats card hover effect */
+.stats-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 
+    0 20px 60px rgba(0, 240, 255, 0.3),
+    0 0 40px rgba(153, 69, 255, 0.2);
+}
+
+/* Input field focus glow */
 input:focus,
 textarea:focus,
 select:focus {
-  outline: 2px solid var(--base);
-  outline-offset: 0;
-  border-color: var(--base);
+  box-shadow: 
+    0 0 0 3px rgba(0, 240, 255, 0.1),
+    inset 0 0 20px rgba(0, 240, 255, 0.05);
 }

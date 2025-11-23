@@ -24,18 +24,18 @@ const EnhancedStatCard: React.FC<EnhancedStatCardProps> = ({
 }) => {
   const colorConfig = {
     purple: {
-      gradient: 'from-[var(--base)]/20 to-[var(--base)]/5',
-      border: 'border-[var(--base)]/30',
-      glow: 'shadow-[var(--base)]/20',
-      text: 'text-[var(--base)]',
-      sparkline: 'var(--base)'
+      gradient: 'from-[#9381FF]/20 to-[#9381FF]/5',
+      border: 'border-[#9381FF]/30',
+      glow: 'shadow-[#9381FF]/20',
+      text: 'text-[#9381FF]',
+      sparkline: '#9381FF'
     },
     lime: {
-      gradient: 'from-[var(--contrast)]/20 to-[var(--contrast)]/5',
-      border: 'border-[var(--contrast)]/30',
-      glow: 'shadow-[var(--contrast)]/20',
-      text: 'text-[var(--contrast)]',
-      sparkline: 'var(--contrast)'
+      gradient: 'from-[#DAFF7C]/20 to-[#DAFF7C]/5',
+      border: 'border-[#DAFF7C]/30',
+      glow: 'shadow-[#DAFF7C]/20',
+      text: 'text-[#DAFF7C]',
+      sparkline: '#DAFF7C'
     },
     orange: {
       gradient: 'from-[#fd934e]/20 to-[#fd934e]/5',
@@ -88,7 +88,7 @@ const EnhancedStatCard: React.FC<EnhancedStatCardProps> = ({
   };
 
   return (
-    <div className={`group relative bg-gradient-to-br from-[var(--neutral-1-bg)]/90 to-[var(--neutral-2-surface)]/90 backdrop-blur-xl rounded-xl border ${config.border} hover:${config.glow} hover:shadow-lg transition-all duration-300 overflow-hidden`}>
+    <div className={`group relative bg-gradient-to-br from-[#1F1F1F]/90 to-[#2A2A2A]/90 backdrop-blur-xl rounded-xl border ${config.border} hover:${config.glow} hover:shadow-lg transition-all duration-300 overflow-hidden`}>
       {/* Glowing gradient background */}
       <div className={`absolute inset-0 bg-gradient-to-br ${config.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
 

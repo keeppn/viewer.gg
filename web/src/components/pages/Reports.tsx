@@ -23,7 +23,7 @@ const Reports: React.FC = () => {
     name: 'Tournament Report',
     format: 'pdf',
     branding: {
-      accent_color: 'var(--base)',
+      accent_color: '#387B66',
       header_text: '',
       footer_text: 'Powered by viewer.gg',
       sponsor_logos: []
@@ -104,12 +104,12 @@ const Reports: React.FC = () => {
         {/* Configuration Panel */}
         <div className="lg:col-span-2 space-y-6">
           {/* Tournament Selection */}
-          <div className="bg-[#1E1E1E] border border-[var(--neutral-border)] rounded-lg p-6">
+          <div className="bg-[#1E1E1E] border border-white/10 rounded-lg p-6">
             <h3 className="text-xl font-bold text-white mb-4">Select Tournament</h3>
             <select
               value={selectedTournament}
               onChange={(e) => setSelectedTournament(e.target.value)}
-              className="w-full px-4 py-3 bg-black/20 border border-white/20 rounded-lg text-white focus:outline-none focus:border-[var(--base)]"
+              className="w-full px-4 py-3 bg-black/20 border border-white/20 rounded-lg text-white focus:outline-none focus:border-[#387B66]"
             >
               <option value="">Choose a tournament...</option>
               {tournaments.map(t => (
@@ -119,7 +119,7 @@ const Reports: React.FC = () => {
           </div>
 
           {/* Report Sections */}
-          <div className="bg-[#1E1E1E] border border-[var(--neutral-border)] rounded-lg p-6">
+          <div className="bg-[#1E1E1E] border border-white/10 rounded-lg p-6">
             <h3 className="text-xl font-bold text-white mb-4">Report Sections</h3>
             <div className="space-y-3">
               {Object.entries(reportConfig.sections || {}).map(([key, value]) => {
@@ -136,7 +136,7 @@ const Reports: React.FC = () => {
                           [key]: e.target.checked
                         }
                       }))}
-                      className="w-5 h-5 rounded border-white/20 bg-black/20 text-[var(--base)] focus:ring-[var(--base)]"
+                      className="w-5 h-5 rounded border-white/20 bg-black/20 text-[#387B66] focus:ring-[#387B66]"
                     />
                     <span className="text-gray-300 capitalize">
                       {key.replace(/_/g, ' ')}
@@ -148,7 +148,7 @@ const Reports: React.FC = () => {
           </div>
 
           {/* Branding */}
-          <div className="bg-[#1E1E1E] border border-[var(--neutral-border)] rounded-lg p-6">
+          <div className="bg-[#1E1E1E] border border-white/10 rounded-lg p-6">
             <h3 className="text-xl font-bold text-white mb-4">Branding</h3>
             <div className="space-y-4">
               <div>
@@ -178,8 +178,8 @@ const Reports: React.FC = () => {
                         accent_color: e.target.value
                       }
                     }))}
-                    className="flex-1 px-4 py-2 bg-black/20 border border-white/20 rounded-lg text-white focus:outline-none focus:border-[var(--base)]"
-                    placeholder="var(--base)"
+                    className="flex-1 px-4 py-2 bg-black/20 border border-white/20 rounded-lg text-white focus:outline-none focus:border-[#387B66]"
+                    placeholder="#387B66"
                   />
                 </div>
               </div>
@@ -198,7 +198,7 @@ const Reports: React.FC = () => {
                       header_text: e.target.value
                     }
                   }))}
-                  className="w-full px-4 py-2 bg-black/20 border border-white/20 rounded-lg text-white focus:outline-none focus:border-[var(--base)]"
+                  className="w-full px-4 py-2 bg-black/20 border border-white/20 rounded-lg text-white focus:outline-none focus:border-[#387B66]"
                   placeholder="Optional header text"
                 />
               </div>
@@ -217,7 +217,7 @@ const Reports: React.FC = () => {
                       footer_text: e.target.value
                     }
                   }))}
-                  className="w-full px-4 py-2 bg-black/20 border border-white/20 rounded-lg text-white focus:outline-none focus:border-[var(--base)]"
+                  className="w-full px-4 py-2 bg-black/20 border border-white/20 rounded-lg text-white focus:outline-none focus:border-[#387B66]"
                   placeholder="Powered by viewer.gg"
                 />
               </div>
@@ -225,7 +225,7 @@ const Reports: React.FC = () => {
           </div>
 
           {/* Custom Commentary */}
-          <div className="bg-[#1E1E1E] border border-[var(--neutral-border)] rounded-lg p-6">
+          <div className="bg-[#1E1E1E] border border-white/10 rounded-lg p-6">
             <h3 className="text-xl font-bold text-white mb-4">Custom Commentary</h3>
             <textarea
               value={reportConfig.sections?.custom_commentary}
@@ -237,7 +237,7 @@ const Reports: React.FC = () => {
                 }
               }))}
               rows={6}
-              className="w-full px-4 py-3 bg-black/20 border border-white/20 rounded-lg text-white focus:outline-none focus:border-[var(--base)]"
+              className="w-full px-4 py-3 bg-black/20 border border-white/20 rounded-lg text-white focus:outline-none focus:border-[#387B66]"
               placeholder="Add custom notes or commentary for this report..."
             />
           </div>
@@ -246,7 +246,7 @@ const Reports: React.FC = () => {
         {/* Preview & Generate Panel */}
         <div className="space-y-6">
           {/* Format Selection */}
-          <div className="bg-[#1E1E1E] border border-[var(--neutral-border)] rounded-lg p-6">
+          <div className="bg-[#1E1E1E] border border-white/10 rounded-lg p-6">
             <h3 className="text-xl font-bold text-white mb-4">Export Format</h3>
             <div className="space-y-3">
               <label className="flex items-center space-x-3 cursor-pointer">
@@ -255,7 +255,7 @@ const Reports: React.FC = () => {
                   name="format"
                   checked={reportConfig.format === 'pdf'}
                   onChange={() => setReportConfig(prev => ({ ...prev, format: 'pdf' }))}
-                  className="w-5 h-5 text-[var(--base)] focus:ring-[var(--base)]"
+                  className="w-5 h-5 text-[#387B66] focus:ring-[#387B66]"
                 />
                 <span className="text-gray-300">PDF Document</span>
               </label>
@@ -265,7 +265,7 @@ const Reports: React.FC = () => {
                   name="format"
                   checked={reportConfig.format === 'csv'}
                   onChange={() => setReportConfig(prev => ({ ...prev, format: 'csv' }))}
-                  className="w-5 h-5 text-[var(--base)] focus:ring-[var(--base)]"
+                  className="w-5 h-5 text-[#387B66] focus:ring-[#387B66]"
                 />
                 <span className="text-gray-300">CSV Spreadsheet</span>
               </label>
@@ -274,7 +274,7 @@ const Reports: React.FC = () => {
 
           {/* Statistics Preview */}
           {analyticsData && (
-            <div className="bg-[#1E1E1E] border border-[var(--neutral-border)] rounded-lg p-6">
+            <div className="bg-[#1E1E1E] border border-white/10 rounded-lg p-6">
               <h3 className="text-xl font-bold text-white mb-4">Quick Stats</h3>
               <div className="space-y-3">
                 <div className="flex justify-between">

@@ -304,7 +304,7 @@ const Settings: React.FC = () => {
                             Back to Dashboard
                         </Button>
                     </div>
-                    <div className="mt-4 p-4 bg-black/30 rounded border border-[var(--neutral-border)]">
+                    <div className="mt-4 p-4 bg-black/30 rounded border border-white/10">
                         <p className="text-gray-400 text-xs font-mono">
                             Check the browser console (F12) for detailed error logs.
                         </p>
@@ -330,7 +330,7 @@ const Settings: React.FC = () => {
             )}
 
             {/* Discord Integration */}
-            <div className="bg-[#1E1E1E] p-8 rounded-lg shadow-sm border border-[var(--neutral-border)]">
+            <div className="bg-[#1E1E1E] p-8 rounded-lg shadow-sm border border-white/10">
                 <h2 className="text-2xl font-bold mb-1 text-white">Discord Bot Integration</h2>
                 <p className="text-gray-400 mb-6">
                     Connect the viewer.gg bot to your Discord server to automate role assignments for approved co-streamers.
@@ -357,7 +357,7 @@ const Settings: React.FC = () => {
                             </div>
 
                             {/* Role Name Configuration */}
-                            <div className="mt-4 bg-[#1A1A1A] p-4 rounded-lg border border-[var(--neutral-border)]">
+                            <div className="mt-4 bg-[#1A1A1A] p-4 rounded-lg border border-white/10">
                                 <label className="block text-sm font-medium text-gray-300 mb-2">
                                     Discord Role Name
                                 </label>
@@ -370,7 +370,7 @@ const Settings: React.FC = () => {
                                     value={discordConfig.role_name || 'Approved Co-Streamer'}
                                     onChange={(e) => handleUpdateRoleName(e.target.value)}
                                     placeholder="e.g., Approved Co-Streamer"
-                                    className="w-full px-4 py-2 bg-[#121212] border border-[var(--neutral-border)] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#387B66] transition-colors"
+                                    className="w-full px-4 py-2 bg-[#121212] border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#387B66] transition-colors"
                                 />
                             </div>
                         </div>
@@ -385,7 +385,7 @@ const Settings: React.FC = () => {
                     </div>
                 ) : (
                     <div className="space-y-4">
-                        <div className="bg-gray-800/50 border border-[var(--neutral-border)] rounded-lg p-4">
+                        <div className="bg-gray-800/50 border border-white/10 rounded-lg p-4">
                             <h3 className="text-white font-semibold mb-2">What happens when you connect:</h3>
                             <ul className="text-gray-400 text-sm space-y-1 ml-4 list-decimal">
                                 <li>You&apos;ll be redirected to Discord</li>
@@ -412,7 +412,7 @@ const Settings: React.FC = () => {
             </div>
 
             {/* Account Settings */}
-            <div className="bg-[#1E1E1E] p-8 rounded-lg shadow-sm border border-[var(--neutral-border)]">
+            <div className="bg-[#1E1E1E] p-8 rounded-lg shadow-sm border border-white/10">
                 <h2 className="text-2xl font-bold mb-4 text-white">Organization Settings</h2>
                 <div className="space-y-4">
                     <div>
