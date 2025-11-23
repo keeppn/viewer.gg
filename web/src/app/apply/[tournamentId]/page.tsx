@@ -5,13 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { applicationApi } from '@/lib/api/applications';
 import Button from '@/components/common/Button';
-
-interface FormField {
-  id: string;
-  label: string;
-  type: string;
-  required: boolean;
-}
+import { FormField } from '@/types';
 
 interface Tournament {
   id: string;
@@ -19,7 +13,106 @@ interface Tournament {
   game: string;
   banner_url: string;
   form_fields: FormField[];
+  form_header_image?: string;
+  form_description?: string;
+  form_primary_color?: string;
+  form_button_text?: string;
 }
+
+// Helper function to render form field based on type
+const renderFormField = (field: FormField, value: any, onChange: (value: any) => void, error?: string) => {
+  const baseInputClass = `w-full bg-white/5 text-white rounded-lg p-3 border ${
+    error ? 'border-red-500/50' : 'border-white/20'
+  } focus:border-[#9381FF] focus:ring-2 focus:ring-[#9381FF]/20 outline-none transition-all`;
+
+  switch (field.type) {
+    case 'textarea':
+      return (
+        <textarea
+          value={value || ''}
+          onChange={(e) => onChange(e.target.value)}
+          className={`${baseInputClass} resize-none`}
+          rows={4}
+          placeholder={field.description || 'Your answer...'}
+          required={field.required}
+        />
+      );
+
+    case 'select':
+      return (
+        <select
+          value={value || ''}
+          onChange={(e) => onChange(e.target.value)}
+          className={baseInputClass}
+          required={field.required}
+        >
+          <option value="">Choose an option...</option>
+          {field.options?.map((opt, i) => (
+            <option key={i} value={opt}>{opt}</option>
+          ))}
+        </select>
+      );
+
+    case 'radio':
+      return (
+        <div className="space-y-2">
+          {field.options?.map((opt, i) => (
+            <label key={i} className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 cursor-pointer transition-colors">
+              <input
+                type="radio"
+                name={field.id}
+                value={opt}
+                checked={value === opt}
+                onChange={(e) => onChange(e.target.value)}
+                className="w-4 h-4 text-[#9381FF] border-white/20 focus:ring-[#9381FF]"
+                required={field.required}
+              />
+              <span className="text-white/80">{opt}</span>
+            </label>
+          ))}
+        </div>
+      );
+
+    case 'checkbox':
+      return (
+        <div className="space-y-2">
+          {field.options?.map((opt, i) => (
+            <label key={i} className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 cursor-pointer transition-colors">
+              <input
+                type="checkbox"
+                checked={Array.isArray(value) && value.includes(opt)}
+                onChange={(e) => {
+                  const newValue = Array.isArray(value) ? [...value] : [];
+                  if (e.target.checked) {
+                    onChange([...newValue, opt]);
+                  } else {
+                    onChange(newValue.filter(v => v !== opt));
+                  }
+                }}
+                className="w-4 h-4 text-[#9381FF] border-white/20 rounded focus:ring-[#9381FF]"
+              />
+              <span className="text-white/80">{opt}</span>
+            </label>
+          ))}
+        </div>
+      );
+
+    default:
+      return (
+        <input
+          type={field.type}
+          value={value || ''}
+          onChange={(e) => onChange(e.target.value)}
+          className={baseInputClass}
+          placeholder={field.description || 'Your answer...'}
+          required={field.required}
+          pattern={field.validation?.pattern}
+          min={field.validation?.min}
+          max={field.validation?.max}
+        />
+      );
+  }
+};
 
 export default function ApplyPage() {
   const params = useParams();
@@ -30,15 +123,8 @@ export default function ApplyPage() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [discordIdError, setDiscordIdError] = useState<string | null>(null);
-  const [formData, setFormData] = useState<{[key: string]: string}>({
-    streamerName: '',
-    email: '',
-    platform: 'Twitch',
-    channelUrl: '',
-    discordUsername: '',
-    discordUserId: '',
-  });
+  const [formData, setFormData] = useState<{[key: string]: any}>({});
+  const [fieldErrors, setFieldErrors] = useState<{[key: string]: string}>({});
 
   useEffect(() => {
     async function fetchTournament() {
@@ -57,11 +143,6 @@ export default function ApplyPage() {
         }
 
         setTournament(data);
-        
-        // Debug: Log the form fields to see what's being loaded
-        console.log('Tournament loaded:', data);
-        console.log('Form fields:', data.form_fields);
-        
         setLoading(false);
       } catch (err) {
         console.error('Unexpected error:', err);
@@ -75,19 +156,15 @@ export default function ApplyPage() {
     }
   }, [tournamentId]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-
-    // Validate Discord User ID format if it's being changed
-    if (name === 'discordUserId') {
-      if (value === '') {
-        setDiscordIdError(null); // Optional field, empty is valid
-      } else if (!/^\d{17,19}$/.test(value)) {
-        setDiscordIdError('Discord User ID must be 17-19 digits (numbers only)');
-      } else {
-        setDiscordIdError(null);
-      }
+  const handleFieldChange = (fieldId: string, value: any) => {
+    setFormData(prev => ({ ...prev, [fieldId]: value }));
+    // Clear error for this field
+    if (fieldErrors[fieldId]) {
+      setFieldErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[fieldId];
+        return newErrors;
+      });
     }
   };
 
@@ -95,37 +172,47 @@ export default function ApplyPage() {
     e.preventDefault();
     if (!tournament) return;
 
-    // Validate Discord ID before submission if provided
-    if (formData.discordUserId && !/^\d{17,19}$/.test(formData.discordUserId)) {
-      setError('Please enter a valid Discord User ID (17-19 digits)');
-      return;
-    }
-
     setSubmitting(true);
     setError(null);
+    setFieldErrors({});
 
     try {
-      // Collect custom field data
+      // Extract system fields from form data
+      const streamerName = formData['system_streamer_name'] || formData['streamer_name'] || '';
+      const email = formData['system_email'] || formData['email'] || '';
+      const platform = formData['system_platform'] || formData['platform'] || 'Twitch';
+      const channelUrl = formData['system_channel_url'] || formData['channel_url'] || '';
+      const discordUsername = formData['system_discord_username'] || formData['discord_username'] || '';
+      const discordUserId = formData['system_discord_user_id'] || formData['discord_user_id'] || '';
+
+      // Validate required system fields
+      if (!streamerName || !email || !platform || !channelUrl) {
+        setError('Please fill in all required fields');
+        setSubmitting(false);
+        return;
+      }
+
+      // Prepare custom data (exclude system fields)
       const customData: Record<string, any> = {};
-      tournament.form_fields.forEach(field => {
-        if (formData[field.id]) {
-          customData[field.id] = formData[field.id];
+      Object.keys(formData).forEach(key => {
+        if (!key.startsWith('system_')) {
+          customData[key] = formData[key];
         }
       });
 
-      // IMPORTANT: Add Discord User ID to custom_data for role assignment
-      if (formData.discordUserId) {
-        customData.discord_user_id = formData.discordUserId;
+      // Add Discord User ID to custom_data for role assignment
+      if (discordUserId) {
+        customData.discord_user_id = discordUserId;
       }
 
       // Prepare streamer profile
       const streamerProfile = {
-        name: formData.streamerName,
-        platform: formData.platform as 'Twitch' | 'YouTube' | 'Kick',
-        channel_url: formData.channelUrl,
-        email: formData.email,
-        discord_username: formData.discordUsername,
-        discord_user_id: formData.discordUserId || undefined, // Only include if provided
+        name: streamerName,
+        platform: platform as 'Twitch' | 'YouTube' | 'Kick',
+        channel_url: channelUrl,
+        email: email,
+        discord_username: discordUsername,
+        discord_user_id: discordUserId || undefined,
         avg_viewers: 0,
         follower_count: 0,
         primary_languages: ['English'],
@@ -155,7 +242,7 @@ export default function ApplyPage() {
     return (
       <div className="min-h-screen bg-[#121212] flex items-center justify-center">
         <div className="text-center">
-          <div className="inline-block w-12 h-12 border-4 border-[#387B66] border-t-transparent rounded-full animate-spin mb-4"></div>
+          <div className="inline-block w-12 h-12 border-4 border-[#9381FF] border-t-transparent rounded-full animate-spin mb-4"></div>
           <div className="text-white text-xl">Loading tournament...</div>
         </div>
       </div>
@@ -176,19 +263,29 @@ export default function ApplyPage() {
     );
   }
 
+  const primaryColor = tournament.form_primary_color || '#9381FF';
+
   return (
     <div className="min-h-screen bg-[#121212] py-12 px-4">
       <div className="max-w-2xl mx-auto bg-[#1E1E1E] rounded-lg shadow-lg border border-white/10 overflow-hidden">
-        {/* Tournament Header */}
-        <img
-          src={tournament.banner_url}
-          alt={tournament.title}
-          className="w-full h-48 object-cover"
-        />
+        {/* Header Image */}
+        {tournament.form_header_image && (
+          <img
+            src={tournament.form_header_image}
+            alt={tournament.title}
+            className="w-full h-48 object-cover"
+          />
+        )}
 
         <div className="p-8">
+          {/* Tournament Title */}
           <h1 className="text-3xl font-bold mb-2 text-white">{tournament.title}</h1>
-          <p className="text-lg text-gray-400 mb-8">{tournament.game}</p>
+          <p className="text-lg text-gray-400 mb-2">{tournament.game}</p>
+
+          {/* Form Description */}
+          {tournament.form_description && (
+            <p className="text-white/70 mb-8">{tournament.form_description}</p>
+          )}
 
           {error && (
             <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-md">
@@ -197,164 +294,48 @@ export default function ApplyPage() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Standard Fields */}
-            <div>
-              <h3 className="text-xl font-semibold text-white mb-4">Your Information</h3>
-
-              <div className="space-y-4">
-                <div>
+            {/* Render all form fields */}
+            {tournament.form_fields && tournament.form_fields.length > 0 ? (
+              tournament.form_fields.map((field, index) => (
+                <div key={field.id || index}>
                   <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Streamer Name <span className="text-red-400">*</span>
+                    {field.label}
+                    {field.required && <span className="text-red-400 ml-1">*</span>}
                   </label>
-                  <input
-                    type="text"
-                    name="streamerName"
-                    value={formData.streamerName}
-                    onChange={handleChange}
-                    className="w-full bg-[#121212] text-white rounded-md p-3 border border-white/20 focus:border-[#387B66] focus:outline-none transition-colors"
-                    required
-                    placeholder="Your streaming name"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Email <span className="text-red-400">*</span>
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="w-full bg-[#121212] text-white rounded-md p-3 border border-white/20 focus:border-[#387B66] focus:outline-none transition-colors"
-                    required
-                    placeholder="your.email@example.com"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Platform <span className="text-red-400">*</span>
-                  </label>
-                  <select
-                    name="platform"
-                    value={formData.platform}
-                    onChange={handleChange}
-                    className="w-full bg-[#121212] text-white rounded-md p-3 border border-white/20 focus:border-[#387B66] focus:outline-none transition-colors"
-                    required
-                  >
-                    <option value="Twitch">Twitch</option>
-                    <option value="YouTube">YouTube</option>
-                    <option value="Kick">Kick</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Channel URL <span className="text-red-400">*</span>
-                  </label>
-                  <input
-                    type="url"
-                    name="channelUrl"
-                    value={formData.channelUrl}
-                    onChange={handleChange}
-                    className="w-full bg-[#121212] text-white rounded-md p-3 border border-white/20 focus:border-[#387B66] focus:outline-none transition-colors"
-                    required
-                    placeholder="https://twitch.tv/yourname"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Discord Username
-                  </label>
-                  <input
-                    type="text"
-                    name="discordUsername"
-                    value={formData.discordUsername}
-                    onChange={handleChange}
-                    className="w-full bg-[#121212] text-white rounded-md p-3 border border-white/20 focus:border-[#387B66] focus:outline-none transition-colors"
-                    placeholder="username#0000"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Discord User ID
-                  </label>
-                  <input
-                    type="text"
-                    name="discordUserId"
-                    value={formData.discordUserId}
-                    onChange={handleChange}
-                    className={`w-full bg-[#121212] text-white rounded-md p-3 border ${
-                      discordIdError 
-                        ? 'border-red-500/50 focus:border-red-500' 
-                        : 'border-white/20 focus:border-[#387B66]'
-                    } focus:outline-none transition-colors`}
-                    placeholder="123456789012345678"
-                    pattern="\d{17,19}"
-                  />
-                  {discordIdError && (
-                    <p className="text-red-400 text-sm mt-1">{discordIdError}</p>
+                  {field.description && !['text', 'email', 'url', 'number', 'phone'].includes(field.type) && (
+                    <p className="text-sm text-gray-400 mb-2">{field.description}</p>
                   )}
-                  <p className="text-gray-400 text-xs mt-2">
-                    Your Discord User ID is a 17-19 digit number. To find it:
-                    <br />
-                    1. Open Discord and enable Developer Mode (User Settings → Advanced → Developer Mode)
-                    <br />
-                    2. Right-click your username and select &apos;Copy User ID&apos;
-                    <br />
-                    3. Paste the number here
-                    <br />
-                    <a 
-                      href="https://support.discord.com/hc/en-us/articles/206346498" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-[#387B66] hover:text-[#2d6350] underline"
-                    >
-                      Learn more about finding your Discord ID →
-                    </a>
-                  </p>
+                  {renderFormField(
+                    field,
+                    formData[field.id],
+                    (value) => handleFieldChange(field.id, value),
+                    fieldErrors[field.id]
+                  )}
+                  {fieldErrors[field.id] && (
+                    <p className="text-red-400 text-sm mt-1">{fieldErrors[field.id]}</p>
+                  )}
                 </div>
-              </div>
-            </div>
-
-            {/* Custom Fields */}
-            {tournament.form_fields && tournament.form_fields.length > 0 && (
-              <div className="pt-6 border-t border-white/20">
-                <h3 className="text-xl font-semibold text-white mb-4">Tournament Questions</h3>
-                <div className="space-y-4">
-                  {tournament.form_fields.map(field => (
-                    <div key={field.id}>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">
-                        {field.label}
-                        {field.required && <span className="text-red-400"> *</span>}
-                      </label>
-                      <input
-                        type={field.type}
-                        name={field.id}
-                        onChange={handleChange}
-                        className="w-full bg-[#121212] text-white rounded-md p-3 border border-white/20 focus:border-[#387B66] focus:outline-none transition-colors"
-                        required={field.required}
-                      />
-                    </div>
-                  ))}
-                </div>
+              ))
+            ) : (
+              <div className="text-center py-12">
+                <p className="text-white/60">No form fields available. Please contact the tournament organizer.</p>
               </div>
             )}
 
             {/* Submit Button */}
-            <div className="pt-6">
-              <Button
-                type="submit"
-                variant="primary"
-                className="w-full text-lg py-3"
-                disabled={submitting}
-              >
-                {submitting ? 'Submitting...' : 'Submit Application'}
-              </Button>
-            </div>
+            {tournament.form_fields && tournament.form_fields.length > 0 && (
+              <div className="pt-6">
+                <Button
+                  type="submit"
+                  variant="primary"
+                  className="w-full text-lg py-3"
+                  style={{ backgroundColor: primaryColor }}
+                  disabled={submitting}
+                >
+                  {submitting ? 'Submitting...' : (tournament.form_button_text || 'Submit Application')}
+                </Button>
+              </div>
+            )}
           </form>
         </div>
       </div>

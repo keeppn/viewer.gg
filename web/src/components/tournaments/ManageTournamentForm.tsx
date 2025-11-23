@@ -111,6 +111,12 @@ const ManageTournamentForm: React.FC<ManageTournamentFormProps> = ({ tournament,
     const [showAddField, setShowAddField] = useState(false);
     const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
+    // Branding state
+    const [formHeaderImage, setFormHeaderImage] = useState(tournament.form_header_image || '');
+    const [formDescription, setFormDescription] = useState(tournament.form_description || '');
+    const [formPrimaryColor, setFormPrimaryColor] = useState(tournament.form_primary_color || '#9381FF');
+    const [formButtonText, setFormButtonText] = useState(tournament.form_button_text || 'Submit Application');
+
     const publicFormUrl = `${window.location.origin}/apply/${tournament.id}`;
     const selectedField = formFields.find(f => f.id === selectedFieldId);
 
@@ -175,7 +181,11 @@ const ManageTournamentForm: React.FC<ManageTournamentFormProps> = ({ tournament,
                 title,
                 game,
                 start_date: startDate,
-                form_fields: formFields
+                form_fields: formFields,
+                form_header_image: formHeaderImage,
+                form_description: formDescription,
+                form_primary_color: formPrimaryColor,
+                form_button_text: formButtonText
             };
 
             await onSave(updatedTournament);
@@ -247,10 +257,74 @@ const ManageTournamentForm: React.FC<ManageTournamentFormProps> = ({ tournament,
                 </div>
             </div>
 
-            {/* Form URL */}
+            {/* Form Branding & Customization */}
             <div className="bg-gradient-to-br from-[#1F1F1F]/90 to-[#2A2A2A]/90 backdrop-blur-xl p-6 rounded-xl border border-white/10">
                 <h3 className="text-lg font-bold mb-4 text-white flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#DAFF7C]" />
+                    Form Branding & Customization
+                </h3>
+                <div className="space-y-4">
+                    <div>
+                        <label className="block text-sm font-medium text-white/70 mb-2">Header Image URL</label>
+                        <input
+                            type="url"
+                            value={formHeaderImage}
+                            onChange={e => setFormHeaderImage(e.target.value)}
+                            className="w-full bg-white/5 text-white rounded-lg p-3 border border-white/20 focus:border-[#9381FF] focus:ring-2 focus:ring-[#9381FF]/20 outline-none transition-all"
+                            placeholder="https://example.com/header-image.jpg"
+                        />
+                        <p className="text-xs text-white/40 mt-1">Displayed at the top of the application form (recommended: 1200x400px)</p>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-white/70 mb-2">Form Description</label>
+                        <textarea
+                            value={formDescription}
+                            onChange={e => setFormDescription(e.target.value)}
+                            className="w-full bg-white/5 text-white rounded-lg p-3 border border-white/20 focus:border-[#9381FF] focus:ring-2 focus:ring-[#9381FF]/20 outline-none transition-all resize-none"
+                            rows={3}
+                            placeholder="Welcome! Please fill out this application form to participate in our tournament..."
+                        />
+                        <p className="text-xs text-white/40 mt-1">Optional intro text shown below the tournament title</p>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm font-medium text-white/70 mb-2">Primary Color</label>
+                            <div className="flex items-center gap-3">
+                                <input
+                                    type="color"
+                                    value={formPrimaryColor}
+                                    onChange={e => setFormPrimaryColor(e.target.value)}
+                                    className="w-14 h-10 bg-white/5 rounded-lg border border-white/20 cursor-pointer"
+                                />
+                                <input
+                                    type="text"
+                                    value={formPrimaryColor}
+                                    onChange={e => setFormPrimaryColor(e.target.value)}
+                                    className="flex-1 bg-white/5 text-white rounded-lg p-3 border border-white/20 focus:border-[#9381FF] focus:ring-2 focus:ring-[#9381FF]/20 outline-none transition-all font-mono text-sm"
+                                    placeholder="#9381FF"
+                                />
+                            </div>
+                            <p className="text-xs text-white/40 mt-1">Used for the submit button</p>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-white/70 mb-2">Submit Button Text</label>
+                            <input
+                                type="text"
+                                value={formButtonText}
+                                onChange={e => setFormButtonText(e.target.value)}
+                                className="w-full bg-white/5 text-white rounded-lg p-3 border border-white/20 focus:border-[#9381FF] focus:ring-2 focus:ring-[#9381FF]/20 outline-none transition-all"
+                                placeholder="Submit Application"
+                            />
+                            <p className="text-xs text-white/40 mt-1">Customize the submit button text</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Form URL */}
+            <div className="bg-gradient-to-br from-[#1F1F1F]/90 to-[#2A2A2A]/90 backdrop-blur-xl p-6 rounded-xl border border-white/10">
+                <h3 className="text-lg font-bold mb-4 text-white flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#9381FF]" />
                     Public Application URL
                 </h3>
                 <div className="flex items-center gap-3">
