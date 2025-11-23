@@ -447,25 +447,6 @@ const ManageTournamentForm: React.FC<ManageTournamentFormProps> = ({ tournament,
                                 <p className="text-white/60">{game || 'Game Name'} Tournament Application</p>
                             </div>
 
-                            {/* Default Fields */}
-                            <div className="p-6 rounded-xl border-2 border-white/10 bg-gradient-to-br from-white/5 to-transparent">
-                                <label className="block text-white font-medium mb-1">
-                                    Full Name
-                                    <span className="text-[#fd934e] ml-1">*</span>
-                                </label>
-                                <p className="text-sm text-white/60 mb-3">Your full name or team name</p>
-                                <input type="text" placeholder="Your answer here..." className="w-full bg-white/5 text-white rounded-lg p-3 border border-white/20 focus:border-[#9381FF] focus:ring-2 focus:ring-[#9381FF]/20 outline-none" />
-                            </div>
-
-                            <div className="p-6 rounded-xl border-2 border-white/10 bg-gradient-to-br from-white/5 to-transparent">
-                                <label className="block text-white font-medium mb-1">
-                                    Email Address
-                                    <span className="text-[#fd934e] ml-1">*</span>
-                                </label>
-                                <p className="text-sm text-white/60 mb-3">We'll use this to contact you</p>
-                                <input type="email" placeholder="Your answer here..." className="w-full bg-white/5 text-white rounded-lg p-3 border border-white/20 focus:border-[#9381FF] focus:ring-2 focus:ring-[#9381FF]/20 outline-none" />
-                            </div>
-
                             {/* Custom Fields */}
                             {formFields.length > 0 ? (
                                 formFields.map(field => (
