@@ -28,9 +28,9 @@ const EngagementMetrics: React.FC<EngagementMetricsProps> = ({
       value: totalHoursWatched,
       suffix: 'hrs',
       description: 'Cumulative viewing time',
-      color: 'from-[#DAFF7C]/20 to-[#DAFF7C]/5',
-      borderColor: 'border-[#DAFF7C]/30',
-      textColor: 'text-[#DAFF7C]',
+      color: 'from-[var(--contrast)]/20 to-[var(--contrast)]/5',
+      borderColor: 'border-[var(--contrast)]/30',
+      textColor: 'text-[var(--contrast)]',
       icon: '⏱️'
     },
     {
@@ -38,9 +38,9 @@ const EngagementMetrics: React.FC<EngagementMetricsProps> = ({
       value: estimatedUniqueViewers,
       suffix: '',
       description: 'Approximate reach',
-      color: 'from-[#9381FF]/20 to-[#9381FF]/5',
-      borderColor: 'border-[#9381FF]/30',
-      textColor: 'text-[#9381FF]',
+      color: 'from-[var(--base)]/20 to-[var(--base)]/5',
+      borderColor: 'border-[var(--base)]/30',
+      textColor: 'text-[var(--base)]',
       icon: '👥'
     },
     {
@@ -86,7 +86,7 @@ const EngagementMetrics: React.FC<EngagementMetricsProps> = ({
   ];
 
   return (
-    <div className="bg-gradient-to-br from-[#1F1F1F]/90 to-[#2A2A2A]/90 backdrop-blur-xl rounded-xl border border-white/10 p-6">
+    <div className="bg-gradient-to-br from-[var(--neutral-1-bg)]/90 to-[var(--neutral-2-surface)]/90 backdrop-blur-xl rounded-xl border border-white/10 p-6">
       <div className="mb-6">
         <h3 className="text-xl font-bold text-white flex items-center gap-2">
           <span className="w-1.5 h-1.5 rounded-full bg-[#10b981]" />
@@ -136,13 +136,13 @@ const EngagementMetrics: React.FC<EngagementMetricsProps> = ({
           <div className="flex items-start gap-2 text-sm">
             <span className="text-[#10b981] flex-shrink-0">✓</span>
             <span className="text-white/70">
-              Total reach of approximately <span className="text-[#DAFF7C] font-semibold">{estimatedUniqueViewers.toLocaleString()}</span> unique viewers
+              Total reach of approximately <span className="text-[var(--contrast)] font-semibold">{estimatedUniqueViewers.toLocaleString()}</span> unique viewers
             </span>
           </div>
           <div className="flex items-start gap-2 text-sm">
             <span className="text-[#10b981] flex-shrink-0">✓</span>
             <span className="text-white/70">
-              Generated <span className="text-[#9381FF] font-semibold">{totalHoursWatched.toLocaleString()}</span> hours of content consumption
+              Generated <span className="text-[var(--base)] font-semibold">{totalHoursWatched.toLocaleString()}</span> hours of content consumption
             </span>
           </div>
         </div>

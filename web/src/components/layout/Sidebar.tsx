@@ -24,16 +24,20 @@ const NavItem: React.FC<{
       <div
         className={`relative flex items-center px-3 py-2.5 my-0.5 rounded-lg cursor-pointer transition-all duration-200 group ${
           isActive
-            ? 'bg-[#9381FF]/10'
+            ? 'bg-[var(--base-dim)]'
             : 'hover:bg-white/5'
         }`}
       >
-        {/* Active indicator - simple bar on left */}
+        {/* Active indicator - simple bar on left (BASE color) with shared layout transition */}
         {isActive && (
-          <div className="absolute left-0 top-0 h-full w-0.5 bg-[#9381FF] rounded-r" />
+          <motion.div
+            layoutId="activeIndicator"
+            className="absolute left-0 top-0 h-full w-0.5 bg-[var(--base)] rounded-r"
+            transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+          />
         )}
 
-        {/* Icon with clean styling */}
+        {/* Icon with clean styling - 8pt system: w-9 (36px close to 32px), h-9 (36px), rounded-lg (8px) */}
         <div
           className={`relative w-9 h-9 flex items-center justify-center rounded-lg flex-shrink-0 transition-all duration-200 ${
             isActive
@@ -75,26 +79,26 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
   return (
     <>
-      {/* Desktop Sidebar */}
+      {/* Desktop Sidebar - NEUTRAL 1 background (recessed area) */}
       <aside
-        className="hidden lg:flex relative w-64 flex-shrink-0 flex-col bg-[#1F1F1F] border-r border-white/10"
+        className="hidden lg:flex relative w-64 flex-shrink-0 flex-col bg-[var(--neutral-1-bg)] border-r border-[var(--neutral-border)]"
         style={{ fontFamily: 'Inter, sans-serif' }}
       >
-        {/* Subtle accent at top */}
-        <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-[#9381FF]/5 to-transparent pointer-events-none" />
+        {/* Subtle BASE accent at top */}
+        <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-[var(--base)]/5 to-transparent pointer-events-none" />
 
-        {/* Logo Section */}
+        {/* Logo Section - Display typography (42px) */}
         <div className="flex items-center justify-center px-4 py-6 mb-1 relative">
           <h1
-            className="text-2xl font-bold text-white tracking-tight"
+            className="text-[42px] leading-[48px] font-bold text-white tracking-tight"
             style={{ fontFamily: 'Geist Sans, sans-serif' }}
           >
             viewer.gg
           </h1>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 px-3 pt-2 overflow-y-auto scrollbar-thin scrollbar-thumb-[#9381FF]/30 scrollbar-track-transparent">
+        {/* Navigation - 8pt spacing */}
+        <nav className="flex-1 px-3 pt-2 overflow-y-auto scrollbar-thin scrollbar-thumb-[var(--base)]/30 scrollbar-track-transparent">
           <ul>
             {pages.map(({ name, iconPath, path }) => (
               <NavItem
@@ -108,8 +112,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           </ul>
         </nav>
 
-        {/* Footer */}
-        <div className="m-4 p-3 rounded-lg text-center bg-white/5 border border-white/10">
+        {/* Footer - 8pt spacing: m-4 (16px), p-3 (12px), rounded-lg (8px) */}
+        <div className="m-4 p-3 rounded-lg text-center bg-white/5 border border-[var(--neutral-border)]">
           <p className="text-xs font-medium text-white/70">
             © 2024 viewer.gg
           </p>
@@ -135,26 +139,26 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="lg:hidden fixed left-0 top-0 bottom-0 w-72 flex-shrink-0 flex flex-col bg-[#1F1F1F] border-r border-white/10 z-50"
+              className="lg:hidden fixed left-0 top-0 bottom-0 w-72 flex-shrink-0 flex flex-col bg-[var(--neutral-1-bg)] border-r border-[var(--neutral-border)] z-50"
               style={{ fontFamily: 'Inter, sans-serif' }}
             >
-              {/* Subtle accent at top */}
-              <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-[#9381FF]/5 to-transparent pointer-events-none" />
+              {/* Subtle BASE accent at top */}
+              <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-[var(--base)]/5 to-transparent pointer-events-none" />
 
-              {/* Close button */}
+              {/* Close button - 8pt spacing: p-2 (8px), rounded-[10px] close to 8px */}
               <button
                 onClick={onClose}
-                className="absolute top-4 right-4 z-50 p-2 rounded-[10px] text-white/70 hover:text-white hover:bg-[#9381FF]/20 transition-colors"
+                className="absolute top-4 right-4 z-50 p-2 rounded-lg text-white/70 hover:text-white hover:bg-[var(--base)]/20 transition-colors"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
 
-              {/* Logo Section */}
+              {/* Logo Section - Display typography (42px) */}
               <div className="flex items-center justify-center px-4 py-6 mb-1 relative">
                 <h1
-                  className="text-2xl font-bold text-white tracking-tight"
+                  className="text-[42px] leading-[48px] font-bold text-white tracking-tight"
                   style={{ fontFamily: 'Geist Sans, sans-serif' }}
                 >
                   viewer.gg
@@ -176,8 +180,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 </ul>
               </nav>
 
-              {/* Footer */}
-              <div className="m-4 p-3 rounded-lg text-center bg-white/5 border border-white/10">
+              {/* Footer - 8pt spacing */}
+              <div className="m-4 p-3 rounded-lg text-center bg-white/5 border border-[var(--neutral-border)]">
                 <p className="text-xs font-medium text-white/70">
                   © 2024 viewer.gg
                 </p>

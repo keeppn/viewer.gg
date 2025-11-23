@@ -6,6 +6,7 @@ import Card from '@/components/common/Card';
 import { Application, Stats, Tournament } from '@/types';
 import { ApplicationIcon, CheckCircleIcon, XCircleIcon, ClockIcon } from '@/components/icons/Icons';
 import { useAppStore } from '@/store/appStore';
+import { motion, staggerContainer, fadeInUp } from '@/animations';
 
 const TournamentApplicationSummary: React.FC<{ tournaments: Tournament[], applications: Application[] }> = ({ tournaments, applications }) => {
     const summaryData = useMemo(() => {
@@ -30,7 +31,7 @@ const TournamentApplicationSummary: React.FC<{ tournaments: Tournament[], applic
     }, [tournaments, applications]);
 
     return (
-        <div className="bg-[#2A2A2A] p-5 rounded-xl border border-white/10 h-full">
+        <div className="bg-[var(--neutral-2-surface)] p-6 rounded-2xl border border-[var(--neutral-border)] h-full">
             <h3 className="text-lg font-semibold mb-4 text-white">
                 Tournament Summary
             </h3>
@@ -38,7 +39,7 @@ const TournamentApplicationSummary: React.FC<{ tournaments: Tournament[], applic
                 {summaryData.map((t) => (
                     <div
                         key={t.id}
-                        className="bg-[#1F1F1F] p-4 rounded-lg border border-white/10 hover:border-white/20 transition-all duration-200"
+                        className="bg-[var(--neutral-1-bg)] p-4 rounded-xl border border-[var(--neutral-border)] hover:border-white/20 transition-all duration-200"
                     >
                         <div className="flex justify-between items-center mb-3">
                             <div className="flex-1">
@@ -49,19 +50,19 @@ const TournamentApplicationSummary: React.FC<{ tournaments: Tournament[], applic
                                 {t.total} Apps
                             </span>
                         </div>
-                        <div className="w-full bg-[#1A1A1A] rounded-full h-2.5 flex overflow-hidden">
+                        <div className="w-full bg-[#1A1A1A] rounded-full h-2 flex overflow-hidden">
                            <div
-                               className="bg-[#22C55E] h-2.5"
+                               className="bg-[var(--semantic-success)] h-2"
                                style={{ width: `${t.approvedPercent}%` }}
                                title={`Approved: ${t.approved}`}
                            />
                            <div
-                               className="bg-[#9381FF] h-2.5"
+                               className="bg-[var(--base)] h-2"
                                style={{ width: `${t.pendingPercent}%` }}
                                title={`Pending: ${t.pending}`}
                            />
                            <div
-                               className="bg-[#EF4444] h-2.5"
+                               className="bg-[var(--semantic-error)] h-2"
                                style={{ width: `${t.rejectedPercent}%` }}
                                title={`Rejected: ${t.rejected}`}
                            />
@@ -77,27 +78,40 @@ const Overview: React.FC = () => {
   const { stats, applications = [], tournaments = [] } = useAppStore();
 
   const applicationStatusData = [
-    { name: 'Pending', count: stats?.pending || 0, fill: '#9381FF' },
-    { name: 'Approved', count: stats?.approved || 0, fill: '#22C55E' },
-    { name: 'Rejected', count: stats?.rejected || 0, fill: '#EF4444' },
+    { name: 'Pending', count: stats?.pending || 0, fill: 'var(--base)' },
+    { name: 'Approved', count: stats?.approved || 0, fill: 'var(--semantic-success)' },
+    { name: 'Rejected', count: stats?.rejected || 0, fill: 'var(--semantic-error)' },
   ];
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       {/* Compact description */}
       <p className="text-sm text-white/60">Quick overview of your tournament applications and status</p>
 
-      {/* Compact Stats Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <Card title="Applications" value={stats?.totalApplications || 0} icon={<ApplicationIcon />} accentColor="neutral" />
-        <Card title="Approved" value={stats?.approved || 0} icon={<CheckCircleIcon />} accentColor="success" />
-        <Card title="Pending" value={stats?.pending || 0} icon={<ClockIcon />} accentColor="neutral" />
-        <Card title="Rejected" value={stats?.rejected || 0} icon={<XCircleIcon />} accentColor="error" />
-      </div>
+      {/* Compact Stats Cards - 8pt spacing + Stagger animation */}
+      <motion.div
+        className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+      >
+        <motion.div variants={fadeInUp}>
+          <Card title="Applications" value={stats?.totalApplications || 0} icon={<ApplicationIcon />} accentColor="neutral" />
+        </motion.div>
+        <motion.div variants={fadeInUp}>
+          <Card title="Approved" value={stats?.approved || 0} icon={<CheckCircleIcon />} accentColor="success" />
+        </motion.div>
+        <motion.div variants={fadeInUp}>
+          <Card title="Pending" value={stats?.pending || 0} icon={<ClockIcon />} accentColor="purple" />
+        </motion.div>
+        <motion.div variants={fadeInUp}>
+          <Card title="Rejected" value={stats?.rejected || 0} icon={<XCircleIcon />} accentColor="error" />
+        </motion.div>
+      </motion.div>
 
-      {/* Charts Section - Compact Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-5">
-        <div className="lg:col-span-3 bg-[#2A2A2A] p-5 rounded-xl border border-white/10">
+      {/* Charts Section - 8pt spacing */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        <div className="lg:col-span-3 bg-[var(--neutral-2-surface)] p-6 rounded-2xl border border-[var(--neutral-border)]">
           <h3 className="text-lg font-semibold mb-4 text-white">
             Application Status
           </h3>
@@ -117,8 +131,8 @@ const Overview: React.FC = () => {
               />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: '#1F1F1F',
-                  border: '1px solid rgba(255,255,255,0.1)',
+                  backgroundColor: 'var(--neutral-1-bg)',
+                  border: '1px solid var(--neutral-border)',
                   borderRadius: '8px',
                   fontSize: '13px',
                   color: '#fff',
@@ -140,15 +154,15 @@ const Overview: React.FC = () => {
         </div>
       </div>
 
-      {/* Recent Applications Table - Compact */}
-      <div className="bg-[#2A2A2A] p-5 rounded-xl border border-white/10">
+      {/* Recent Applications Table - 8pt spacing */}
+      <div className="bg-[var(--neutral-2-surface)] p-6 rounded-2xl border border-[var(--neutral-border)]">
           <h3 className="text-lg font-semibold mb-4 text-white">
             Recent Applications
           </h3>
           <div className="overflow-x-auto">
               <table className="w-full text-left">
                   <thead>
-                      <tr className="border-b border-white/10 text-white/60 uppercase text-xs tracking-wide">
+                      <tr className="border-b border-[var(--neutral-border)] text-white/60 uppercase text-xs tracking-wide">
                           <th className="p-3 font-semibold">Streamer</th>
                           <th className="p-3 font-semibold">Tournament</th>
                           <th className="p-3 font-semibold hidden sm:table-cell">Date</th>
@@ -166,9 +180,9 @@ const Overview: React.FC = () => {
                               <td className="p-3 text-white/60 text-xs hidden sm:table-cell">{app.submission_date}</td>
                               <td className="p-3">
                                   <span className={`inline-flex items-center px-2.5 py-1 text-xs font-semibold rounded-full ${
-                                      app.status === 'Approved' ? 'bg-[#22C55E]/10 text-[#22C55E] border border-[#22C55E]/30' :
-                                      app.status === 'Rejected' ? 'bg-[#EF4444]/10 text-[#EF4444] border border-[#EF4444]/30' :
-                                      'bg-[#9381FF]/10 text-[#9381FF] border border-[#9381FF]/30'
+                                      app.status === 'Approved' ? 'bg-[var(--semantic-success)]/10 text-[var(--semantic-success)] border border-[var(--semantic-success)]/30' :
+                                      app.status === 'Rejected' ? 'bg-[var(--semantic-error)]/10 text-[var(--semantic-error)] border border-[var(--semantic-error)]/30' :
+                                      'bg-[var(--base)]/10 text-[var(--base)] border border-[var(--base)]/30'
                                   }`}>
                                       {app.status}
                                   </span>

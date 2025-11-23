@@ -86,10 +86,10 @@ const StreamHealthMonitor: React.FC<StreamHealthMonitorProps> = ({ streams }) =>
     good: {
       icon: '🟡',
       label: 'Good',
-      color: 'text-[#DAFF7C]',
-      bg: 'bg-[#DAFF7C]/10',
-      border: 'border-[#DAFF7C]/30',
-      glow: 'shadow-[#DAFF7C]/20'
+      color: 'text-[var(--contrast)]',
+      bg: 'bg-[var(--contrast)]/10',
+      border: 'border-[var(--contrast)]/30',
+      glow: 'shadow-[var(--contrast)]/20'
     },
     warning: {
       icon: '🟠',
@@ -123,7 +123,7 @@ const StreamHealthMonitor: React.FC<StreamHealthMonitorProps> = ({ streams }) =>
   const sortedStreams = [...streamHealthData].sort((a, b) => a.healthScore - b.healthScore);
 
   return (
-    <div className="bg-gradient-to-br from-[#1F1F1F]/90 to-[#2A2A2A]/90 backdrop-blur-xl rounded-xl border border-white/10 overflow-hidden">
+    <div className="bg-gradient-to-br from-[var(--neutral-1-bg)]/90 to-[var(--neutral-2-surface)]/90 backdrop-blur-xl rounded-xl border border-white/10 overflow-hidden">
       {/* Header */}
       <div className="p-6 border-b border-white/10">
         <div className="flex items-center justify-between">
@@ -156,7 +156,7 @@ const StreamHealthMonitor: React.FC<StreamHealthMonitorProps> = ({ streams }) =>
       {/* Stream list */}
       {streamHealthData.length === 0 ? (
         <div className="p-12 text-center">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-[#9381FF]/20 to-[#DAFF7C]/20 flex items-center justify-center">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-[var(--base)]/20 to-[var(--contrast)]/20 flex items-center justify-center">
             <span className="text-3xl">📊</span>
           </div>
           <p className="text-white/60 mb-2">No active streams to monitor</p>
@@ -226,7 +226,7 @@ const StreamHealthMonitor: React.FC<StreamHealthMonitorProps> = ({ streams }) =>
                         <div className="text-xs font-semibold text-white/70 mb-1">Recommendations:</div>
                         <div className="space-y-1">
                           {recommendations.map((rec, index) => (
-                            <div key={index} className="flex items-start gap-2 text-xs text-[#9381FF]">
+                            <div key={index} className="flex items-start gap-2 text-xs text-[var(--base)]">
                               <span>💡</span>
                               <span>{rec}</span>
                             </div>
@@ -251,7 +251,7 @@ const StreamHealthMonitor: React.FC<StreamHealthMonitorProps> = ({ streams }) =>
               <div className="text-xs text-white/60 mt-1">Excellent</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-[#DAFF7C]">{statusCounts.good}</div>
+              <div className="text-2xl font-bold text-[var(--contrast)]">{statusCounts.good}</div>
               <div className="text-xs text-white/60 mt-1">Good</div>
             </div>
             <div className="text-center">

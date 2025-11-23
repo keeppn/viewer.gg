@@ -56,7 +56,7 @@ const StreamerLeaderboard: React.FC<StreamerLeaderboardProps> = ({ streams }) =>
   };
 
   return (
-    <div className="bg-gradient-to-br from-[#1F1F1F]/90 to-[#2A2A2A]/90 backdrop-blur-xl rounded-xl border border-white/10 overflow-hidden">
+    <div className="bg-gradient-to-br from-[var(--neutral-1-bg)]/90 to-[var(--neutral-2-surface)]/90 backdrop-blur-xl rounded-xl border border-white/10 overflow-hidden">
       {/* Header */}
       <div className="p-6 border-b border-white/10">
         <div className="flex items-center justify-between">
@@ -75,7 +75,7 @@ const StreamerLeaderboard: React.FC<StreamerLeaderboardProps> = ({ streams }) =>
               onClick={() => setSortBy('peak')}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                 sortBy === 'peak'
-                  ? 'bg-[#9381FF]/20 text-[#9381FF] border border-[#9381FF]/30'
+                  ? 'bg-[var(--base)]/20 text-[var(--base)] border border-[var(--base)]/30'
                   : 'bg-white/5 text-white/60 hover:bg-white/10'
               }`}
             >
@@ -85,7 +85,7 @@ const StreamerLeaderboard: React.FC<StreamerLeaderboardProps> = ({ streams }) =>
               onClick={() => setSortBy('average')}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                 sortBy === 'average'
-                  ? 'bg-[#9381FF]/20 text-[#9381FF] border border-[#9381FF]/30'
+                  ? 'bg-[var(--base)]/20 text-[var(--base)] border border-[var(--base)]/30'
                   : 'bg-white/5 text-white/60 hover:bg-white/10'
               }`}
             >
@@ -95,7 +95,7 @@ const StreamerLeaderboard: React.FC<StreamerLeaderboardProps> = ({ streams }) =>
               onClick={() => setSortBy('current')}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                 sortBy === 'current'
-                  ? 'bg-[#9381FF]/20 text-[#9381FF] border border-[#9381FF]/30'
+                  ? 'bg-[var(--base)]/20 text-[var(--base)] border border-[var(--base)]/30'
                   : 'bg-white/5 text-white/60 hover:bg-white/10'
               }`}
             >
@@ -109,7 +109,7 @@ const StreamerLeaderboard: React.FC<StreamerLeaderboardProps> = ({ streams }) =>
       <div className="divide-y divide-white/5">
         {sortedStreams.length === 0 ? (
           <div className="p-12 text-center">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-[#9381FF]/20 to-[#DAFF7C]/20 flex items-center justify-center">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-[var(--base)]/20 to-[var(--contrast)]/20 flex items-center justify-center">
               <span className="text-3xl">📊</span>
             </div>
             <p className="text-white/60 mb-2">No live streamers yet</p>
@@ -133,7 +133,7 @@ const StreamerLeaderboard: React.FC<StreamerLeaderboardProps> = ({ streams }) =>
 
                 {/* Avatar */}
                 <div className="flex-shrink-0">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#9381FF]/20 to-[#DAFF7C]/20 flex items-center justify-center border border-white/10">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--base)]/20 to-[var(--contrast)]/20 flex items-center justify-center border border-white/10">
                     {stream.avatar_url ? (
                       <img
                         src={stream.avatar_url}
@@ -168,13 +168,13 @@ const StreamerLeaderboard: React.FC<StreamerLeaderboardProps> = ({ streams }) =>
                 {/* Stats */}
                 <div className="flex items-center gap-6 text-right">
                   <div>
-                    <div className="text-lg font-bold text-[#DAFF7C]">
+                    <div className="text-lg font-bold text-[var(--contrast)]">
                       {stream.peak_viewers.toLocaleString()}
                     </div>
                     <div className="text-xs text-white/60">Peak</div>
                   </div>
                   <div>
-                    <div className="text-lg font-bold text-[#9381FF]">
+                    <div className="text-lg font-bold text-[var(--base)]">
                       {stream.average_viewers.toLocaleString()}
                     </div>
                     <div className="text-xs text-white/60">Average</div>
