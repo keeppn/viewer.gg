@@ -60,6 +60,11 @@ export interface Tournament {
   rejection_message?: string;
   status: 'draft' | 'active' | 'completed' | 'archived';
   application_count: number;
+  // Form branding
+  form_header_image?: string;
+  form_description?: string;
+  form_primary_color?: string;
+  form_button_text?: string;
   created_at: string;
   updated_at: string;
 }
