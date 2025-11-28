@@ -40,13 +40,19 @@ export const tournamentApi = {
 
   // Update tournament
   async update(id: string, updates: Partial<Tournament>): Promise<Tournament> {
-    // Filter out read-only and auto-generated fields that shouldn't be sent to Supabase
+    // Only include fields that exist in the database schema
+    // Filter out: read-only fields, auto-generated fields, and fields not in DB
     const {
       id: _id,
       created_at,
       updated_at,
       application_count,
       organization_id,
+      // These form branding fields don't exist in DB yet - filter them out
+      form_header_image,
+      form_description,
+      form_primary_color,
+      form_button_text,
       ...editableFields
     } = updates as Tournament;
 
