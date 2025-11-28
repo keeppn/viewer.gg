@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Tournament, FormField } from '../../types';
 import Button from '../common/Button';
+import { useToast } from '../common/Toast';
 import { BackIcon, PlusIcon, TrashIcon, CopyIcon } from '../icons/Icons';
 
 interface ManageTournamentFormProps {
@@ -110,6 +111,10 @@ const ManageTournamentForm: React.FC<ManageTournamentFormProps> = ({ tournament,
     const [selectedFieldId, setSelectedFieldId] = useState<string | null>(null);
     const [showAddField, setShowAddField] = useState(false);
     const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+    const [isSaving, setIsSaving] = useState(false);
+
+    // Toast notifications
+    const toast = useToast();
 
     // Branding state
     const [formHeaderImage, setFormHeaderImage] = useState(tournament.form_header_image || '');
@@ -117,7 +122,7 @@ const ManageTournamentForm: React.FC<ManageTournamentFormProps> = ({ tournament,
     const [formPrimaryColor, setFormPrimaryColor] = useState(tournament.form_primary_color || '#9381FF');
     const [formButtonText, setFormButtonText] = useState(tournament.form_button_text || 'Submit Application');
 
-    const publicFormUrl = `${window.location.origin}/apply/${tournament.id}`;
+    const publicFormUrl = typeof window !== 'undefined' ? `${window.location.origin}/apply/${tournament.id}` : '';
     const selectedField = formFields.find(f => f.id === selectedFieldId);
 
     const handleAddField = (type: FieldType) => {
@@ -175,11 +180,22 @@ const ManageTournamentForm: React.FC<ManageTournamentFormProps> = ({ tournament,
     };
 
     const handleSave = async () => {
+        // Validation
+        if (!title.trim()) {
+            toast.error('Tournament title is required');
+            return;
+        }
+        if (!game.trim()) {
+            toast.error('Game name is required');
+            return;
+        }
+
+        setIsSaving(true);
         try {
             const updatedTournament = {
                 ...tournament,
-                title,
-                game,
+                title: title.trim(),
+                game: game.trim(),
                 start_date: startDate,
                 form_fields: formFields,
                 form_header_image: formHeaderImage,
@@ -189,16 +205,22 @@ const ManageTournamentForm: React.FC<ManageTournamentFormProps> = ({ tournament,
             };
 
             await onSave(updatedTournament);
-            alert('Tournament saved successfully!');
+            toast.success('Tournament saved successfully!');
         } catch (error) {
             console.error('Error saving tournament:', error);
-            alert('Failed to save tournament. Please try again.');
+            toast.error(error instanceof Error ? error.message : 'Failed to save tournament. Please try again.');
+        } finally {
+            setIsSaving(false);
         }
     };
 
-    const handleCopy = () => {
-        navigator.clipboard.writeText(publicFormUrl);
-        alert('Form URL copied to clipboard!');
+    const handleCopy = async () => {
+        try {
+            await navigator.clipboard.writeText(publicFormUrl);
+            toast.success('Form URL copied to clipboard!');
+        } catch {
+            toast.error('Failed to copy URL');
+        }
     };
 
     return (
@@ -212,8 +234,16 @@ const ManageTournamentForm: React.FC<ManageTournamentFormProps> = ({ tournament,
                         <p className="text-white/60 text-sm">Build your custom application form</p>
                     </div>
                 </div>
-                <Button onClick={handleSave} className="shadow-lg shadow-[#DAFF7C]/20">
-                    Save All Changes
+                <Button onClick={handleSave} disabled={isSaving} className="shadow-lg shadow-[#DAFF7C]/20">
+                    {isSaving ? (
+                        <span className="flex items-center gap-2">
+                            <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                            </svg>
+                            Saving...
+                        </span>
+                    ) : 'Save All Changes'}
                 </Button>
             </div>
 

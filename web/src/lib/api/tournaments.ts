@@ -40,14 +40,29 @@ export const tournamentApi = {
 
   // Update tournament
   async update(id: string, updates: Partial<Tournament>): Promise<Tournament> {
+    // Filter out read-only and auto-generated fields that shouldn't be sent to Supabase
+    const {
+      id: _id,
+      created_at,
+      updated_at,
+      application_count,
+      organization_id,
+      ...editableFields
+    } = updates as Tournament;
+
+    console.log('Updating tournament with fields:', Object.keys(editableFields));
+
     const { data, error } = await supabase
       .from('tournaments')
-      .update(updates)
+      .update(editableFields)
       .eq('id', id)
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error('Tournament update error:', error);
+      throw new Error(error.message || 'Failed to update tournament');
+    }
     return data;
   },
 

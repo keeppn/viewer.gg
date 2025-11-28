@@ -7,6 +7,7 @@ import { useAuthStore } from '@/store/authStore';
 import { useAppStore } from '@/store/appStore';
 import Layout from '@/components/layout/Layout';
 import ErrorBoundary from '@/components/common/ErrorBoundary';
+import { ToastProvider } from '@/components/common/Toast';
 
 export default function DashboardLayout({
   children,
@@ -101,7 +102,9 @@ export default function DashboardLayout({
   console.log('[DashboardLayout] Rendering: Layout with children');
   return (
     <ErrorBoundary>
-      <Layout>{children}</Layout>
+      <ToastProvider>
+        <Layout>{children}</Layout>
+      </ToastProvider>
     </ErrorBoundary>
   );
 }
