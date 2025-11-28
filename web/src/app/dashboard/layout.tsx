@@ -16,37 +16,36 @@ export default function DashboardLayout({
   const router = useRouter();
   const { initialize, user, organization, initialized, isInitializing } = useAuthStore();
   const { fetchTournaments, fetchApplications } = useAppStore();
-  const [checking, setChecking] = useState(!initialized); // Start false if already initialized
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    // If already initialized with a user, skip checking
-    if (initialized && user) {
-      setChecking(false);
-      return;
-    }
-
-    // If already initializing, just wait
-    if (isInitializing) {
-      return;
-    }
-
     let isMounted = true;
 
-    const checkAndInitialize = async () => {
+    const initAuth = async () => {
+      // If already initialized with a user, we're ready
+      if (initialized && user) {
+        if (isMounted) setIsReady(true);
+        return;
+      }
+
+      // If already initializing, wait for it
+      if (isInitializing) {
+        return;
+      }
+
+      // Initialize auth
       try {
         await initialize();
-        if (isMounted) {
-          setChecking(false);
-        }
       } catch (error) {
         console.error('Dashboard initialization error:', error);
-        if (isMounted) {
-          setChecking(false);
-        }
+      }
+      
+      if (isMounted) {
+        setIsReady(true);
       }
     };
 
-    checkAndInitialize();
+    initAuth();
 
     return () => {
       isMounted = false;
@@ -65,8 +64,8 @@ export default function DashboardLayout({
     }
   }, [user, organization, fetchTournaments, fetchApplications]);
 
-  // Show loading only while checking AND not yet initialized
-  if (checking && !initialized) {
+  // Show loading while auth is initializing
+  if (!isReady || !initialized) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#121212] via-[#0D0D0D] to-[#0A0A0A] flex items-center justify-center relative overflow-hidden">
         <div className="absolute top-0 -left-4 w-96 h-96 bg-[#387B66]/5 rounded-full blur-3xl" />
@@ -86,7 +85,7 @@ export default function DashboardLayout({
 
   // After initialization, if no user found, redirect to login
   if (!user) {
-    router.push('/');
+    router.replace('/');
     return null;
   }
 

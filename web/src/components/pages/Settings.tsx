@@ -12,7 +12,7 @@ const Settings: React.FC = () => {
     const searchParams = useSearchParams();
     
     // Get organization from auth store instead of fetching again
-    const { user, organization } = useAuthStore();
+    const { user, organization, initialized } = useAuthStore();
 
     const [loading, setLoading] = useState(true);
     const [discordConfig, setDiscordConfig] = useState<DiscordConfig | null>(null);
@@ -24,6 +24,11 @@ const Settings: React.FC = () => {
 
         const initializePage = async () => {
             if (!isMounted) return;
+
+            // Wait for auth store to be initialized
+            if (!initialized) {
+                return;
+            }
 
             // Check URL params for success/error messages
             const success = searchParams.get('success');
@@ -56,7 +61,7 @@ const Settings: React.FC = () => {
         return () => {
             isMounted = false;
         };
-    }, [organization, searchParams]);
+    }, [organization, searchParams, initialized]);
 
     const loadDiscordConfig = async (orgId: string) => {
         try {
@@ -130,7 +135,8 @@ const Settings: React.FC = () => {
         }
     };
 
-    if (loading) {
+    // Show loading while auth store is initializing OR while we're loading discord config
+    if (!initialized || loading) {
         return (
             <div className="max-w-2xl mx-auto">
                 <div className="text-center py-12">
